@@ -1,38 +1,35 @@
-.App {
-  text-align: center;
+/* Navbar */
+.custom-navbar.navbar {
+  background-color: #1e6262 !important;  /* Add !important to override Bootstrap */
+  color: #ecfffb !important; /* Ensure text color is overridden */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Background color for body */
+body {
+  background-color: #ecfffb !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Footer */
+.custom-footer {
+  background-color: #1e6262 !important;
+  color: #ecfffb !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.custom-footer a {
+  color: #b4f1f1 !important; /* Light blue for footer links */
 }
 
-.App-link {
-  color: #61dafb;
+/* Text Colors */
+h1, h2, h3, h4, p, button {
+  color: #2d767f !important; /* Use #2d767f for text */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button {
+  background-color: #b4f1f1 !important;
+  border-color: #2d767f !important;
+}
+
+button:hover {
+  background-color: #2d767f !important;
+  color: #ecfffb !important;
 }

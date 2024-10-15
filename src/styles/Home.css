@@ -1,0 +1,72 @@
+/* Background color */
+body {
+    background-color: #ecfffb !important;  /* Ensure body background is applied */
+}
+  
+/* Navbar and Footer background color */
+.custom-navbar, .custom-footer {
+    background-color: #1e6262 !important;
+    color: #ecfffb !important;
+}
+
+/* Navbar Links */
+.custom-navbar .navbar-nav .nav-link,
+.custom-navbar .navbar-brand {
+    color: #b4f1f1 !important;  /* Light blue for navbar links and brand */
+}
+
+.custom-navbar .navbar-nav .nav-link:hover,
+.custom-navbar .navbar-brand:hover {
+    color: #ecfffb !important;  /* Hover effect: white */
+}
+
+/* Footer Links */
+.custom-footer a {
+    color: #b4f1f1 !important;
+}
+
+.custom-footer a:hover {
+    color: #ecfffb !important;  /* Hover effect: white */
+}
+
+/* Text Colors for headings, paragraphs, and buttons */
+h1, h2, h3, h4, p, button {
+    color: #2d767f !important;
+}
+
+button {
+    background-color: #b4f1f1 !important;
+    border-color: #2d767f !important;
+}
+
+button:hover {
+    background-color: #2d767f !important;
+    color: #ecfffb !important;
+}
+
+/* Ensure the body and html take up the full height */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Container for the page content */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* Ensures full viewport height */
+}
+
+/* The main content container should grow to fill the remaining space */
+.main-content {
+    flex-grow: 1;
+}
+
+/* Sticky Footer */
+.custom-footer {
+    background-color: #1e6262;
+    color: #ecfffb;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto;  /* Pushes the footer to the bottom */
+}
