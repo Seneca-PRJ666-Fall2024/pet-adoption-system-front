@@ -1,12 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Button, Container, Row, Col, Card, Navbar, Nav } from 'react-bootstrap';
 import '../styles/Home.css';
+import petsImage from '../assets/images/pets.jpg';
 
 const Home = () => {
+  // Simulate the user role: "guest", "adopter", or "shelter"
+  const [userRole, setUserRole] = useState('guest'); // guest is the default state
+
+  // Handler to switch roles (for demo purposes)
+  const loginAsAdopter = () => setUserRole('adopter');
+  const loginAsShelter = () => setUserRole('shelter');
+  const logout = () => setUserRole('guest');
+
   return (
     <div id="root">
       {/* Navbar */}
-      <Navbar expand="lg" className="custom-navbar">
+       <Navbar expand="lg" className="custom-navbar">
         <Container>
           <Navbar.Brand href="#home">Pet Adoption Platform</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -14,20 +23,42 @@ const Home = () => {
             <Nav className="ml-auto">
               <Nav.Link href="#support">Support</Nav.Link>
               <Nav.Link href="#contacts">Contacts</Nav.Link>
-              <Nav.Link href="#register">Register</Nav.Link>
-              <Nav.Link href="#login">Login</Nav.Link>
+              {userRole === 'guest' ? (
+                <>
+                  <Nav.Link href="#register">Register</Nav.Link>
+                  <Nav.Link href="#login">Login</Nav.Link>
+                </>
+              ) : (
+                <Nav.Link href="#logout" onClick={logout}>
+                  Logout
+                </Nav.Link>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
       {/* Main Content Wrapper */}
-      <div className="main-content">
+      <div className="flex-grow-1 text-center mt-4">
+        {userRole === 'guest' && (
+          <>
+            <h1>Welcome to Pet Adoption Platform!</h1>
+            <p>Please register or log in to explore more features.</p>
+            <img
+            src={petsImage} // Update with your actual image path
+            alt="Pets"
+            className="img-fluid mt-4"
+          />
+          </>
+        )}
+
+        {userRole === 'adopter' && (
+          <>
         {/* Welcome and Image Section */}
         <Container className="flex-grow-1 text-center mt-4">
           <h1>Welcome, Jessie!</h1>
           <img
-            src="../assets/images/pets.jpg" // Update with your actual image path
+            src={petsImage} // Update with your actual image path
             alt="Pets"
             className="img-fluid mt-4"
           />
@@ -35,7 +66,7 @@ const Home = () => {
 
         {/* Available Pets Section */}
         <Container className="mt-4">
-          <h3>Review available pets status:</h3>
+          <h3>Checkout available pet's status:</h3>
           <Row className="mt-4 text-center">
             {/* Pet Card 1 */}
             <Col md={4}>
@@ -95,8 +126,97 @@ const Home = () => {
 
         {/* Additional Information Section */}
         <Container className="mt-4">
-          <h4>Adoption applications:</h4>
-          <p>You didn’t receive any new application yet.</p>
+          <h4>Adoption process status:</h4>
+          <p>You didn’t submit any application yet <a href="#adoption-process">here</a><a href="#adoption-process">here</a>.</p>
+
+          <h4>Find your match:</h4>
+          <p>Please click <a href="#pet-matching">here</a>.</p>
+
+          <h4>Your profile:</h4>
+          <p>
+            <a href="#profile">Click here to review or update your profile</a>.
+          </p>
+        </Container>
+        </>
+      )}
+
+
+        {userRole === 'shelter' && (
+          <>
+        {/* Welcome and Image Section */}
+        <Container className="flex-grow-1 text-center mt-4">
+          <h1>Welcome, Jessie!</h1>
+          <img
+            src={petsImage} // Update with your actual image path
+            alt="Pets"
+            className="img-fluid mt-4"
+          />
+        </Container>
+
+        {/* Available Pets Section */}
+        <Container className="mt-4">
+          <h3>Checkout available pet's status:</h3>
+          <Row className="mt-4 text-center">
+            {/* Pet Card 1 */}
+            <Col md={4}>
+              <Card className="mb-4 shadow-sm">
+                <Card.Img variant="top" src="/assets/images/cat.jpg" />
+                <Card.Body>
+                  <Button variant="link">View pet’s profile</Button>
+                  <Row>
+                    <Col>
+                      <Button variant="success">Adopted</Button>
+                    </Col>
+                    <Col>
+                      <Button variant="outline-success">Still available</Button>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* Pet Card 2 */}
+            <Col md={4}>
+              <Card className="mb-4 shadow-sm">
+                <Card.Img variant="top" src="/assets/images/dog.jpg" />
+                <Card.Body>
+                  <Button variant="link">View pet’s profile</Button>
+                  <Row>
+                    <Col>
+                      <Button variant="success">Adopted</Button>
+                    </Col>
+                    <Col>
+                      <Button variant="outline-success">Still available</Button>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* Pet Card 3 */}
+            <Col md={4}>
+              <Card className="mb-4 shadow-sm">
+                <Card.Img variant="top" src="/assets/images/hamster.jpg" />
+                <Card.Body>
+                  <Button variant="link">View pet’s profile</Button>
+                  <Row>
+                    <Col>
+                      <Button variant="success">Adopted</Button>
+                    </Col>
+                    <Col>
+                      <Button variant="outline-success">Still available</Button>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+
+        {/* Additional Information Section */}
+        <Container className="mt-4">
+          <h4>Adoption application status:</h4>
+          <p>You didn’t receive any new application yet <a href="#adoption-process">here</a>.</p>
 
           <h4>Register new pet:</h4>
           <p>Please fill out the new pet registration form <a href="#registration-form">here</a>.</p>
@@ -106,7 +226,11 @@ const Home = () => {
             <a href="#profile">Click here to review or update your profile</a>.
           </p>
         </Container>
+        </>
+      )}
+
       </div>
+     
 
       {/* Footer */}
       <footer className="custom-footer">
