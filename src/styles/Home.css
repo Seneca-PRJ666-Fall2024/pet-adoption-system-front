@@ -70,3 +70,22 @@ html, body {
     padding: 20px 0;
     margin-top: auto;  /* Pushes the footer to the bottom */
 }
+
+/* Image Styling */
+.img-fluid {
+    width: 70%; /* Adjust the percentage to change the size */
+    height: auto;
+    opacity: 0.9; /* Make the image slightly transparent */
+    background-color: #ecfffb; /* The background color you want to blend with */
+    mix-blend-mode: multiply; /* This helps blend the image with the background */
+    border-radius: 10px; /* Optional: add rounded corners */
+  }
+  
+  /* If you want to center the image */
+  .img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  

@@ -1,253 +1,80 @@
-import React, {useState} from 'react';
-import { Button, Container, Row, Col, Card, Navbar, Nav } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Container, Row, Col, Card, Navbar, Nav } from 'react-bootstrap';  // Make sure Row and Col are imported
+import NavbarComponent from './NavbarComponent';
+import AdopterView from './AdopterView';
+import ShelterView from './ShelterView';
 import '../styles/Home.css';
 import petsImage from '../assets/images/pets.jpg';
+import ReviewCard from './ReviewCard';  // Import the ReviewCard component
+import { Link } from 'react-router-dom';  // Import Link from react-router-dom
+import FooterComponent from './FooterComponent';  // Import the FooterComponent
 
 const Home = () => {
-  // Simulate the user role: "guest", "adopter", or "shelter"
   const [userRole, setUserRole] = useState('guest'); // guest is the default state
 
-  // Handler to switch roles (for demo purposes)
+  // Handlers to switch roles (for demo purposes)
   const loginAsAdopter = () => setUserRole('adopter');
   const loginAsShelter = () => setUserRole('shelter');
   const logout = () => setUserRole('guest');
 
+  // Extended reviews data
+  const reviews = [
+    { title: "Amazing Experience!", story: "We found our perfect furry friend through this platform, and the process was seamless.", author: "Jane Doe" },
+    { title: "Highly Recommend!", story: "The staff was very helpful, and now we have a new family member who brings us so much joy.", author: "John Smith" },
+    { title: "A True Blessing", story: "Adopting our cat changed our lives, and we're so grateful for this service.", author: "Emily Davis" },
+    { title: "Fantastic Service", story: "I never thought adopting a pet would be this easy! Great team and very helpful support.", author: "Robert Wilson" },
+    { title: "Heartwarming Experience", story: "Our family adopted two kittens, and they’ve brought so much happiness into our home.", author: "Samantha Green" },
+    { title: "Smooth and Safe Process", story: "I felt confident in the adoption process. The platform provided excellent guidance from start to finish.", author: "Michael Brown" },
+  ];
+
+
   return (
     <div id="root">
       {/* Navbar */}
-       <Navbar expand="lg" className="custom-navbar">
-        <Container>
-          <Navbar.Brand href="#home">Pet Adoption Platform</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ml-auto">
-              <Nav.Link href="#support">Support</Nav.Link>
-              <Nav.Link href="#contacts">Contacts</Nav.Link>
-              {userRole === 'guest' ? (
-                <>
-                  <Nav.Link href="#register">Register</Nav.Link>
-                  <Nav.Link href="#login">Login</Nav.Link>
-                </>
-              ) : (
-                <Nav.Link href="#logout" onClick={logout}>
-                  Logout
-                </Nav.Link>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <NavbarComponent userRole={userRole} logout={logout} />
 
-      {/* Main Content Wrapper */}
+      {/* Main Content */}
       <div className="flex-grow-1 text-center mt-4">
         {userRole === 'guest' && (
           <>
-            <h1>Welcome to Pet Adoption Platform!</h1>
-            <p>Please register or log in to explore more features.</p>
-            <img
-            src={petsImage} // Update with your actual image path
-            alt="Pets"
-            className="img-fluid mt-4"
-          />
+            <Container className="text-center mt-4">
+              <h1>Welcome to Pet Adoption Platform!</h1>
+              <p>Please <a href="#register">Register</a> or <Link to="/login">Log in</Link> to explore more features.</p>
+              <div className="img-container">
+                <img
+                  src={petsImage} 
+                  alt="Pets"
+                  className="img-fluid"
+                />
+              </div>
+            </Container>
+
+            <p style={{ 
+               borderTop: '3px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
+               width: '50%',                    // Centered at 50% width
+               margin: '40px auto 0 auto'       // 20px top margin, centered
+            }} />
+            
+            {/* Adoption Success Stories */}
+            <Container className="mt-5 mb-5">
+              <h2>Adoption Success Stories</h2>
+              <Row className="mt-4">
+                {reviews.map((review, index) => (
+                  <Col md={4} key={index}>
+                    <ReviewCard title={review.title} story={review.story} author={review.author} />
+                  </Col>
+                ))}
+              </Row>
+            </Container>
           </>
         )}
 
-        {userRole === 'adopter' && (
-          <>
-        {/* Welcome and Image Section */}
-        <Container className="flex-grow-1 text-center mt-4">
-          <h1>Welcome, Jessie!</h1>
-          <img
-            src={petsImage} // Update with your actual image path
-            alt="Pets"
-            className="img-fluid mt-4"
-          />
-        </Container>
-
-        {/* Available Pets Section */}
-        <Container className="mt-4">
-          <h3>Checkout available pet's status:</h3>
-          <Row className="mt-4 text-center">
-            {/* Pet Card 1 */}
-            <Col md={4}>
-              <Card className="mb-4 shadow-sm">
-                <Card.Img variant="top" src="/assets/images/cat.jpg" />
-                <Card.Body>
-                  <Button variant="link">View pet’s profile</Button>
-                  <Row>
-                    <Col>
-                      <Button variant="success">Adopted</Button>
-                    </Col>
-                    <Col>
-                      <Button variant="outline-success">Still available</Button>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            {/* Pet Card 2 */}
-            <Col md={4}>
-              <Card className="mb-4 shadow-sm">
-                <Card.Img variant="top" src="/assets/images/dog.jpg" />
-                <Card.Body>
-                  <Button variant="link">View pet’s profile</Button>
-                  <Row>
-                    <Col>
-                      <Button variant="success">Adopted</Button>
-                    </Col>
-                    <Col>
-                      <Button variant="outline-success">Still available</Button>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            {/* Pet Card 3 */}
-            <Col md={4}>
-              <Card className="mb-4 shadow-sm">
-                <Card.Img variant="top" src="/assets/images/hamster.jpg" />
-                <Card.Body>
-                  <Button variant="link">View pet’s profile</Button>
-                  <Row>
-                    <Col>
-                      <Button variant="success">Adopted</Button>
-                    </Col>
-                    <Col>
-                      <Button variant="outline-success">Still available</Button>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-
-        {/* Additional Information Section */}
-        <Container className="mt-4">
-          <h4>Adoption process status:</h4>
-          <p>You didn’t submit any application yet <a href="#adoption-process">here</a><a href="#adoption-process">here</a>.</p>
-
-          <h4>Find your match:</h4>
-          <p>Please click <a href="#pet-matching">here</a>.</p>
-
-          <h4>Your profile:</h4>
-          <p>
-            <a href="#profile">Click here to review or update your profile</a>.
-          </p>
-        </Container>
-        </>
-      )}
-
-
-        {userRole === 'shelter' && (
-          <>
-        {/* Welcome and Image Section */}
-        <Container className="flex-grow-1 text-center mt-4">
-          <h1>Welcome, Jessie!</h1>
-          <img
-            src={petsImage} // Update with your actual image path
-            alt="Pets"
-            className="img-fluid mt-4"
-          />
-        </Container>
-
-        {/* Available Pets Section */}
-        <Container className="mt-4">
-          <h3>Checkout available pet's status:</h3>
-          <Row className="mt-4 text-center">
-            {/* Pet Card 1 */}
-            <Col md={4}>
-              <Card className="mb-4 shadow-sm">
-                <Card.Img variant="top" src="/assets/images/cat.jpg" />
-                <Card.Body>
-                  <Button variant="link">View pet’s profile</Button>
-                  <Row>
-                    <Col>
-                      <Button variant="success">Adopted</Button>
-                    </Col>
-                    <Col>
-                      <Button variant="outline-success">Still available</Button>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            {/* Pet Card 2 */}
-            <Col md={4}>
-              <Card className="mb-4 shadow-sm">
-                <Card.Img variant="top" src="/assets/images/dog.jpg" />
-                <Card.Body>
-                  <Button variant="link">View pet’s profile</Button>
-                  <Row>
-                    <Col>
-                      <Button variant="success">Adopted</Button>
-                    </Col>
-                    <Col>
-                      <Button variant="outline-success">Still available</Button>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            {/* Pet Card 3 */}
-            <Col md={4}>
-              <Card className="mb-4 shadow-sm">
-                <Card.Img variant="top" src="/assets/images/hamster.jpg" />
-                <Card.Body>
-                  <Button variant="link">View pet’s profile</Button>
-                  <Row>
-                    <Col>
-                      <Button variant="success">Adopted</Button>
-                    </Col>
-                    <Col>
-                      <Button variant="outline-success">Still available</Button>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-
-        {/* Additional Information Section */}
-        <Container className="mt-4">
-          <h4>Adoption application status:</h4>
-          <p>You didn’t receive any new application yet <a href="#adoption-process">here</a>.</p>
-
-          <h4>Register new pet:</h4>
-          <p>Please fill out the new pet registration form <a href="#registration-form">here</a>.</p>
-
-          <h4>Your shelter profile:</h4>
-          <p>
-            <a href="#profile">Click here to review or update your profile</a>.
-          </p>
-        </Container>
-        </>
-      )}
-
+        {userRole === 'adopter' && <AdopterView />}
+        {userRole === 'shelter' && <ShelterView />}
       </div>
-     
 
-      {/* Footer */}
-      <footer className="custom-footer">
-        <Container>
-          <Row>
-            <Col>
-              <a href="#support">Support</a>
-            </Col>
-            <Col>
-              <a href="#legal">Legal</a>
-            </Col>
-            <Col>
-              <a href="#terms">Terms and Conditions</a>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
+       {/* Footer */}
+       <FooterComponent />
     </div>
   );
 };

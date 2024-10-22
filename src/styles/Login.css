@@ -1,0 +1,53 @@
+/* Background color */
+body {
+    background-color: #ecfffb !important;
+  }
+  
+  /* Navbar and Footer background color */
+  .custom-navbar, .custom-footer {
+    background-color: #1e6262 !important;
+    color: #ecfffb !important;
+  }
+  
+  /* Navbar Links */
+  .custom-navbar .navbar-nav .nav-link {
+    color: #b4f1f1 !important;
+  }
+  
+  .custom-navbar .navbar-nav .nav-link:hover {
+    color: #ecfffb !important;
+  }
+  
+  /* Footer Links */
+  .custom-footer a {
+    color: #b4f1f1 !important;
+  }
+  
+  .custom-footer a:hover {
+    color: #ecfffb !important;
+  }
+  
+  /* Login Box */
+  .login-box {
+    background-color: #b4f1f1;
+    border: 2px solid #2d767f;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  /* Login Button */
+  button {
+    background-color: #2d767f !important;
+    border-color: #2d767f !important;
+  }
+  
+  button:hover {
+    background-color: #1e6262 !important;
+    color: #ecfffb !important;
+  }
+  
+  .custom-btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+  
