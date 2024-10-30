@@ -45,6 +45,7 @@ module.exports = {
       filename: 'index.html',
     }),
   ],
+  devtool: 'source-map', // Replaces eval-based sourcemap
   devServer: {
     hot: true,  // Enable Hot Module Replacement (HMR)
     liveReload: true, // Live reload when non-HMR files are changed
@@ -57,6 +58,7 @@ module.exports = {
       overlay: true,  // Display errors as an overlay in the browser
     },
     watchFiles: ['src/**/*.css'],  // Ensure Webpack watches CSS files for changes
+    historyApiFallback: true,
   },
   mode: 'development',
 };

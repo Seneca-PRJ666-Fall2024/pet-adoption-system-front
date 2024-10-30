@@ -14,14 +14,15 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route 
+        {/* <Route 
           path="/login" 
           element={userRole ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
-        />
+        /> */}
         <Route 
           path="/" 
           element={<Home userRole={userRole} />}  // Always render Home as landing page
         />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );

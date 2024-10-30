@@ -7,12 +7,11 @@ const NavbarComponent = ({ userRole, logout }) => {
   return (
     <Navbar expand="lg" className="custom-navbar">
       <Container>
-        <Navbar.Brand href="#home">Pet Adoption Platform</Navbar.Brand>
+        <Navbar.Brand href="/">Pet Adoption Platform</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
-            <Nav.Link href="#support">Support</Nav.Link>
-            <Nav.Link href="#contacts">Contacts</Nav.Link>
+            <Nav.Link href="#about-us">About Us</Nav.Link>
             {userRole === 'guest' ? (
               <>
                 <Nav.Link href="#register">Register</Nav.Link>

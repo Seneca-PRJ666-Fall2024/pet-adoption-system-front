@@ -37,6 +37,7 @@ body {
   
   /* Login Button */
   button {
+    color: #ecfffb !important;
     background-color: #2d767f !important;
     border-color: #2d767f !important;
   }
