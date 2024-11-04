@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import './styles/Home.css';  // Import CSS for Home component
 import Home from './components/Home';
 import Login from './components/Login';
+import Register from './components/Register';
+import ProfileSetup from './components/ProfileSetup';
 
 const App = () => {
   const [userRole, setUserRole] = useState(null);
@@ -23,6 +25,8 @@ const App = () => {
           element={<Home userRole={userRole} />}  // Always render Home as landing page
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/ProfileSetup" element={<ProfileSetup />} />
       </Routes>
     </Router>
   );

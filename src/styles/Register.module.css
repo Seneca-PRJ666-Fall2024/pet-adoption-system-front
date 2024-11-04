@@ -1,0 +1,64 @@
+.register{
+    margin: 5% 30% 5% 30%;
+    text-align: center;
+}
+
+.title{
+    color: #1e6262;
+    min-width: 100%;
+    margin-bottom: 5%;
+}
+
+.regform{
+    border: 10px solid #1e6262;
+    border-radius: 20px;
+    padding: 3%;
+    background-color: #b4f1f1;
+    text-align: left;
+    color: #1e6262;
+}
+
+.question{
+    font-size: 25px;
+}
+
+.input{
+    background-color: #ecfffb;
+    border-radius: 5px;
+    border: 1px solid #1e6262;
+    height: 35px;
+}
+
+.username{
+    display: flex;
+    flex-direction: column;
+}
+
+.mybtn{
+    display: flex;
+    border-radius: 20px;
+    background-color: #1e6262;
+    border: 1px solid #1e6262;
+    padding: 5px 50px 5px 50px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #ecfffb;
+    transition: color .5s, background-color 0.5s;
+}
+
+.mybtn:hover{
+    color: #1e6262;
+    background-color: #ecfffb;
+}
+
+.signin{
+    color: #1e6262;
+    min-width: 100%;
+    margin-top: 5%;
+}
+
+span:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+

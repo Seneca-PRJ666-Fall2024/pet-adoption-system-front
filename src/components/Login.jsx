@@ -4,6 +4,7 @@ import { Container, Form, Button, Navbar, Nav, Row, Col } from 'react-bootstrap'
 import '../styles/Login.css';
 import FooterComponent from './FooterComponent';
 import NavbarComponent from './NavbarComponent';  // Import NavbarComponent
+import { Link } from 'react-router-dom';
 
 
 
@@ -62,7 +63,7 @@ const Login = ({ onLogin }) => {
                 </Form>
             </div>
             <p className="mt-3">
-                Not registered yet? <a href="#register">Join us by clicking here</a>.
+                Not registered yet? <Link to="/register">Join us by clicking here</Link>.
             </p>
             </Container>
 

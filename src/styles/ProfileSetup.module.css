@@ -1,0 +1,48 @@
+.title{
+    color: #1e6262;
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 3%;
+    letter-spacing: 1px;
+    font-weight: bolder;
+}
+
+.quesWrap{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100%;
+    padding: 2% 30% 2% 30%;
+}
+
+.quesWrap form{
+    min-width: 100%;
+    text-align: left;
+}
+
+.mylabel{
+    color: #1e6262;
+    margin-bottom: 2%;
+    font-size: larger;
+    font-weight: bold;
+}
+
+.mylabelQuestionnaire{
+    color: #1e6262;
+    margin-bottom: 2%;
+    font-size: 25px;
+    font-weight: bold;
+    /* display: flex;
+    justify-content: center; */
+}
+
+.photo{
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonContainer{
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}

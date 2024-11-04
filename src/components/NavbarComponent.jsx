@@ -14,7 +14,7 @@ const NavbarComponent = ({ userRole, logout }) => {
             <Nav.Link href="#about-us">About Us</Nav.Link>
             {userRole === 'guest' ? (
               <>
-                <Nav.Link href="#register">Register</Nav.Link>
+                <Nav.Link as={Link} to="/register">Register</Nav.Link>
                 <Nav.Link as={Link} to="/login">Login</Nav.Link>  {/* Use Link for navigation */}
               </>
             ) : (
