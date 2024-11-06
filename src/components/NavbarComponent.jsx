@@ -19,7 +19,7 @@ const NavbarComponent = ({ userRole, logout }) => {
 
             {userRole === 'guest' ? (
               <>
-                <Nav.Link href="#register">Register</Nav.Link>
+                <Nav.Link as={Link} to="/register">Register</Nav.Link>
                 <Nav.Link as={Link} to="/login">Login</Nav.Link>  {/* Use Link for navigation */}
               </>
             ) : (

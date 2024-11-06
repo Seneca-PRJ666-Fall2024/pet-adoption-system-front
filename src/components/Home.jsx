@@ -39,7 +39,7 @@ const Home = () => {
           <>
             <Container className="text-center mt-4">
               <h1>Welcome to Pet Adoption Platform!</h1>
-              <p>Please <a href="#register">Register</a> or <Link to="/login">Log in</Link> to explore more features.</p>
+              <p>Please <Link to="/register">Register</Link> or <Link to="/login">Log in</Link> to explore more features.</p>
               <div className="img-container">
                 <img
                   src={petsImage} 

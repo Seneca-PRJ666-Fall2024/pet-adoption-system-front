@@ -4,6 +4,8 @@ import './styles/Home.css';  // Import CSS for Home component
 import Home from './components/Home';
 import Login from './components/Login';
 import PetMatching from './components/PetMatching';
+import Register from './components/Register';
+import ProfileSetup from './components/ProfileSetup';
 
 const App = () => {
   const [userRole, setUserRole] = useState(null);
@@ -22,6 +24,8 @@ const App = () => {
         <Route path="/" element={<Home userRole={userRole} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/matching" element={<PetMatching />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/ProfileSetup" element={<ProfileSetup />} />
       </Routes>
     </Router>
   );
