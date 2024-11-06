@@ -10,8 +10,13 @@ const NavbarComponent = ({ userRole, logout }) => {
         <Navbar.Brand href="/">Pet Adoption Platform</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ml-auto">
+          <Nav className="ms-auto">
             <Nav.Link href="#about-us">About Us</Nav.Link>
+            
+            {userRole === 'adopter' && (
+              <Nav.Link as={Link} to="/pet-matching">Pet Matching</Nav.Link> // Show only for adopters
+            )}
+
             {userRole === 'guest' ? (
               <>
                 <Nav.Link href="#register">Register</Nav.Link>

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import './styles/Home.css';  // Import CSS for Home component
 import Home from './components/Home';
 import Login from './components/Login';
+import PetMatching from './components/PetMatching';
 
 const App = () => {
   const [userRole, setUserRole] = useState(null);
@@ -18,11 +19,9 @@ const App = () => {
           path="/login" 
           element={userRole ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
         /> */}
-        <Route 
-          path="/" 
-          element={<Home userRole={userRole} />}  // Always render Home as landing page
-        />
+        <Route path="/" element={<Home userRole={userRole} />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/matching" element={<PetMatching />} />
       </Routes>
     </Router>
   );
