@@ -11,12 +11,10 @@ const NavbarComponent = ({ userRole, logout }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="#about-us">About Us</Nav.Link>
-            
+            <Nav.Link href="/aboutus">About Us</Nav.Link>
             {userRole === 'adopter' && (
               <Nav.Link as={Link} to="/pet-matching">Pet Matching</Nav.Link> // Show only for adopters
             )}
-
             {userRole === 'guest' ? (
               <>
                 <Nav.Link as={Link} to="/register">Register</Nav.Link>

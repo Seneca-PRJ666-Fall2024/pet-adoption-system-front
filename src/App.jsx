@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './styles/Home.css';  // Import CSS for Home component
 import Home from './components/Home';
+import AboutUs from "./components/AboutUs";
 import Login from './components/Login';
 import PetMatching from './components/PetMatching';
 import Register from './components/Register';
@@ -21,7 +22,11 @@ const App = () => {
           path="/login" 
           element={userRole ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
         /> */}
-        <Route path="/" element={<Home userRole={userRole} />} />
+        <Route 
+          path="/" 
+          element={<Home userRole={userRole} />}  // Always render Home as landing page
+        />
+        <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/login" element={<Login />} />
         <Route path="/matching" element={<PetMatching />} />
         <Route path="/register" element={<Register />} />
