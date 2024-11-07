@@ -11,7 +11,7 @@ const NavbarComponent = ({ userRole, logout }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
-            <Nav.Link as={Link} to="/register">About Us</Nav.Link>
+            <Nav.Link as={Link} to="/aboutus">About Us</Nav.Link>
             {userRole === 'guest' ? (
               <>
                 <Nav.Link as={Link} to="/register">Register</Nav.Link>
