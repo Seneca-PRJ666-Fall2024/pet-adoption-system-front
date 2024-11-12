@@ -30,25 +30,56 @@ body {
   /* Login Box */
   .login-box {
     background-color: #b4f1f1;
-    border: 2px solid #2d767f;
+    border: 10px solid #1e6262; /* Match the border thickness and color from Register */
+    border-radius: 20px; /* Make the edges rounded */
+    padding: 3%; /* Add padding for content spacing */
     max-width: 400px;
     width: 100%;
+    color: #1e6262;
+  }
+  
+  /* Input and Label Styling */
+  .input {
+    background-color: #ecfffb;
+    border-radius: 5px;
+    border: 1px solid #1e6262;
+    height: 35px;
+  }
+  
+  .question {
+    font-size: 25px;
   }
   
   /* Login Button */
-  button {
-    color: #ecfffb !important;
-    background-color: #2d767f !important;
-    border-color: #2d767f !important;
+  .mybtn {
+    display: flex;
+    border-radius: 20px;
+    background-color: #1e6262;
+    border: 1px solid #1e6262;
+    padding: 5px 50px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #ecfffb;
+    transition: color 0.5s, background-color 0.5s;
   }
   
-  button:hover {
-    background-color: #1e6262 !important;
-    color: #ecfffb !important;
+  .mybtn:hover {
+    color: #1e6262;
+    background-color: #ecfffb;
   }
   
-  .custom-btn {
-    padding: 0.4rem 1rem;
-    font-size: 0.9rem;
+  /* Sign-in Text Styling */
+  .signin {
+    color: #1e6262;
+    margin-top: 5%;
+  }
+  
+  .signin a {
+    color: #1e6262;
+  }
+  
+  .signin a:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
   
