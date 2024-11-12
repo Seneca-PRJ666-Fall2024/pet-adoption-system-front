@@ -89,3 +89,9 @@ html, body {
     margin-top: 20px;
   }
   
+  .bigger-container {
+    max-width: 1500px; /* Increase the width to make it bigger */
+    padding: 40px; /* Increase the padding for more space */
+    margin-top: 50px; /* You can adjust the margin for more space above */
+    margin-bottom: 50px; /* Adjust the margin for more space below */
+  }
