@@ -1,6 +1,9 @@
 import React, { useRef, useState } from "react";
 import styles from "../styles/ProfileSetup.module.css";
 import Questionnaire from "./Questionnaire";
+import ShelterRegistration from "./ShelterRegistration";
+import FooterComponent from './FooterComponent';
+import NavbarComponent from './NavbarComponent';  // Import NavbarComponent
 
 function ProfileSetup() {
   const [userType, setUserType] = useState("");
@@ -34,7 +37,7 @@ function ProfileSetup() {
 //   const handleUserTextChange = (e) => setUserText(e.target.value);
 
 // Adopter-specific fields
-const [firstName, setFirstName] = useState("");
+const [shelterName, setShelterName] = useState("");
 const [lastName, setLastName] = useState("");
 const [email, setEmail] = useState("");
 const [phone, setPhone] = useState("");
@@ -68,19 +71,12 @@ const [postalCode, setPostalCode] = useState("");
       }
   };
 
-  const shelterQuestions = {
-    petType: "What type of pet is this?",
-    breedType: "What is the breed of this pet?",
-    petColour: "What colour is this pet?",
-    petSize: "What size is this pet?",
-    petActivityLevel: "How active is this pet?",
-    petEnvironment: "What type of living environment suits this pet?",
-    petSocial: "Is this pet social with other animals?",
-    userText: "Does this pet have any behavioral challenges?",
-  };
+
 
   // Adopter-specific labels for questions
   const adopterQuestions = {
+    questionnaire: "Please Complete the Questionnaire to start matching with Pets!",
+    gender: "What is the preferred Gender for your pet?",
     petType: "What type of pet are you interested in adopting?",
     breedType: "Do you have a preferred breed?",
     petColour: "Do you have a preferred pet colour?",
@@ -105,7 +101,7 @@ const [postalCode, setPostalCode] = useState("");
       petEnvironment,
       petSocial: petSocial === "other animals" ? otherPetSocial : petSocial,
       userText,
-      firstName,
+      shelterName,
       lastName,
       email,
       phone,
@@ -119,13 +115,13 @@ const [postalCode, setPostalCode] = useState("");
     alert("Form submitted");
   };
 
-
   
 
 
   return (
     <>
-    <h1 className={styles.title}>Register</h1>
+    <NavbarComponent userRole="guest" />
+    <h1 className={styles.title}>Profile & Preferences</h1>
     <div className={styles.quesWrap}>
       <form onSubmit={handleClick}>
         <div>
@@ -148,50 +144,9 @@ const [postalCode, setPostalCode] = useState("");
         <br />
 
         {userType === "shelter" && (
-           <Questionnaire
-           questions={shelterQuestions}
-           showPetName={true}
-           petName={petName}
-           setPetName={setPetName}
-           selectedGender={selectedGender}
-           setSelectedGender={setSelectedGender}
-           petType={petType}
-           setPetType={setPetType}
-           otherPetType={otherPetType}
-           setOtherPetType={setOtherPetType}
-           breedType={breedType}
-           setBreedType={setBreedType}
-           petColour={petColour}
-           setPetColour={setPetColour}
-           petSize={petSize}
-           setPetSize={setPetSize}
-           petActivityLevel={petActivityLevel}
-           setPetActivityLevel={setPetActivityLevel}
-           petEnvironment={petEnvironment}
-           setPetEnvironment={setPetEnvironment}
-           petSocial={petSocial}
-           setPetSocial={setPetSocial}
-           otherPetSocial={otherPetSocial}
-           setOtherPetSocial={setOtherPetSocial}
-           userText={userText}
-           setUserText={setUserText}
-           handleFileChange={handleFileChange}
-           previewUrl={previewUrl}
-           handleRemovePhoto={handleRemovePhoto}
-           handleUploadClick={handleUploadClick}
-           fileInputRef={fileInputRef}
-           selectedFile={selectedFile}
-         />
-        )}
-
-        {userType === "adopter" && (
-          <Questionnaire
-          questions={adopterQuestions}
-          showPetName={false}
-          firstName={firstName}
-          setFirstName={setFirstName}
-          lastName={lastName}
-          setLastName={setLastName}
+           <ShelterRegistration
+           shelterName={shelterName}
+          setShelterName={setShelterName}
           email={email}
           setEmail={setEmail}
           phone={phone}
@@ -204,6 +159,25 @@ const [postalCode, setPostalCode] = useState("");
           setProvince={setProvince}
           postalCode={postalCode}
           setPostalCode={setPostalCode}
+           handleFileChange={handleFileChange}
+           previewUrl={previewUrl}
+           handleRemovePhoto={handleRemovePhoto}
+           handleUploadClick={handleUploadClick}
+           fileInputRef={fileInputRef}
+           selectedFile={selectedFile}
+         />
+        )}
+
+        {userType === "adopter" && (
+          <>
+          <label className={styles.mylabelQuestionnaire}>
+          Questionnaire
+        </label>
+        <p style={{ color: "#1e6262", marginBottom: "3%" }}>
+          {adopterQuestions.questionnaire}
+        </p>
+          <Questionnaire
+          questions={adopterQuestions}
           petName={petName}
           setPetName={setPetName}
           selectedGender={selectedGender}
@@ -228,13 +202,8 @@ const [postalCode, setPostalCode] = useState("");
           setOtherPetSocial={setOtherPetSocial}
           userText={userText}
           setUserText={setUserText}
-          handleFileChange={handleFileChange}
-          previewUrl={previewUrl}
-          handleRemovePhoto={handleRemovePhoto}
-          handleUploadClick={handleUploadClick}
-          fileInputRef={fileInputRef}
-          selectedFile={selectedFile}
         />
+        </>
         )}
 
         <div className={styles.buttonContainer}>
@@ -243,11 +212,13 @@ const [postalCode, setPostalCode] = useState("");
             onClick={handleClick}
             type="submit"
           >
-            Register
+            Save
           </button>
         </div>
       </form>
     </div>
+    {/* Footer */}
+    <FooterComponent />
   </>
   );
 }

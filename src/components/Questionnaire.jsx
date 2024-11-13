@@ -3,17 +3,8 @@ import styles from "../styles/ProfileSetup.module.css";
 
 function Questionnaire({
   questions,
-  showPetName = false,
-  petName,
-  setPetName,
   selectedGender,
   setSelectedGender,
-  fileInputRef,
-  handleFileChange,
-  previewUrl,
-  handleRemovePhoto,
-  handleUploadClick,
-  selectedFile,
   petType,
   setPetType,
   otherPetType,
@@ -34,41 +25,12 @@ function Questionnaire({
   setOtherPetSocial,
   userText,
   setUserText,
-  firstName,
-  setFirstName,
-  lastName,
-  setLastName,
-  email,
-  setEmail,
-  phone,
-  setPhone,
-  address,
-  setAddress,
-  city,
-  setCity,
-  province,
-  setProvince,
-  postalCode,
-  setPostalCode,
 }) {
   return (
-    <div>
-      {showPetName ? (
         <>
-        <div>
-          <label className={styles.mylabel}>Pet's Name:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={petName}
-            onChange={(e) => setPetName(e.target.value)}
-          />
-          <br />
-          <br />
-        </div>
-      
+          
 
-      <label className={styles.mylabel}>Gender:</label>
+      <label className={styles.mylabel}>{questions.gender}</label>
       <br />
       <label className="me-5">
         <input
@@ -95,128 +57,6 @@ function Questionnaire({
       <br />
       <br />
       <br />
-      </>
-    ) : (
-        <>
-            <label className={styles.mylabel}>First Name:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-          <br />
-
-          <label className={styles.mylabel}>Last Name:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-          <br />
-
-          <label className={styles.mylabel}>Email:</label>
-          <input
-            className="form-control"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <br />
-
-          <label className={styles.mylabel}>Phone:</label>
-          <input
-            className="form-control"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <br />
-
-          <label className={styles.mylabel}>Address:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-          <br />
-
-          <label className={styles.mylabel}>City:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-          <br />
-
-          <label className={styles.mylabel}>Province:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={province}
-            onChange={(e) => setProvince(e.target.value)}
-          />
-          <br />
-
-          <label className={styles.mylabel}>Postal Code:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-          />
-          <br />
-        </>
-    )}
-      <label className={styles.mylabel}>Upload Photo:</label>
-      <br />
-      <input
-        style={{ display: "none" }}
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-      />
-      <button
-        type="button"
-        className="btn btn-success"
-        onClick={handleUploadClick}
-      >
-        Please select a photo to upload
-      </button>
-
-      {selectedFile && (
-        <div className="ms-5">
-          <br />
-          <label className={styles.mylabel}>
-            Selected File: {selectedFile.name}
-          </label>
-          <br />
-          <img src={previewUrl || ""} alt="Preview" style={{ width: "200px" }} />
-          <button
-            type="button"
-            className="btn btn-danger ms-5"
-            onClick={handleRemovePhoto}
-          >
-            Remove Photo
-          </button>
-          <br />
-          <br />
-        </div>
-      )}
-      <br />
-      <br />
-      <br />
-
-      <label className={styles.mylabelQuestionnaire}>
-        Questionnaire
-      </label>
-      <p style={{ color: "#1e6262", marginBottom: "3%" }}>
-        Please Complete the Questionnaire to start matching with Adopters!
-      </p>
 
       <label className={styles.mylabel}>{questions.petType}</label>
       <br />
@@ -487,7 +327,7 @@ function Questionnaire({
         onChange={(e) => setUserText(e.target.value)}
         placeholder="Describe animal behaviour here..."
       ></textarea>
-    </div>
+        </>
   );
 }
 

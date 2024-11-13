@@ -11,8 +11,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 100%;
-    padding: 2% 30% 2% 30%;
+    min-width: 75%;
+    padding: 2% 15% 2% 15%;
+    border: 10px solid #1e6262;
+    border-radius: 5px;
+    margin: 0 10% 5% 10%;
 }
 
 .quesWrap form{
