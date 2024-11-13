@@ -7,6 +7,7 @@ import Login from './components/Login';
 import PetMatching from './components/PetMatching';
 import Register from './components/Register';
 import ProfileSetup from './components/ProfileSetup';
+import AdoptionManagement from './components/AdoptionManagement';
 
 const App = () => {
   const [userRole, setUserRole] = useState(null);
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/matching" element={<PetMatching />} />
         <Route path="/register" element={<Register />} />
         <Route path="/ProfileSetup" element={<ProfileSetup />} />
+        <Route path="/adoption" element={<AdoptionManagement />} />
       </Routes>
     </Router>
   );
