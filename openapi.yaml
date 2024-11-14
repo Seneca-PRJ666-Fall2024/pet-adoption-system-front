@@ -1,0 +1,315 @@
+openapi: 3.0.0
+info:
+  title: Pet Adoption System API
+  description: API for user registration, login, adopter preferences, shelter pet management, and recommendations in the Pet Adoption System.
+  version: 1.0.0
+  contact:
+    name: PRJ666 - Group 1 - 'Pet Adoption System' Team
+    email: support@petadoption.com
+servers:
+  - url: http://localhost:8080/api/v2
+    description: Local development server
+
+paths:
+  /user/register:
+    post:
+      summary: Register a new user
+      description: Registers a new user with an email, password, and account type (Pet Adopter or Pet Shelter).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: adopter@example.com
+                password:
+                  type: string
+                  example: P@ssw0rd
+                accountType:
+                  type: string
+                  enum: [Pet Adopter, Pet Shelter]
+                  example: Pet Adopter
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Email is already taken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /user/login:
+    post:
+      summary: Login a user
+      description: Logs in a user using email and password, and returns a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: adopter@example.com
+                password:
+                  type: string
+                  example: P@ssw0rd
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Login successful
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /user/update-contacts:
+    put:
+      summary: Update user contact information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                  example: "123-456-7890"
+                address:
+                  type: string
+                  example: "123 Pet Lane"
+      responses:
+        '200':
+          description: User contacts updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /adopter/preferences:
+    post:
+      summary: Add a preference for pet attributes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attributeId:
+                  type: integer
+                  example: 1
+                weight:
+                  type: integer
+                  example: 5
+      responses:
+        '201':
+          description: Preference added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /adopter/recommendations:
+    get:
+      summary: Get a list of recommended pets based on preferences
+      responses:
+        '200':
+          description: A list of recommended pets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recommendation'
+
+  /shelter/add-pet:
+    post:
+      summary: Add a new pet to the shelter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Buddy"
+                comments:
+                  type: string
+                  example: "Friendly and playful"
+      responses:
+        '201':
+          description: Pet added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /shelter/update-contacts:
+    put:
+      summary: Update shelter contact information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                  example: "321-654-0987"
+                address:
+                  type: string
+                  example: "456 Shelter Street"
+      responses:
+        '200':
+          description: Shelter contacts updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /pet/update-info:
+    put:
+      summary: Update pet information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Buddy"
+                comments:
+                  type: string
+                  example: "Updated comments about Buddy"
+      responses:
+        '200':
+          description: Pet information updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /recommendation/next:
+    get:
+      summary: Get the next recommendation for the adopter
+      responses:
+        '200':
+          description: The next recommendation item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+
+  /recommendation/{id}/accept:
+    post:
+      summary: Accept a recommendation and create an adoption
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The ID of the recommendation to accept
+      responses:
+        '201':
+          description: Recommendation accepted, adoption created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /adoptionStory:
+    get:
+      summary: Retrieve a list of adoption stories
+      description: Returns a list of adoption stories with the specified number of objects.
+      parameters:
+        - in: query
+          name: N
+          schema:
+            type: integer
+            minimum: 1
+            default: 5
+          description: The number of adoption story objects to return
+      responses:
+        '200':
+          description: A list of adoption stories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    author:
+                      type: string
+                      description: The author of the adoption story
+                      example: "John Doe"
+                    title:
+                      type: string
+                      description: The title of the adoption story
+                      example: "A Happy Ending for Max"
+                    text:
+                      type: string
+                      description: The content of the adoption story
+                      example: "Max was found wandering the streets and was taken in by a local shelter. After weeks of care, he found a loving home with the Doe family."
+
+
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Operation completed successfully
+
+    Recommendation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        pet_id:
+          type: integer
+          example: 42
+        date:
+          type: string
+          format: date
+          example: "2023-05-15"
+        status:
+          type: integer
+          example: 1

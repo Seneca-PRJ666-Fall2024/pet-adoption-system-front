@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Container, Row, Col, Card, Navbar, Nav } from 'react-bootstrap';  // Make sure Row and Col are imported
 import NavbarComponent from './NavbarComponent';
 import AdopterView from './AdopterView';
@@ -8,6 +8,7 @@ import petsImage from '../assets/images/pets.jpg';
 import ReviewCard from './ReviewCard';  // Import the ReviewCard component
 import { Link } from 'react-router-dom';  // Import Link from react-router-dom
 import FooterComponent from './FooterComponent';  // Import the FooterComponent
+import  { DefaultApi, ApiClient } from '../../api-client/src';
 
 const Home = () => {
   const [userRole, setUserRole] = useState('guest'); // guest is the default state
@@ -17,15 +18,25 @@ const Home = () => {
   const loginAsShelter = () => setUserRole('shelter');
   const logout = () => setUserRole('guest');
 
-  // Extended reviews data
-  const reviews = [
-    { title: "Amazing Experience!", story: "We found our perfect furry friend through this platform, and the process was seamless.", author: "Jane Doe" },
-    { title: "Highly Recommend!", story: "The staff was very helpful, and now we have a new family member who brings us so much joy.", author: "John Smith" },
-    { title: "A True Blessing", story: "Adopting our cat changed our lives, and we're so grateful for this service.", author: "Emily Davis" },
-    { title: "Fantastic Service", story: "I never thought adopting a pet would be this easy! Great team and very helpful support.", author: "Robert Wilson" },
-    { title: "Heartwarming Experience", story: "Our family adopted two kittens, and they’ve brought so much happiness into our home.", author: "Samantha Green" },
-    { title: "Smooth and Safe Process", story: "I felt confident in the adoption process. The platform provided excellent guidance from start to finish.", author: "Michael Brown" },
-  ];
+  const apiClient = new ApiClient();
+  apiClient.basePath = `http://${window.location.hostname}:8080/api/v2`;
+
+  const defaultApi = new DefaultApi(apiClient);
+
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => fetchReviews(), []);
+
+  const fetchReviews = () => {
+    const N = 6; // Number of stories to fetch
+    defaultApi.adoptionStoryGet({ N }, (error, data, response) => {
+      if (error) {
+        console.error('Error fetching adoption stories:', error);
+      } else {
+        setReviews(data);
+      }
+    });
+  };
 
 
   return (
@@ -61,7 +72,7 @@ const Home = () => {
               <Row className="mt-4">
                 {reviews.map((review, index) => (
                   <Col md={4} key={index}>
-                    <ReviewCard title={review.title} story={review.story} author={review.author} />
+                    <ReviewCard title={review.title} story={review.text} author={review.author} />
                   </Col>
                 ))}
               </Row>
