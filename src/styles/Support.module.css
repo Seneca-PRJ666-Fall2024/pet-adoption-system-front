@@ -1,0 +1,11 @@
+.support-btn {
+  background-color: #b4f1f1;
+  border-color: #2d767f;
+  color: #1e6262;
+}
+
+.support-btn:hover {
+  background-color: #ecfffb;
+  border-color: #2d767f;
+  color: #1e6262;
+}
