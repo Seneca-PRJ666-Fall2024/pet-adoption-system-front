@@ -3,23 +3,70 @@ import styles from "../styles/Register.module.css";
 import { Link } from 'react-router-dom';  // Import Link from react-router-dom
 import FooterComponent from './FooterComponent';
 import NavbarComponent from './NavbarComponent';  // Import NavbarComponent
+import { initBackendApi } from './BackendApi';
 
 function Register() {
+
+  const backendApi = initBackendApi();
+
     // Step 1: Set up state to store the selected user type
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // Step 2: Function to handle user selection change
   const handleUserTypeChange = (e) => {
     setUserType(e.target.value); // Update state with the selected value
   };
 
-  // Step 3: Function to handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    console.log(userType); // Log the selected user type (can be sent to the backend)
-    // You can send this data to your backend using fetch, axios, etc.
+  // Handle username and password inputs
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'username') setUsername(value);
+    else if (name === 'password') setPassword(value);
   };
 
+  // Step 3: Function to handle form submission
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate input
+    if (!username || !password || !userType) {
+      setError('All fields are required.');
+      return;
+    }
+
+    // Prepare the request payload
+    const userRegisterPostRequest = {
+      email: username,
+      password: password,
+      accountType: userType === 'adopter' ? 'Pet Adopter' : 'Pet Shelter',
+    };
+
+    try {
+      // Call the API
+      const response = await new Promise((resolve, reject) => {
+        backendApi.userRegisterPost(userRegisterPostRequest, (error, data, response) => {
+          if (error) reject(error);
+          else resolve(data);
+        });
+      });
+
+      // Handle success
+      setSuccess('Registration successful! You can now log in.');
+      setError('');
+      setUsername('');
+      setPassword('');
+      setUserType('');
+    } catch (apiError) {
+      // Handle error
+      setError(apiError.message || 'An error occurred during registration.');
+      setSuccess('');
+    }
+  };
 
 
   return (
@@ -32,23 +79,23 @@ function Register() {
       </div>
 
       <div className={styles.regform}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <label className={styles.question} htmlFor="userType">
               Are you an adopter or shelter?
             </label>
-            <br />
+            <br/>
             <select
-              id="userType"
-              className="form-select mb-3"
-              value={userType} // Set the value to state
-              onChange={handleUserTypeChange} // Update state on change
-              style={{
-                backgroundColor: "#ecfffb",
-                borderRadius: "5px",
-                border: "1px solid #1e6262",
-                color: "#1e6262"
-              }}
+                id="userType"
+                className="form-select mb-3"
+                value={userType} // Set the value to state
+                onChange={handleUserTypeChange} // Update state on change
+                style={{
+                  backgroundColor: "#ecfffb",
+                  borderRadius: "5px",
+                  border: "1px solid #1e6262",
+                  color: "#1e6262"
+                }}
             >
               <option value="" disabled>
                 Please Choose...
@@ -60,19 +107,35 @@ function Register() {
 
           <div className={styles.username}>
             <label className={styles.question}>Username:</label>
-            <input type="text" className={styles.input} name="username"></input>
+            <input
+                type="text"
+                className={styles.input}
+                name="username"
+                value={username}
+                onChange={handleInputChange}
+            />
           </div>
-          <br />
+          <br/>
 
           <div className={styles.username}>
             <label className={styles.question}>Password:</label>
-            <input type="text" className={styles.input} name="username"></input>
+            <input
+                type="password"
+                className={styles.input}
+                name="password"
+                value={password}
+                onChange={handleInputChange}
+            />
           </div>
-          <br />
+          <br/>
 
 
           <button type="submit" className={styles.mybtn}>Register</button>
         </form>
+
+        {/* Error and Success Messages */}
+        {error && <p className={styles.error}>{error}</p>}
+        {success && <p className={styles.success}>{success}</p>}
       </div>
 
       <div className={styles.signin}>
@@ -81,8 +144,8 @@ function Register() {
         </p>
       </div>
     </div>
-    {/* Footer */}
-    <FooterComponent />
+      {/* Footer */}
+      <FooterComponent/>
     </>
   );
 }
