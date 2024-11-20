@@ -1,74 +1,202 @@
 import React, { useState } from "react";
-import { Container, Table, Button, ProgressBar } from "react-bootstrap";
+import {
+  Container,
+  Table,
+  Button,
+  ProgressBar,
+  Modal,
+} from "react-bootstrap";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
-import "../styles/AdoptionManagement.css"; // Create a CSS file for custom styling
+import NewPetAdoptionApplication from "./NewPetAdoptionApplication"; // Import the new component
+import "../styles/AdoptionManagement.css";
 
 const AdoptionManagement = () => {
-  // Sample data for applications
   const [applications, setApplications] = useState([
     {
       id: 1,
       petName: "Buddy",
-      status: "In Progress",
-      progress: 50,
+      petType: "Dog",
+      petAge: "2 years",
+      petGender: "Male",
+      status: "Waitlisted",
     },
     {
       id: 2,
       petName: "Max",
-      status: "Submitted",
-      progress: 100,
+      petType: "Dog",
+      petAge: "4 years",
+      petGender: "Male",
+      status: "Interviewing",
     },
     {
       id: 3,
       petName: "Bella",
-      status: "Pending",
-      progress: 20,
+      petType: "Cat",
+      petAge: "3 years",
+      petGender: "Female",
+      status: "Rejected",
     },
   ]);
 
-  // Function to handle canceling an application
-  const handleCancel = (id) => {
-    setApplications((prevApps) =>
-      prevApps.map((app) =>
-        app.id === id ? { ...app, status: "Cancelled", progress: 0 } : app
-      )
-    );
+  const [existingAdopters, setExistingAdopters] = useState([
+    {
+      id: 1,
+      name: "John Doe",
+      birthday: "1990-01-01",
+      gender: "Male",
+      homeAddress: "123 Main St",
+      phoneNumber: "123-456-7890",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      birthday: "1985-05-15",
+      gender: "Female",
+      homeAddress: "456 Elm St",
+      phoneNumber: "987-654-3210",
+    },
+  ]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [currentApplication, setCurrentApplication] = useState(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [applicationToCancel, setApplicationToCancel] = useState(null);
+
+  const [newApplication, setNewApplication] = useState({
+    petName: "",
+    adopterInfoType: "new",
+    existingAdopterId: "",
+    adopterName: "",
+    birthday: "",
+    gender: "",
+    homeAddress: "",
+    phoneNumber: "",
+    reasonForAdoption: "",
+    housingType: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewApplication((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
-  // Function to handle withdrawing an application request
-  const handleWithdraw = (id) => {
-    setApplications((prevApps) =>
-      prevApps.map((app) =>
-        app.id === id ? { ...app, status: "Withdrawn", progress: 0 } : app
-      )
-    );
+  const handleSubmitApplication = async () => {
+    try {
+      const adopterInfo =
+        newApplication.adopterInfoType === "existing"
+          ? existingAdopters.find(
+              (adopter) => adopter.id === parseInt(newApplication.existingAdopterId)
+            )
+          : {
+              name: newApplication.adopterName,
+              birthday: newApplication.birthday,
+              gender: newApplication.gender,
+              homeAddress: newApplication.homeAddress,
+              phoneNumber: newApplication.phoneNumber,
+            };
+
+      const newApp = {
+        id: applications.length + 1,
+        petName: newApplication.petName,
+        petType: "Unknown", // Default value for testing
+        petAge: "Unknown", // Default value for testing
+        petGender: "Unknown", // Default value for testing
+        adopterInfo,
+        status: "Submitted",
+        progress: 10, // Initial progress for a new submission
+      };
+
+      // Simulate sending data to the server
+      setApplications((prevApps) => [...prevApps, newApp]);
+      setShowModal(false);
+      setNewApplication({
+        petName: "",
+        adopterInfoType: "new",
+        existingAdopterId: "",
+        adopterName: "",
+        birthday: "",
+        gender: "",
+        homeAddress: "",
+        phoneNumber: "",
+        reasonForAdoption: "",
+        housingType: "",
+      });
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      alert("Failed to submit the application. Please try again.");
+    }
   };
 
-  // Function to handle viewing details of an application
-  const handleViewDetails = (id) => {
-    // You can implement the logic to show detailed information about the application
-    alert(`Viewing details for application ID: ${id}`);
+  const handleCancelApplication = (id) => {
+    setApplicationToCancel(id);
+    setShowCancelModal(true);
+  };
+
+  const confirmCancelApplication = () => {
+    setApplications((prevApps) =>
+      prevApps.map((app) =>
+        app.id === applicationToCancel ? { ...app, status: "Cancelled", progress: 0 } : app
+      )
+    );
+    setShowCancelModal(false);
+  };
+
+  const handleViewDetails = (application) => {
+    setCurrentApplication(application);
+    setShowDetailsModal(true);
+  };
+
+  const getProgressVariant = (progress) => {
+    if (progress === 100) return "success";
+    if (progress > 50) return "info";
+    return "warning";
+  };
+
+  const updateProgress = (status) => {
+    switch (status) {
+      case "Submitted":
+        return 10;
+      case "Reviewing":
+      case "Waitlisted":
+        return 30;
+      case "Interviewing":
+        return 60;
+      case "Decision Making":
+        return 90;
+      case "Adopted":
+      case "Rejected":
+        return 100;
+      case "Cancelled":
+        return 0;
+      default:
+        return 0;
+    }
   };
 
   return (
     <>
-      {/* Navbar */}
       <NavbarComponent userRole="adopter" />
-
-      {/* Header and Button in a Flexbox Container */}
       <Container className="my-4">
         <div className="d-flex justify-content-between align-items-center">
           <h3>Your Adoption Applications</h3>
-          <Button variant="success">Submit New Application</Button>
+          <Button variant="success" onClick={() => setShowModal(true)}>
+            Submit New Application
+          </Button>
         </div>
 
-        {/* Applications Table */}
         <Table striped bordered hover className="mt-3">
           <thead>
             <tr>
               <th>#</th>
               <th>Pet Name</th>
+              <th>Pet Type</th>
+              <th>Pet Age</th>
+              <th>Pet Gender</th>
               <th>Status</th>
               <th>Progress</th>
               <th>Actions</th>
@@ -79,18 +207,15 @@ const AdoptionManagement = () => {
               <tr key={app.id}>
                 <td>{index + 1}</td>
                 <td>{app.petName}</td>
+                <td>{app.petType}</td>
+                <td>{app.petAge}</td>
+                <td>{app.petGender}</td>
                 <td>{app.status}</td>
                 <td>
                   <ProgressBar
-                    now={app.progress}
-                    label={`${app.progress}%`}
-                    variant={
-                      app.progress === 100
-                        ? "success"
-                        : app.progress > 50
-                        ? "info"
-                        : "warning"
-                    }
+                    now={updateProgress(app.status)}
+                    label={`${updateProgress(app.status)}%`}
+                    variant={getProgressVariant(updateProgress(app.status))}
                   />
                 </td>
                 <td>
@@ -98,26 +223,16 @@ const AdoptionManagement = () => {
                     variant="primary"
                     size="sm"
                     className="me-2"
-                    onClick={() => handleViewDetails(app.id)}
+                    onClick={() => handleViewDetails(app)}
                   >
                     Detail
                   </Button>
                   <Button
                     variant="danger"
                     size="sm"
-                    className="me-2"
-                    onClick={() => handleCancel(app.id)}
-                    disabled={app.status === "Cancelled" || app.status === "Withdrawn"}
+                    onClick={() => handleCancelApplication(app.id)}
                   >
                     Cancel
-                  </Button>
-                  <Button
-                    variant="warning"
-                    size="sm"
-                    onClick={() => handleWithdraw(app.id)}
-                    disabled={app.status === "Cancelled" || app.status === "Withdrawn"}
-                  >
-                    Withdraw Request
                   </Button>
                 </td>
               </tr>
@@ -126,7 +241,84 @@ const AdoptionManagement = () => {
         </Table>
       </Container>
 
-      {/* Footer */}
+      {/* Modal for New Application */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Submit New Application</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <NewPetAdoptionApplication
+            newApplication={newApplication}
+            handleInputChange={handleInputChange}
+            existingAdopters={existingAdopters}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSubmitApplication}
+            disabled={
+              !newApplication.petName.trim() ||
+              (newApplication.adopterInfoType === "new" &&
+                (!newApplication.adopterName.trim() ||
+                  !newApplication.birthday ||
+                  !newApplication.gender ||
+                  !newApplication.homeAddress.trim() ||
+                  !newApplication.phoneNumber.trim())) ||
+              (newApplication.adopterInfoType === "existing" &&
+                !newApplication.existingAdopterId)
+            }
+          >
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal for Viewing Details */}
+      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Application Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {currentApplication && (
+            <>
+              <p><strong>Pet Name:</strong> {currentApplication.petName}</p>
+              <p><strong>Pet Type:</strong> {currentApplication.petType}</p>
+              <p><strong>Pet Age:</strong> {currentApplication.petAge}</p>
+              <p><strong>Pet Gender:</strong> {currentApplication.petGender}</p>
+              <p><strong>Status:</strong> {currentApplication.status}</p>
+              <p><strong>Progress:</strong> {updateProgress(currentApplication.status)}%</p>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal for Cancel Confirmation */}
+      <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Cancel Application</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to cancel this application?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+            No
+          </Button>
+          <Button variant="danger" onClick={confirmCancelApplication}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <FooterComponent />
     </>
   );

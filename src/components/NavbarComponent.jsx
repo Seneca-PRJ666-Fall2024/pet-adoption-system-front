@@ -13,7 +13,7 @@ const NavbarComponent = ({ userRole, logout }) => {
           <Nav className="ms-auto">
             <Nav.Link href="/aboutus">About Us</Nav.Link>
             {userRole === 'adopter' && (
-              <Nav.Link as={Link} to="/pet-matching">Pet Matching</Nav.Link> // Show only for adopters
+              <Nav.Link as={Link} to="/matching">Pet Matching</Nav.Link> // Show only for adopters
             )}
             {userRole === 'guest' ? (
               <>
