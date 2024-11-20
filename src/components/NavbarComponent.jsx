@@ -1,7 +1,6 @@
-import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';  // Import Link from react-router-dom
-
+import React from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 const NavbarComponent = ({ userRole, logout }) => {
   return (
@@ -11,14 +10,23 @@ const NavbarComponent = ({ userRole, logout }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="/aboutus">About Us</Nav.Link>
-            {userRole === 'adopter' && (
-              <Nav.Link as={Link} to="/matching">Pet Matching</Nav.Link> // Show only for adopters
+            <Nav.Link as={Link} to="/aboutus">
+              About Us
+            </Nav.Link>
+            {userRole === "adopter" && (
+              <Nav.Link as={Link} to="/matching">
+                Pet Matching
+              </Nav.Link> // Show only for adopters
             )}
-            {userRole === 'guest' ? (
+            {userRole === "guest" ? (
               <>
-                <Nav.Link as={Link} to="/register">Register</Nav.Link>
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>  {/* Use Link for navigation */}
+                <Nav.Link as={Link} to="/register">
+                  Register
+                </Nav.Link>
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>{" "}
+                {/* Use Link for navigation */}
               </>
             ) : (
               <Nav.Link href="#logout" onClick={logout}>

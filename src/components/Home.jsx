@@ -8,7 +8,7 @@ import petsImage from '../assets/images/pets.jpg';
 import ReviewCard from './ReviewCard';  // Import the ReviewCard component
 import { Link } from 'react-router-dom';  // Import Link from react-router-dom
 import FooterComponent from './FooterComponent';  // Import the FooterComponent
-import  { DefaultApi, ApiClient } from '../../api-client/src';
+import { initBackendApi } from './BackendApi';
 
 const Home = () => {
   const [userRole, setUserRole] = useState('guest'); // guest is the default state
@@ -18,10 +18,7 @@ const Home = () => {
   const loginAsShelter = () => setUserRole('shelter');
   const logout = () => setUserRole('guest');
 
-  const apiClient = new ApiClient();
-  apiClient.basePath = `http://${window.location.hostname}:8080/api/v2`;
-
-  const defaultApi = new DefaultApi(apiClient);
+  const backendApi = initBackendApi();
 
   const [reviews, setReviews] = useState([]);
 
@@ -29,7 +26,7 @@ const Home = () => {
 
   const fetchReviews = () => {
     const N = 6; // Number of stories to fetch
-    defaultApi.adoptionStoryGet({ N }, (error, data, response) => {
+    backendApi.adoptionStoryGet({ N }, (error, data, response) => {
       if (error) {
         console.error('Error fetching adoption stories:', error);
       } else {

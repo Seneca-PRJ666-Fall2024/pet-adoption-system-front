@@ -37,6 +37,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],  // Allow importing without file extensions
+    fallback: {
+      fs: false,
+    },
   },
   plugins: [
     new CleanWebpackPlugin(),
