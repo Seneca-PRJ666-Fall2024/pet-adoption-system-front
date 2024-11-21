@@ -14,9 +14,15 @@ const NavbarComponent = ({ userRole, logout }) => {
               About Us
             </Nav.Link>
             {userRole === "adopter" && (
+              <>
               <Nav.Link as={Link} to="/matching">
                 Pet Matching
-              </Nav.Link> // Show only for adopters
+              </Nav.Link> 
+
+              <Nav.Link as={Link} to="/adoption">
+                Pet Adoption Management
+              </Nav.Link> 
+              </>
             )}
             {userRole === "guest" ? (
               <>

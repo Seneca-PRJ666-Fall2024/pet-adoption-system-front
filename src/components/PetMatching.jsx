@@ -66,12 +66,14 @@ const PetMatching = () => {
 
       {/* Additional Info Section */}
       <Container className="mt-5">
-        <h4>Adoption application status:</h4>
-        <p>You didn’t submit any application yet.</p>
+        <h4>Your Adoption application:</h4>
+        <a href="/adoption">
+            Click here to check your submitted adoption application.
+          </a>
 
-        <h4>Your adopter profile:</h4>
-        <p>
-          <a href="#profile">
+        <h4 className='mt-4'>Your adopter profile:</h4>
+        <p className='mb-5'>
+          <a href="profilesetup">
             Click here to review or update your profile and preferences.
           </a>
         </p>

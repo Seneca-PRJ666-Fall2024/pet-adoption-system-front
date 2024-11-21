@@ -14,28 +14,104 @@ import "../styles/AdoptionManagement.css";
 const AdoptionManagement = () => {
   const [applications, setApplications] = useState([
     {
-      id: 1,
-      petName: "Buddy",
-      petType: "Dog",
-      petAge: "2 years",
-      petGender: "Male",
-      status: "Waitlisted",
+        id: 1,
+        petName: "Buddy",
+        petType: "Dog",
+        petAge: "2 years",
+        petGender: "Male",
+        status: "Waitlisted",
+        petBreed: "Poodle",
+        adopterInfoType: "new",
+        existingAdopterId: "",
+        adopterName: "John Doe",
+        dateOfBirth: "1990-01-01",
+        contactNumber: "123-456-7890",
+        email: "john@example.com",
+        homeAddress: "123 Main St",
+        housingType: "House",
+        rentOrOwn: "own",
+        landlordContact: "",
+        fencedYard: "Yes",
+        activeLifestyle: "Very active",
+        hoursAlone: "2",
+        crateTraining: "Yes",
+        sleepingArrangements: "Inside",
+        priorExperience: "Yes",
+        currentPets: "None",
+        vetContact: "Dr. Smith, 987-654-3210",
+        exercisePlan: "Daily walks",
+        groomingPlan: "Weekly grooming",
+        travelPlan: "Pet sitter",
+        behavioralExpectations: "Well-behaved",
+        commitmentAcknowledgement: true,
+        references: "Jane Doe, 555-123-4567",
+
     },
     {
-      id: 2,
-      petName: "Max",
-      petType: "Dog",
-      petAge: "4 years",
-      petGender: "Male",
-      status: "Interviewing",
+        id: 2,
+        petName: "Max",
+        petType: "Dog",
+        petAge: "4 years",
+        petGender: "Male",
+        status: "Interviewing",
+        petBreed: "Chihuahua",
+        adopterInfoType: "existing",
+        existingAdopterId: "1",
+        adopterName: "Jane Smith",
+        dateOfBirth: "1985-05-15",
+        contactNumber: "987-654-3210",
+        email: "jane@example.com",
+        homeAddress: "456 Elm St",
+        housingType: "Apartment",
+        rentOrOwn: "rent",
+        landlordContact: "Mr. Johnson, 123-789-4560",
+        fencedYard: "No",
+        activeLifestyle: "Moderately active",
+        hoursAlone: "4",
+        crateTraining: "No",
+        sleepingArrangements: "On the bed",
+        priorExperience: "No",
+        currentPets: "One cat, 2 years old",
+        vetContact: "Dr. Brown, 123-123-1234",
+        exercisePlan: "Walks every evening",
+        groomingPlan: "Monthly grooming",
+        travelPlan: "Take with us",
+        behavioralExpectations: "Calm and quiet",
+        commitmentAcknowledgement: true,
+        references: "Bob Johnson, 555-987-6543",
     },
     {
-      id: 3,
-      petName: "Bella",
-      petType: "Cat",
-      petAge: "3 years",
-      petGender: "Female",
-      status: "Rejected",
+        id: 3,
+        petName: "Bella",
+        petType: "Cat",
+        petAge: "3 years",
+        petGender: "Female",
+        status: "Rejected",
+        petBreed: "American Bobtail",
+        adopterInfoType: "new",
+        existingAdopterId: "",
+        adopterName: "Mike Wilson",
+        dateOfBirth: "1992-02-20",
+        contactNumber: "321-654-9870",
+        email: "mike@example.com",
+        homeAddress: "789 Oak St",
+        housingType: "Townhouse",
+        rentOrOwn: "own",
+        landlordContact: "",
+        fencedYard: "No",
+        activeLifestyle: "Quiet",
+        hoursAlone: "6",
+        crateTraining: "No",
+        sleepingArrangements: "In a pet bed",
+        priorExperience: "Yes, with dogs",
+        currentPets: "None",
+        vetContact: "Dr. Green, 456-789-0123",
+        exercisePlan: "Playtime indoors",
+        groomingPlan: "Brushing twice a week",
+        travelPlan: "Boarding facility",
+        behavioralExpectations: "Playful but calm",
+        commitmentAcknowledgement: true,
+        references: "Sarah Lee, 444-555-6666",
     },
   ]);
 
@@ -196,6 +272,7 @@ const AdoptionManagement = () => {
               <th>Pet Name</th>
               <th>Pet Type</th>
               <th>Pet Age</th>
+              <th>Pet Breed</th>
               <th>Pet Gender</th>
               <th>Status</th>
               <th>Progress</th>
@@ -209,6 +286,7 @@ const AdoptionManagement = () => {
                 <td>{app.petName}</td>
                 <td>{app.petType}</td>
                 <td>{app.petAge}</td>
+                <td>{app.petBreed}</td>
                 <td>{app.petGender}</td>
                 <td>{app.status}</td>
                 <td>
@@ -288,9 +366,32 @@ const AdoptionManagement = () => {
               <p><strong>Pet Name:</strong> {currentApplication.petName}</p>
               <p><strong>Pet Type:</strong> {currentApplication.petType}</p>
               <p><strong>Pet Age:</strong> {currentApplication.petAge}</p>
+              <p><strong>Pet Breed:</strong> {currentApplication.petBreed}</p>
               <p><strong>Pet Gender:</strong> {currentApplication.petGender}</p>
               <p><strong>Status:</strong> {currentApplication.status}</p>
-              <p><strong>Progress:</strong> {updateProgress(currentApplication.status)}%</p>
+              <p><strong>Adopter Info Type:</strong> {currentApplication.adopterInfoType}</p>
+              <p><strong>Adopter Name:</strong> {currentApplication.adopterName}</p>
+              <p><strong>Date of Birth:</strong> {currentApplication.dateOfBirth}</p>
+              <p><strong>Contact Number:</strong> {currentApplication.contactNumber}</p>
+              <p><strong>Email:</strong> {currentApplication.email}</p>
+              <p><strong>Home Address:</strong> {currentApplication.homeAddress}</p>
+              <p><strong>Housing Type:</strong> {currentApplication.housingType}</p>
+              <p><strong>Rent or Own:</strong> {currentApplication.rentOrOwn}</p>
+              <p><strong>Landlord Contact:</strong> {currentApplication.landlordContact}</p>
+              <p><strong>Fenced Yard:</strong> {currentApplication.fencedYard}</p>
+              <p><strong>Active Lifestyle:</strong> {currentApplication.activeLifestyle}</p>
+              <p><strong>Hours Alone:</strong> {currentApplication.hoursAlone}</p>
+              <p><strong>Crate Training:</strong> {currentApplication.crateTraining}</p>
+              <p><strong>Sleeping Arrangements:</strong> {currentApplication.sleepingArrangements}</p>
+              <p><strong>Prior Experience:</strong> {currentApplication.priorExperience}</p>
+              <p><strong>Current Pets:</strong> {currentApplication.currentPets}</p>
+              <p><strong>Vet Contact:</strong> {currentApplication.vetContact}</p>
+              <p><strong>Exercise Plan:</strong> {currentApplication.exercisePlan}</p>
+              <p><strong>Grooming Plan:</strong> {currentApplication.groomingPlan}</p>
+              <p><strong>Travel Plan:</strong> {currentApplication.travelPlan}</p>
+              <p><strong>Behavioral Expectations:</strong> {currentApplication.behavioralExpectations}</p>
+              <p><strong>Commitment Acknowledgement:</strong> {currentApplication.commitmentAcknowledgement ? "Yes" : "No"}</p>
+              <p><strong>References:</strong> {currentApplication.references}</p>
             </>
           )}
         </Modal.Body>

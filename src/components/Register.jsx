@@ -59,7 +59,7 @@ function Register() {
           </div>
 
           <div className={styles.username}>
-            <label className={styles.question}>Username:</label>
+            <label className={styles.question}>Email:</label>
             <input type="text" className={styles.input} name="username"></input>
           </div>
           <br />
