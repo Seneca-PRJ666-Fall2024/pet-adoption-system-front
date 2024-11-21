@@ -1,29 +1,51 @@
 import React, { useState } from 'react';
 import styles from "../styles/Register.module.css"; // Use the same CSS as Register
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FooterComponent from './FooterComponent';
 import NavbarComponent from './NavbarComponent';
+import { initBackendApi } from './BackendApi';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const backendApi = initBackendApi();
+  const navigate = useNavigate(); // To navigate to different routes
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Simulate authentication and role-based login
-    const users = [
-      { email: 'adopter@example.com', password: 'password123', role: 'adopter' },
-      { email: 'shelter@example.com', password: 'password123', role: 'shelter' },
-    ];
+    setError(''); // Clear previous errors
+    setLoading(true); // Indicate loading state
 
-    const user = users.find((user) => user.email === email && user.password === password);
+    // Prepare the request payload
+    const loginRequest = {
+      email: email,
+      password: password,
+    };
 
-    if (user) {
-      console.log(`Logged in as ${user.role}`);
-      // Redirect or handle successful login
-    } else {
-      setError('Invalid email or password');
+    try {
+      // Call the backend login API
+      const response = await new Promise((resolve, reject) => {
+        backendApi.userLoginPost(loginRequest, (error, data, response) => {
+          if (error) reject(error);
+          else resolve(data);
+        });
+      });
+
+      // Handle successful login
+      console.log('Login successful', response);
+      localStorage.setItem('token', response.token); // Save JWT token
+      setLoading(false);
+
+      // Redirect based on role (mock example, adapt as needed)
+      // TODO: Update to a correct page: navigate(response.role === 'adopter' ? '/adopter-dashboard' : '/shelter-dashboard');
+      navigate('/');
+    } catch (apiError) {
+      // Handle errors from the backend
+      console.error('Login failed', apiError);
+      setError(apiError.message || 'Invalid email or password');
+      setLoading(false);
     }
   };
 
@@ -63,6 +85,7 @@ function Login() {
             <br />
 
             {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error if any */}
+            {loading && <p>Loading...</p>} {/* Display loading indicator */}
 
             <button type="submit" className={styles.mybtn}>Sign in</button>
           </form>

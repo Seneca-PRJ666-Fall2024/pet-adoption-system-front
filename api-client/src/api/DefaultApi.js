@@ -477,7 +477,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['BearerAuth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
       let returnType = ApiResponse;

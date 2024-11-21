@@ -90,6 +90,8 @@ paths:
   /user/update-contacts:
     put:
       summary: Update user contact information
+      security:
+        - BearerAuth: [ ]
       requestBody:
         required: true
         content:
@@ -286,6 +288,11 @@ paths:
 
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # Optional, but helps to specify the token type
   schemas:
     ApiResponse:
       type: object
