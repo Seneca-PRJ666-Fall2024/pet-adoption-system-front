@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
 import styles from "../styles/ProfileSetup.module.css";
 import Questionnaire from "./Questionnaire";
-import FooterComponent from './FooterComponent';
-import NavbarComponent from './NavbarComponent';  // Import NavbarComponent
 
 
-function PetManagement() {
+
+function PetManagement({ application, updateApplication, closeModal }) {
 
     const [userType, setUserType] = useState("");
   const [petName, setPetName] = useState("");
@@ -25,6 +24,8 @@ function PetManagement() {
   const [adoptionStatus, setAdoptionStatus] = useState(false);
   const fileInputRef = useRef(null);
   const handleUploadClick = () => fileInputRef.current?.click();
+  const [formData, setFormData] = useState(application);
+  const [isSaving, setIsSaving] = useState(false);
 
     const shelterQuestions = {
         questionnaire: "Please Edit the Questionnaire to keep this Pet's information up to date!",
@@ -92,10 +93,49 @@ function PetManagement() {
         alert("Pet removed from the system.");
       };
 
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      };
+
+
+      const handleSave = async () => {
+        setIsSaving(true);
+        try {
+          const response = await fetch(`/api/pets/${formData.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+    
+          if (!response.ok) {
+            throw new Error("Failed to update pet details");
+          }
+    
+          const updatedPet = await response.json();
+    
+          // Notify parent component of the update
+          updateApplication(updatedPet);
+    
+          // Close the modal
+          closeModal();
+    
+          alert("Pet details updated successfully!");
+        } catch (error) {
+          console.error("Error updating pet details:", error);
+          alert("Failed to save pet details. Please try again.");
+        } finally {
+          setIsSaving(false);
+        }
+      };
+      
+      
+
     return(
         <>
-        {/* Navbar */}
-    <NavbarComponent userRole="guest" />
     <h1 className={styles.title}>Pet Profile Management</h1>
         <div class={styles.quesWrap}>
             <form onSubmit={handleClick}>
@@ -157,9 +197,9 @@ function PetManagement() {
             <label className={styles.mylabel}>What is the name of this Pet?</label>
           <input
             className="form-control"
-            type="text"
-            value={petName}
-            onChange={(e) => setPetName(e.target.value)}
+            name="petName"
+            value={formData.petName}
+            onChange={handleInputChange}
           />
           <br />
             <Questionnaire
@@ -191,26 +231,25 @@ function PetManagement() {
         />
         <br />
         <div className={styles.buttonContainer}>
-          <button
-            className="btn btn-success btn-lg mt-3"
-            onClick={handleClick}
-            type="submit"
-          >
-            Save
-          </button>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={handleSave}
+          disabled={isSaving}
+        >
+          {isSaving ? "Saving..." : "Save Changes"}
+        </button>
 
           <button
             type="button"
-            className="btn btn-danger mt-3 ms-4"
-            onClick={handleDeletePet}
+            className="btn btn-danger mt-3 ms-4 xl"
+            onClick={closeModal}
           >
-            Remove Pet
+            Cancel
           </button>
         </div>
         </form>
         </div>
-        {/* Footer */}
-    <FooterComponent />
         </>
     );
 }

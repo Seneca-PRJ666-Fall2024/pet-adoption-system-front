@@ -13,7 +13,8 @@ import PetMatching from "./components/PetMatching";
 import Register from "./components/Register";
 import ProfileSetup from "./components/ProfileSetup";
 import AdoptionManagement from "./components/AdoptionManagement";
-import PetManagement from "./components/PetManagement";
+// import PetManagement from "./components/PetManagement";
+import PetManagementMain from "./components/PetManagementMain";
 import Support from "./components/Support";
 import Terms from "./components/Terms";
 import Privacy from "./components/Privacy";
@@ -42,7 +43,8 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/ProfileSetup" element={<ProfileSetup />} />
         <Route path="/adoption" element={<AdoptionManagement />} />
-        <Route path="/PetManagement" element={<PetManagement />} />
+        {/* <Route path="/PetManagement" element={<PetManagement />} /> */}
+        <Route path="/PetManagementMain" element={<PetManagementMain />} />
         <Route path="/support" element={<Support />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
