@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
-const NavbarComponent = ({ userRole, logout }) => {
+const NavbarComponent = ({ userRole }) => {
+  // Access login state and logout function
+  const { isLoggedIn, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <Navbar expand="lg" className="custom-navbar">
       <Container>
@@ -15,16 +25,18 @@ const NavbarComponent = ({ userRole, logout }) => {
             </Nav.Link>
             {userRole === "adopter" && (
               <>
-              <Nav.Link as={Link} to="/matching">
-                Pet Matching
-              </Nav.Link> 
+                <Nav.Link as={Link} to="/matching">
+                  Pet Matching
+                </Nav.Link>
 
-              <Nav.Link as={Link} to="/adoption">
-                Adoption Management
-              </Nav.Link> 
+                <Nav.Link as={Link} to="/adoption">
+                  Adoption Management
+                </Nav.Link>
               </>
             )}
-            {userRole === "guest" ? (
+            {isLoggedIn ? (
+              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+            ) : (
               <>
                 <Nav.Link as={Link} to="/register">
                   Register
@@ -32,12 +44,7 @@ const NavbarComponent = ({ userRole, logout }) => {
                 <Nav.Link as={Link} to="/login">
                   Login
                 </Nav.Link>{" "}
-                {/* Use Link for navigation */}
               </>
-            ) : (
-              <Nav.Link href="#logout" onClick={logout}>
-                Logout
-              </Nav.Link>
             )}
           </Nav>
         </Navbar.Collapse>

@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
-import styles from "../styles/Register.module.css"; // Use the same CSS as Register
-import { Link, useNavigate } from 'react-router-dom';
-import FooterComponent from './FooterComponent';
-import NavbarComponent from './NavbarComponent';
-import { initBackendApi } from './BackendApi';
+import React, { useState, useContext } from "react";
+import styles from "../styles/Register.module.css";
+import { Link, useNavigate } from "react-router-dom";
+import FooterComponent from "./FooterComponent";
+import NavbarComponent from "./NavbarComponent";
+import { initBackendApi } from "./BackendApi";
+import AuthContext from "../context/AuthContext";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const backendApi = initBackendApi();
-  const navigate = useNavigate(); // To navigate to different routes
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous errors
+    setError(""); // Clear previous errors
     setLoading(true); // Indicate loading state
 
     // Prepare the request payload
@@ -33,18 +35,18 @@ function Login() {
         });
       });
 
-      // Handle successful login
-      console.log('Login successful', response);
-      localStorage.setItem('token', response.token); // Save JWT token
+      // Call login function from context to update global state
+      login(response.token);
+
       setLoading(false);
 
       // Redirect based on role (mock example, adapt as needed)
       // TODO: Update to a correct page: navigate(response.role === 'adopter' ? '/adopter-dashboard' : '/shelter-dashboard');
-      navigate('/');
+      navigate("/");
     } catch (apiError) {
       // Handle errors from the backend
-      console.error('Login failed', apiError);
-      setError(apiError.message || 'Invalid email or password');
+      console.error("Login failed", apiError);
+      setError(apiError.message || "Invalid email or password");
       setLoading(false);
     }
   };
@@ -71,7 +73,6 @@ function Login() {
               />
             </div>
             <br />
-
             <div className={styles.username}>
               <label className={styles.question}>Password:</label>
               <input
@@ -83,17 +84,21 @@ function Login() {
               />
             </div>
             <br />
-
-            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error if any */}
+            {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+            {/* Display error if any */}
             {loading && <p>Loading...</p>} {/* Display loading indicator */}
-
-            <button type="submit" className={styles.mybtn}>Sign in</button>
+            <button type="submit" className={styles.mybtn}>
+              Sign in
+            </button>
           </form>
         </div>
 
         <div className={styles.signin}>
           <p>
-            Not registered yet? <span><Link to="/register">Join us by clicking here</Link></span>
+            Not registered yet?{" "}
+            <span>
+              <Link to="/register">Join us by clicking here</Link>
+            </span>
           </p>
         </div>
       </div>
