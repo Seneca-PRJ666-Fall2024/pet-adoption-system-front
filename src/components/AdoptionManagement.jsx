@@ -155,11 +155,20 @@ const AdoptionManagement = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setNewApplication((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+  
+    setNewApplication((prev) => {
+      const updatedApplication = {
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      };
+  
+      // Log the updated application state
+      console.log(updatedApplication);
+  
+      return updatedApplication;
+    });
   };
+  
 
   const handleSubmitApplication = async () => {
     try {
@@ -261,7 +270,7 @@ const AdoptionManagement = () => {
         <div className="d-flex justify-content-between align-items-center">
           <h3>Your Adoption Applications</h3>
           <Button variant="success" onClick={() => setShowModal(true)}>
-            Submit New Application
+            Create New Application
           </Button>
         </div>
 
@@ -322,7 +331,7 @@ const AdoptionManagement = () => {
       {/* Modal for New Application */}
       <Modal show={showModal}  size="xl" onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Submit New Application</Modal.Title>
+          <Modal.Title>Create New Application</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <NewPetAdoptionApplication
@@ -338,17 +347,6 @@ const AdoptionManagement = () => {
           <Button
             variant="primary"
             onClick={handleSubmitApplication}
-            disabled={
-              !newApplication.petName.trim() ||
-              (newApplication.adopterInfoType === "new" &&
-                (!newApplication.adopterName.trim() ||
-                  !newApplication.birthday ||
-                  !newApplication.gender ||
-                  !newApplication.homeAddress.trim() ||
-                  !newApplication.phoneNumber.trim())) ||
-              (newApplication.adopterInfoType === "existing" &&
-                !newApplication.existingAdopterId)
-            }
           >
             Submit
           </Button>

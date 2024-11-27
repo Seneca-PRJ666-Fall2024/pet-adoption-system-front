@@ -85,7 +85,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
       <Form onSubmit={handleSubmit}>
         {/* Pet Name */}
         <Form.Group controlId="formPetName">
-          <Form.Label>Pet Name</Form.Label>
+          <Form.Label style={{ fontWeight: "bold" }}>Pet Name</Form.Label>
           <Form.Control
             as="select"
             name="petName"
@@ -103,7 +103,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
   
         {/* Adopter Information Type */}
         <Form.Group controlId="formAdopterInfoType" className="mt-3">
-          <Form.Label>Adopter Information</Form.Label>
+          <Form.Label style={{ fontWeight: "bold" }}>Adopter Information</Form.Label>
           <Form.Check
             type="radio"
             label="Use Existing Adopter Info"
@@ -125,7 +125,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
         {/* Existing Adopter Dropdown */}
         {newApplication.adopterInfoType === "existing" && (
           <Form.Group controlId="formExistingAdopterId" className="mt-2">
-            <Form.Label>Select Existing Adopter</Form.Label>
+            <Form.Label style={{ fontWeight: "bold" }}>Select Existing Adopter</Form.Label>
             <Form.Control
               as="select"
               name="existingAdopterId"
@@ -146,7 +146,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
         {newApplication.adopterInfoType === "new" && (
           <>
             <Form.Group controlId="formAdopterName" className="mt-2">
-              <Form.Label>Full Name</Form.Label>
+              <Form.Label style={{ fontWeight: "bold" }}>Adopter Full Name</Form.Label>
               <Form.Control
                 type="text"
                 name="adopterName"
@@ -157,7 +157,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
             </Form.Group>
   
             <Form.Group controlId="formDateOfBirth" className="mt-2">
-              <Form.Label>Date of Birth</Form.Label>
+              <Form.Label style={{ fontWeight: "bold" }}>Adopter Date of Birth</Form.Label>
               <Form.Control
                 type="date"
                 name="dateOfBirth"
@@ -167,7 +167,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
             </Form.Group>
   
             <Form.Group controlId="formContactNumber" className="mt-2">
-              <Form.Label>Phone Number</Form.Label>
+              <Form.Label style={{ fontWeight: "bold" }}>Adopter Phone Number</Form.Label>
               <Form.Control
                 type="text"
                 name="contactNumber"
@@ -178,7 +178,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
             </Form.Group>
   
             <Form.Group controlId="formEmail" className="mt-2">
-              <Form.Label>Email Address</Form.Label>
+              <Form.Label style={{ fontWeight: "bold" }}>Adopter Email Address</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
@@ -189,7 +189,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
             </Form.Group>
   
             <Form.Group controlId="formHomeAddress" className="mt-2">
-              <Form.Label>Home Address</Form.Label>
+              <Form.Label style={{ fontWeight: "bold" }}>Adopter Home Address</Form.Label>
               <Form.Control
                 type="text"
                 name="homeAddress"
@@ -203,7 +203,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
 
       {/* Detailed Questions (Outside of Adopter Information) */}
       <Form.Group controlId="formHousingType" className="mt-2">
-        <Form.Label>Housing Type</Form.Label>
+        <Form.Label style={{ fontWeight: "bold" }}>Your Housing Type</Form.Label>
         <Form.Control
           type="text"
           name="housingType"
@@ -214,7 +214,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
       </Form.Group>
 
       <Form.Group controlId="formRentOrOwn" className="mt-2">
-        <Form.Label>Do you rent or own?</Form.Label>
+        <Form.Label style={{ fontWeight: "bold" }}>Do you rent or own?</Form.Label>
         <Form.Check
           type="radio"
           label="Own"
@@ -235,7 +235,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
 
       {newApplication.rentOrOwn === "rent" && (
         <Form.Group controlId="formLandlordContact" className="mt-2">
-          <Form.Label>Landlord Contact Information</Form.Label>
+          <Form.Label style={{ fontWeight: "bold" }}>Landlord Contact Information</Form.Label>
           <Form.Control
             type="text"
             name="landlordContact"
@@ -247,7 +247,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
       )}
 
       <Form.Group controlId="formFencedYard" className="mt-2">
-        <Form.Label>Do you have a fenced yard?</Form.Label>
+        <Form.Label style={{ fontWeight: "bold" }}>Do you have a fenced yard?</Form.Label>
         <Form.Control
           type="text"
           name="fencedYard"
@@ -259,7 +259,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
 
       
     <Form.Group controlId="formActiveLifestyle" className="mt-2">
-    <Form.Label>How active is your lifestyle?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>How active is your lifestyle?</Form.Label>
     <Form.Control
         type="text"
         name="activeLifestyle"
@@ -270,7 +270,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formHoursAlone" className="mt-2">
-    <Form.Label>How many hours will the pet be left alone daily?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>How many hours will the pet be left alone daily?</Form.Label>
     <Form.Control
         type="number"
         name="hoursAlone"
@@ -280,7 +280,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formCrateTraining" className="mt-2">
-    <Form.Label>Do you plan to use crate training?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>Do you plan to use crate training?</Form.Label>
     <Form.Control
         type="text"
         name="crateTraining"
@@ -291,7 +291,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formSleepingArrangements" className="mt-2">
-    <Form.Label>Where will the pet sleep?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>Where will the pet sleep?</Form.Label>
     <Form.Control
         type="text"
         name="sleepingArrangements"
@@ -302,7 +302,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formPriorExperience" className="mt-2">
-    <Form.Label>Do you have prior experience with pets?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>Do you have prior experience with pets?</Form.Label>
     <Form.Control
         type="text"
         name="priorExperience"
@@ -313,7 +313,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formCurrentPets" className="mt-2">
-    <Form.Label>Do you have other pets? Please provide details.</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>Do you have other pets? Please provide details.</Form.Label>
     <Form.Control
         type="text"
         name="currentPets"
@@ -324,7 +324,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formVetContact" className="mt-2">
-    <Form.Label>Veterinarian Contact Information</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>Veterinarian Contact Information</Form.Label>
     <Form.Control
         type="text"
         name="vetContact"
@@ -335,7 +335,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formExercisePlan" className="mt-2">
-    <Form.Label>How will you exercise your pet?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>How will you exercise your pet?</Form.Label>
     <Form.Control
         type="text"
         name="exercisePlan"
@@ -346,7 +346,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formGroomingPlan" className="mt-2">
-    <Form.Label>How often will you groom your pet?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>How often will you groom your pet?</Form.Label>
     <Form.Control
         type="text"
         name="groomingPlan"
@@ -357,7 +357,7 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formTravelPlan" className="mt-2">
-    <Form.Label>What will you do with your pet when you travel?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>What will you do with your pet when you travel?</Form.Label>
     <Form.Control
         type="text"
         name="travelPlan"
@@ -368,13 +368,26 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
     </Form.Group>
 
     <Form.Group controlId="formBehavioralExpectations" className="mt-2">
-    <Form.Label>What are your behavioral expectations for your pet?</Form.Label>
+    <Form.Label style={{ fontWeight: "bold" }}>What are your behavioral expectations for your pet?</Form.Label>
     <Form.Control
         type="text"
         name="behavioralExpectations"
         value={newApplication.behavioralExpectations}
         onChange={handleInputChange}
         placeholder="Describe any traits or behaviors you expect or want to avoid"
+    />
+    </Form.Group>
+
+
+    <Form.Group controlId="formReferences" className="mt-2">
+    <Form.Label style={{ fontWeight: "bold" }}>References (Please provide at least one)</Form.Label>
+    <Form.Control
+        as="textarea"
+        rows={2}
+        name="references"
+        value={newApplication.references}
+        onChange={handleInputChange}
+        placeholder="Enter names and contact details of references"
     />
     </Form.Group>
 
@@ -387,19 +400,6 @@ const NewPetAdoptionApplication = ({ onSubmit }) => {
         label="I understand the responsibilities of pet ownership and commit to caring for this pet for its lifetime."
     />
     </Form.Group>
-
-    <Form.Group controlId="formReferences" className="mt-2">
-    <Form.Label>References (Please provide at least one)</Form.Label>
-    <Form.Control
-        as="textarea"
-        rows={2}
-        name="references"
-        value={newApplication.references}
-        onChange={handleInputChange}
-        placeholder="Enter names and contact details of references"
-    />
-    </Form.Group>
-
     </Form>
   );
 };
