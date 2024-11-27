@@ -42,7 +42,7 @@ const App = () => {
         <Route path="/matching" element={<PetMatching />} />
         <Route path="/register" element={<Register />} />
         <Route path="/ProfileSetup" element={<ProfileSetup />} />
-        <Route path="/adoption" element={<AdoptionManagement />} />
+        <Route path="/adoption" element={<AdoptionManagement userRole="shelter"/>} /> // test userRole either shelter or adopter 
         {/* <Route path="/PetManagement" element={<PetManagement />} /> */}
         <Route path="/PetManagementMain" element={<PetManagementMain />} />
         <Route path="/support" element={<Support />} />

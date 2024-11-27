@@ -5,14 +5,12 @@ import {
   Button,
   ProgressBar,
   Modal,
-  Form,
 } from "react-bootstrap";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
-import NewPetAdoptionApplication from "./NewPetAdoptionApplication"; // Import the new component
 import "../styles/AdoptionManagement.css";
 
-const AdoptionManagement = ({ userRole }) => {
+const AdoptionManagement = () => {
   const [applications, setApplications] = useState([
     {
         id: 1,
@@ -140,12 +138,6 @@ const AdoptionManagement = ({ userRole }) => {
   const [currentApplication, setCurrentApplication] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [applicationToCancel, setApplicationToCancel] = useState(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [currentStatusChange, setCurrentStatusChange] = useState({
-    applicationId: null,
-    currentStatus: "",
-    newStatus: "",
-  });
 
   const [newApplication, setNewApplication] = useState({
     petName: "",
@@ -249,36 +241,6 @@ const AdoptionManagement = ({ userRole }) => {
     return "warning";
   };
 
-  const handleStatusChangeRequest = (id, currentStatus, newStatus) => {
-    setCurrentStatusChange({ applicationId: id, currentStatus, newStatus });
-    setShowConfirmModal(true);
-  };
-
-  const handleConfirmStatusChange = () => {
-    const { applicationId, newStatus } = currentStatusChange;
-
-    setApplications((prevApplications) =>
-      prevApplications.map((application) =>
-        application.id === applicationId
-          ? { ...application, status: newStatus }
-          : application
-      )
-    );
-
-    setShowConfirmModal(false);
-  };
-
-  const statusOptions = [
-    "Submitted",
-    "Reviewing",
-    "Waitlisted",
-    "Interviewing",
-    "Decision Making",
-    "Adopted",
-    "Rejected",
-    "Cancelled",
-  ];
-
   const updateProgress = (status) => {
     switch (status) {
       case "Submitted":
@@ -302,15 +264,13 @@ const AdoptionManagement = ({ userRole }) => {
 
   return (
     <>
-      <NavbarComponent userRole={userRole}  />
+      <NavbarComponent userRole="adopter" />
       <Container className="my-4">
         <div className="d-flex justify-content-between align-items-center">
           <h3>Your Adoption Applications</h3>
-          {userRole === "adopter" && (
-            <Button variant="success" onClick={() => setShowModal(true)}>
-              Create New Application
-            </Button>
-          )}
+          <Button variant="success" onClick={() => setShowModal(true)}>
+            Create New Application
+          </Button>
         </div>
 
         <Table striped bordered hover className="mt-3">
@@ -336,28 +296,7 @@ const AdoptionManagement = ({ userRole }) => {
                 <td>{app.petAge}</td>
                 <td>{app.petBreed}</td>
                 <td>{app.petGender}</td>
-                <td>
-                  {userRole === "shelter" ? (
-                    <Form.Select
-                      value={app.status}
-                      onChange={(e) =>
-                        handleStatusChangeRequest(
-                          app.id,
-                          app.status,
-                          e.target.value
-                        )
-                      }
-                    >
-                      {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                          {status}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  ) : (
-                    app.status
-                  )}
-                </td>
+                <td>{app.status}</td>
                 <td>
                   <ProgressBar
                     now={updateProgress(app.status)}
@@ -486,37 +425,6 @@ const AdoptionManagement = ({ userRole }) => {
           </Button>
           <Button variant="danger" onClick={confirmCancelApplication}>
             Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Modal for Status Change Confirmation */}
-      <Modal
-        show={showConfirmModal}
-        onHide={() => setShowConfirmModal(false)}
-        centered
-        size='lg'
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Status Change</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center">
-          Are you sure you want to change the status from{" "}
-          <strong>{currentStatusChange.currentStatus}</strong> to{" "}
-          <strong style={{ fontWeight: "bold" }}>
-            {currentStatusChange.newStatus}
-          </strong>
-          ?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowConfirmModal(false)}
-          >
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleConfirmStatusChange}>
-            Confirm
           </Button>
         </Modal.Footer>
       </Modal>
