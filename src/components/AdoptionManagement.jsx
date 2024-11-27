@@ -320,7 +320,7 @@ const AdoptionManagement = () => {
       </Container>
 
       {/* Modal for New Application */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal}  size="xl" onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Submit New Application</Modal.Title>
         </Modal.Header>
@@ -356,25 +356,37 @@ const AdoptionManagement = () => {
       </Modal>
 
       {/* Modal for Viewing Details */}
-      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
+      <Modal size="lg" show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Application Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currentApplication && (
             <>
+              <p><strong>Application Status:</strong> {currentApplication.status}</p>
+              <p style={{ 
+               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
+               width: '100%',                    // Centered at 50% width
+              }} />
               <p><strong>Pet Name:</strong> {currentApplication.petName}</p>
               <p><strong>Pet Type:</strong> {currentApplication.petType}</p>
               <p><strong>Pet Age:</strong> {currentApplication.petAge}</p>
               <p><strong>Pet Breed:</strong> {currentApplication.petBreed}</p>
               <p><strong>Pet Gender:</strong> {currentApplication.petGender}</p>
-              <p><strong>Status:</strong> {currentApplication.status}</p>
+              <p style={{ 
+               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
+               width: '100%',                    // Centered at 50% width
+              }} />
               <p><strong>Adopter Info Type:</strong> {currentApplication.adopterInfoType}</p>
               <p><strong>Adopter Name:</strong> {currentApplication.adopterName}</p>
               <p><strong>Date of Birth:</strong> {currentApplication.dateOfBirth}</p>
               <p><strong>Contact Number:</strong> {currentApplication.contactNumber}</p>
               <p><strong>Email:</strong> {currentApplication.email}</p>
               <p><strong>Home Address:</strong> {currentApplication.homeAddress}</p>
+              <p style={{ 
+               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
+               width: '100%',                    // Centered at 50% width
+              }} />
               <p><strong>Housing Type:</strong> {currentApplication.housingType}</p>
               <p><strong>Rent or Own:</strong> {currentApplication.rentOrOwn}</p>
               <p><strong>Landlord Contact:</strong> {currentApplication.landlordContact}</p>
