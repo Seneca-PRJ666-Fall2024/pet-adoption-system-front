@@ -20,7 +20,7 @@ const NavbarComponent = ({ userRole, logout }) => {
               </Nav.Link> 
 
               <Nav.Link as={Link} to="/adoption">
-                Pet Adoption Management
+                Adoption Management
               </Nav.Link> 
               </>
             )}
