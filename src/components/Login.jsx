@@ -29,7 +29,7 @@ function Login() {
     try {
       // Call the backend login API
       const response = await new Promise((resolve, reject) => {
-        backendApi.userLoginPost(loginRequest, (error, data, response) => {
+        backendApi.user.userLoginPost(loginRequest, (error, data, response) => {
           if (error) reject(error);
           else resolve(data);
         });

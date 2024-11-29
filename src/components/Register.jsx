@@ -43,13 +43,13 @@ function Register() {
     const userRegisterPostRequest = {
       email: username,
       password: password,
-      accountType: userType === 'adopter' ? 'Pet Adopter' : 'Pet Shelter',
+      role: userType === 'adopter' ? 'Pet Adopter' : 'Pet Shelter',
     };
 
     try {
       // Call the API
       const response = await new Promise((resolve, reject) => {
-        backendApi.userRegisterPost(userRegisterPostRequest, (error, data, response) => {
+        backendApi.user.userRegisterPost(userRegisterPostRequest, (error, data, response) => {
           if (error) reject(error);
           else resolve(data);
         });

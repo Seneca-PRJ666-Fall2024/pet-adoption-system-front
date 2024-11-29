@@ -19,7 +19,7 @@ const Home = () => {
 
   const fetchReviews = () => {
     const N = 6; // Number of stories to fetch
-    backendApi.adoptionStoryGet({ N }, (error, data, response) => {
+    backendApi.adoption.adoptionStoryGet({ N }, (error, data, response) => {
       if (error) {
         console.error("Error fetching adoption stories:", error);
       } else {

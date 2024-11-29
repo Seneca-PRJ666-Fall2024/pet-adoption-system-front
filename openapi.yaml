@@ -1,20 +1,39 @@
 openapi: 3.0.0
+
 info:
   title: Pet Adoption System API
-  description: API for user registration, login, adopter preferences, shelter pet management, and recommendations in the Pet Adoption System.
-  version: 1.0.0
+  description: API for user registration, login, adopter preferences, shelter pet
+    management, and recommendations in the Pet Adoption System.
+  version: 4.0.0
   contact:
     name: PRJ666 - Group 1 - 'Pet Adoption System' Team
     email: support@petadoption.com
+
 servers:
-  - url: http://localhost:8080/api/v2
+  - url: http://localhost:8080/api/v4
     description: Local development server
 
+
+tags:
+  - name: user
+    description: Operations about Users (Both Adopters and Shelters)
+  - name: pet
+    description: Operations about Pets
+  - name: matching
+    description: Operations about Adopters
+  - name: adoption
+    description: Operations about Adoptions
+
+
 paths:
+
   /user/register:
     post:
+      tags:
+        - user
       summary: Register a new user
-      description: Registers a new user with an email, password, and account type (Pet Adopter or Pet Shelter).
+      description: Registers a new user with an email, password, and account type
+        (Pet Adopter or Pet Shelter).
       requestBody:
         required: true
         content:
@@ -28,9 +47,11 @@ paths:
                 password:
                   type: string
                   example: P@ssw0rd
-                accountType:
+                role:
                   type: string
-                  enum: [Pet Adopter, Pet Shelter]
+                  enum:
+                    - Pet Adopter
+                    - Pet Shelter
                   example: Pet Adopter
       responses:
         '201':
@@ -38,18 +59,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/SuccessApiResponse'
         '400':
           description: Email is already taken
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/FailureApiResponse'
 
   /user/login:
     post:
+      tags:
+        - user
       summary: Login a user
-      description: Logs in a user using email and password, and returns a JWT token.
+      description: Logs in a user using email and password, and returns a user role and a JWT token.
       requestBody:
         required: true
         content:
@@ -77,21 +100,160 @@ paths:
                   message:
                     type: string
                     example: Login successful
+                  role:
+                    type: string
+                    example: Pet Adopter
                   token:
                     type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
         '401':
           description: Invalid email or password
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/FailureApiResponse'
 
-  /user/update-contacts:
+  /user/preferences:
+    post:
+      tags:
+        - user
+      summary: Add preferences for pet attributes grouped by attribute groups
+      description: >
+        Submit a set of preferences for different attribute groups. Each key in the JSON object
+        represents an attribute group name, and its corresponding value is a list of selected preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+                description: >
+                  A map where each key is the name of an attribute group, and the value is a list of
+                  selected preferences within that group.
+                example:
+                  "Physical Attributes": ["Brown", "Black"]
+                  "Behavioral Attributes": ["Active", "Calm"]
+                  "Health Attributes": ["Vaccinated", "Neutered"]
+      responses:
+        '201':
+          description: Preferences added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
+
+
+  /user/add-profile:
+    post:
+      tags:
+        - user
+      summary: Add a user profile
+      description: This can only be done by the logged in user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+      responses:
+        default:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /user/upload-image:
+    post:
+      tags:
+        - user
+      summary: Upload an image for a user
+      description: Uploads a profile image for a user.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+              required:
+                - image
+      responses:
+        '200':
+          description: Image uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
+        '400':
+          description: Invalid request or missing parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+
+  /user/get-profile:
+    get:
+      tags:
+        - user
+      summary: Retrieve user profile information
+      description: Fetches the profile details of the currently authenticated user
+        (adopter or shelter).
+      responses:
+        '200':
+          description: Profile details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  email:
+                    type: string
+                    example: user@example.com
+                  accountType:
+                    type: string
+                    example: Pet Adopter
+                  name:
+                    type: string
+                    example: John Doe
+                  phone:
+                    type: string
+                    example: 123-456-7890
+                  address:
+                    type: string
+                    example: 123 Pet Lane
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+
+  /user/update-profile:
     put:
-      summary: Update user contact information
-      security:
-        - BearerAuth: [ ]
+      tags:
+        - user
+      summary: Update a user profile
       requestBody:
         required: true
         content:
@@ -101,21 +263,77 @@ paths:
               properties:
                 phone:
                   type: string
-                  example: "123-456-7890"
+                  example: 123-456-7890
                 address:
                   type: string
-                  example: "123 Pet Lane"
+                  example: 123 Pet Lane
       responses:
         '200':
           description: User contacts updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/SuccessApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
 
-  /adopter/preferences:
+  /user/delete-profile/{email}:
+    delete:
+      tags:
+        - user
+      summary: Delete a user profile
+      description: Deletes the user profile with the specified email (username). Requires authentication and authorization.
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: email
+          in: path
+          description: The email (username) for the profile that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User profile successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
+        '400':
+          description: Invalid username supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+        '401':
+          description: Unauthorized access.
+        '403':
+          description: Forbidden. User does not have permission to delete this profile
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+
+
+
+  /pet/add-profile:
     post:
-      summary: Add a preference for pet attributes
+      tags:
+        - pet
+      summary: Add a new pet profile to the system
+      description: Add a new pet profile to the system.
       requestBody:
         required: true
         content:
@@ -123,22 +341,153 @@ paths:
             schema:
               type: object
               properties:
-                attributeId:
-                  type: integer
-                  example: 1
-                weight:
-                  type: integer
-                  example: 5
+                name:
+                  type: string
+                  example: Buddy
+                comments:
+                  type: string
+                  example: Friendly and playful
       responses:
         '201':
-          description: Preference added successfully
+          description: Pet added successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/SuccessApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
+        '405':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
 
-  /adopter/recommendations:
+  /pet/upload-image:
+    post:
+      tags:
+        - pet
+      summary: Upload an image for a pet
+      description: Uploads an image file for a specific pet.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                petId:
+                  type: integer
+                  example: 1
+                image:
+                  type: string
+                  format: binary
+              required:
+                - petId
+                - image
+      responses:
+        '200':
+          description: Image uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
+        '400':
+          description: Invalid request or missing parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+
+  /pet/get-profile:
     get:
+      tags:
+        - pet
+      summary: Retrieve pet profile information
+      description: Fetches the pet profile details.
+      responses:
+        '200':
+          description: Profile details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Buddy
+                  comments:
+                    type: string
+                    example: Friendly and playful
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+
+  /pet/update-profile:
+    put:
+      tags:
+        - pet
+      summary: Update pet profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Buddy
+                comments:
+                  type: string
+                  example: Updated comments about Buddy
+      responses:
+        '200':
+          description: Pet profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessApiResponse'
+
+  /pet/delete-profile/{petId}:
+    delete:
+      tags:
+        - pet
+      summary: Deletes a pet profile
+      description: Deletes the pet profile with the specified ID.
+      parameters:
+        - name: petId
+          in: path
+          description: The unique ID of the pet profile to delete.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Pet profile successfully deleted.
+        '400':
+          description: Invalid pet profile value
+        '401':
+          description: Unauthorized access.
+        '403':
+          description: Forbidden. User does not have permission to delete this profile.
+        '404':
+          description: Pet not found.
+
+
+
+  /matching/recommendations:
+    get:
+      tags:
+        - matching
       summary: Get a list of recommended pets based on preferences
       responses:
         '200':
@@ -150,80 +499,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Recommendation'
 
-  /shelter/add-pet:
-    post:
-      summary: Add a new pet to the shelter
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: "Buddy"
-                comments:
-                  type: string
-                  example: "Friendly and playful"
-      responses:
-        '201':
-          description: Pet added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-
-  /shelter/update-contacts:
-    put:
-      summary: Update shelter contact information
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                phone:
-                  type: string
-                  example: "321-654-0987"
-                address:
-                  type: string
-                  example: "456 Shelter Street"
-      responses:
-        '200':
-          description: Shelter contacts updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-
-  /pet/update-info:
-    put:
-      summary: Update pet information
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: "Buddy"
-                comments:
-                  type: string
-                  example: "Updated comments about Buddy"
-      responses:
-        '200':
-          description: Pet information updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-
-  /recommendation/next:
+  /matching/recommendation/next:
     get:
+      tags:
+        - matching
       summary: Get the next recommendation for the adopter
       responses:
         '200':
@@ -233,8 +512,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Recommendation'
 
-  /recommendation/{id}/accept:
+  /matching/recommendation/{id}/accept:
     post:
+      tags:
+        - matching
       summary: Accept a recommendation and create an adoption
       parameters:
         - in: path
@@ -249,12 +530,56 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/SuccessApiResponse'
 
-  /adoptionStory:
+
+  /adoption/status:
     get:
+      tags:
+        - adoption
+      summary: Retrieve adoption status
+      description: Fetches the current status of adoptions for the authenticated adopter.
+      responses:
+        '200':
+          description: Adoption status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    adoptionId:
+                      type: integer
+                      example: 1
+                    petId:
+                      type: integer
+                      example: 42
+                    status:
+                      type: string
+                      enum:
+                        - Pending
+                        - Approved
+                        - Rejected
+                      example: Pending
+                    date:
+                      type: string
+                      format: date
+                      example: '2023-05-15'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureApiResponse'
+
+  /adoption/story:
+    get:
+      tags:
+        - adoption
       summary: Retrieve a list of adoption stories
-      description: Returns a list of adoption stories with the specified number of objects.
+      description: Returns a list of adoption stories with the specified number of
+        objects.
       parameters:
         - in: query
           name: N
@@ -276,25 +601,32 @@ paths:
                     author:
                       type: string
                       description: The author of the adoption story
-                      example: "John Doe"
+                      example: John Doe
                     title:
                       type: string
                       description: The title of the adoption story
-                      example: "A Happy Ending for Max"
+                      example: A Happy Ending for Max
                     text:
                       type: string
                       description: The content of the adoption story
-                      example: "Max was found wandering the streets and was taken in by a local shelter. After weeks of care, he found a loving home with the Doe family."
+                      example: Max was found wandering the streets and was taken in
+                        by a local shelter. After weeks of care, he found a loving
+                        home with the Doe family.
+
 
 
 components:
+
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT # Optional, but helps to specify the token type
+
+
   schemas:
-    ApiResponse:
+
+    SuccessApiResponse:
       type: object
       properties:
         success:
@@ -303,6 +635,69 @@ components:
         message:
           type: string
           example: Operation completed successfully
+
+    FailureApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Operation completed successfully
+
+
+    User:
+      properties:
+        userId:
+          type: integer
+          format: int64
+          example: 10
+        profileId:
+          type: integer
+          format: int64
+          example: 10
+        role:
+          type: string
+          example: Adopter
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: 12345
+        phone:
+          type: string
+          example: 12345
+        street:
+          type: string
+          example: 1 Young St.
+        city:
+          type: string
+          example: Toronto
+        province:
+          type: string
+          example: Ontario
+        postalCode:
+          type: string
+          example: A1B 2C3
+        userStatus:
+          type: integer
+          format: int32
+          example: 1
+          description: User Status
+      xml:
+        name: user
+      type: object
 
     Recommendation:
       type: object
@@ -316,7 +711,7 @@ components:
         date:
           type: string
           format: date
-          example: "2023-05-15"
+          example: '2023-05-15'
         status:
           type: integer
           example: 1

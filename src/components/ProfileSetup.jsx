@@ -4,6 +4,7 @@ import Questionnaire from "./Questionnaire";
 import ShelterRegistration from "./ShelterRegistration";
 import FooterComponent from './FooterComponent';
 import NavbarComponent from './NavbarComponent';  // Import NavbarComponent
+import { initBackendApi } from "./BackendApi";
 
 function ProfileSetup() {
   const [userType, setUserType] = useState("");
@@ -46,6 +47,8 @@ const [city, setCity] = useState("");
 const [province, setProvince] = useState("");
 const [postalCode, setPostalCode] = useState("");
 
+  const backendApi = initBackendApi();
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -87,32 +90,114 @@ const [postalCode, setPostalCode] = useState("");
     userText: "Any additional preferences or comments?",
   };
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
-    const formData = {
-      userType,
-      petName,
-      selectedGender,
-      petType: petType === "other" ? otherPetType : petType,
-      breedType,
-      petColour,
-      petSize,
-      petActivityLevel,
-      petEnvironment,
-      petSocial: petSocial === "other animals" ? otherPetSocial : petSocial,
-      userText,
-      shelterName,
-      lastName,
-      email,
-      phone,
-      address,
-      city,
-      province,
-      postalCode,
-      photo: selectedFile ? selectedFile.name : "No file selected"
-    };
-    console.log("Form data submitted:", formData);
-    alert("Form submitted");
+    if (userType === "adopter") {
+      const userUpdateRequest = new UserUpdateContactsPutRequest({
+        lastName,
+        email,
+        phone,
+        address,
+        city,
+        province,
+        postalCode,
+      });
+
+      await new Promise((resolve, reject) => {
+        backendApi.user.userUpdateProfilePut(userUpdateRequest, (error, data, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        });
+      });
+
+
+      console.log("Adopter contacts updated successfully.");
+
+      // 2. Submit Adopter Preferences
+      const adopterPreferences = new AdopterPreferencesPostRequest({
+        petName,
+        selectedGender,
+        petType: petType === "other" ? otherPetType : petType,
+        breedType,
+        petColour,
+        petSize,
+        petActivityLevel,
+        petEnvironment,
+        petSocial: petSocial === "other animals" ? otherPetSocial : petSocial,
+        userText,
+        // Include other fields as required
+      });
+
+      await new Promise((resolve, reject) => {
+        backendApi.user.userPreferencesPost(adopterPreferences, (error, data, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        });
+      });
+
+      console.log("Adopter preferences submitted successfully.");
+      alert("Adopter profile and preferences submitted successfully!");
+
+      // Optionally, reset form fields or redirect the user
+      resetForm();
+    } else if (userType === "shelter") {
+      // 1. Update Shelter Contact Information
+      const shelterUpdateRequest = new ShelterUpdateContactsPutRequest({
+        shelterName,
+        email,
+        phone,
+        address,
+        city,
+        province,
+        postalCode,
+      });
+
+
+      console.log("Shelter contacts updated successfully.");
+
+      // 2. Submit Shelter Pet Information
+      // Assuming ShelterAddPetPostRequest requires pet details and possibly a photo URL
+      const shelterAddPetRequest = new ShelterAddPetPostRequest({
+        // Populate with necessary pet information
+        petName,
+        petType: petType === "other" ? otherPetType : petType,
+        breedType,
+        petColour,
+        petSize,
+        petActivityLevel,
+        petEnvironment,
+        petSocial: petSocial === "other animals" ? otherPetSocial : petSocial,
+        userText,
+        // Include other fields as required
+        // For photo, handle file upload separately (see below)
+      });
+
+      // If photo upload is required, handle it before making the request
+      let photoUrl = "";
+      if (selectedFile) {
+        photoUrl = await uploadFile(selectedFile);
+        shelterAddPetRequest.photoUrl = photoUrl;  // Adjust based on API's expected field
+      }
+
+      await new Promise((resolve, reject) => {
+        api.shelterAddPetPost(shelterAddPetRequest, (error, data, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        });
+      });
+
+      console.log("Shelter pet information submitted successfully.");
+      alert("Shelter profile and pet information submitted successfully!");
+    }
   };
 
   
