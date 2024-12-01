@@ -73,15 +73,6 @@ function ShelterRegistration ({
           />
           <br />
 
-          <label className={styles.mylabel}>Please enter the email address of your Shelter's point of contact:</label>
-          <input
-            className="form-control"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <br />
-
           <label className={styles.mylabel}>What is your Shelter's phone number?</label>
           <input
             className="form-control"

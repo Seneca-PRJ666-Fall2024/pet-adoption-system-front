@@ -12,6 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
+import Role from './Role';
 
 /**
  * The UserRegisterPostRequest model module.
@@ -54,7 +55,7 @@ class UserRegisterPostRequest {
                 obj['password'] = ApiClient.convertToType(data['password'], 'String');
             }
             if (data.hasOwnProperty('role')) {
-                obj['role'] = ApiClient.convertToType(data['role'], 'String');
+                obj['role'] = Role.constructFromObject(data['role']);
             }
         }
         return obj;
@@ -73,10 +74,6 @@ class UserRegisterPostRequest {
         // ensure the json data is a string
         if (data['password'] && !(typeof data['password'] === 'string' || data['password'] instanceof String)) {
             throw new Error("Expected the field `password` to be a primitive type in the JSON string but got " + data['password']);
-        }
-        // ensure the json data is a string
-        if (data['role'] && !(typeof data['role'] === 'string' || data['role'] instanceof String)) {
-            throw new Error("Expected the field `role` to be a primitive type in the JSON string but got " + data['role']);
         }
 
         return true;
@@ -98,33 +95,12 @@ UserRegisterPostRequest.prototype['email'] = undefined;
 UserRegisterPostRequest.prototype['password'] = undefined;
 
 /**
- * @member {module:model/UserRegisterPostRequest.RoleEnum} role
+ * @member {module:model/Role} role
  */
 UserRegisterPostRequest.prototype['role'] = undefined;
 
 
 
-
-
-/**
- * Allowed values for the <code>role</code> property.
- * @enum {String}
- * @readonly
- */
-UserRegisterPostRequest['RoleEnum'] = {
-
-    /**
-     * value: "Pet Adopter"
-     * @const
-     */
-    "Adopter": "Pet Adopter",
-
-    /**
-     * value: "Pet Shelter"
-     * @const
-     */
-    "Shelter": "Pet Shelter"
-};
 
 
 

@@ -7,7 +7,7 @@ import FooterComponent from "./FooterComponent";
 const Terms = () => {
   return (
     <>
-      <NavbarComponent userRole="guest" />
+      <NavbarComponent/>
       <Container className="mt-4">
         <h1 className="mb-4 text-center">Terms and Conditions</h1>
         <p>

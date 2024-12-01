@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from "../styles/Register.module.css";
-import { Link } from 'react-router-dom';  // Import Link from react-router-dom
+import {Link, useNavigate} from 'react-router-dom';  // Import Link from react-router-dom
 import FooterComponent from './FooterComponent';
 import NavbarComponent from './NavbarComponent';  // Import NavbarComponent
 import { initBackendApi } from './BackendApi';
@@ -8,6 +8,8 @@ import { initBackendApi } from './BackendApi';
 function Register() {
 
   const backendApi = initBackendApi();
+
+  const navigate = useNavigate();
 
     // Step 1: Set up state to store the selected user type
   const [username, setUsername] = useState('');
@@ -43,7 +45,7 @@ function Register() {
     const userRegisterPostRequest = {
       email: username,
       password: password,
-      role: userType === 'adopter' ? 'Pet Adopter' : 'Pet Shelter',
+      role: userType,
     };
 
     try {
@@ -55,12 +57,9 @@ function Register() {
         });
       });
 
-      // Handle success
-      setSuccess('Registration successful! You can now log in.');
-      setError('');
-      setUsername('');
-      setPassword('');
-      setUserType('');
+      alert("Registration successful! You can now log in.");
+
+      navigate('/login')
     } catch (apiError) {
       // Handle error
       setError(apiError.message || 'An error occurred during registration.');
@@ -72,7 +71,7 @@ function Register() {
   return (
     <>
     {/* Navbar */}
-    <NavbarComponent userRole="guest" />
+    <NavbarComponent/>
     <div className={styles.register}>
       <div className={styles.title}>
         <h1>Create your account</h1>

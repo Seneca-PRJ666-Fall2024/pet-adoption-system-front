@@ -19,6 +19,7 @@ import FailureApiResponse from './model/FailureApiResponse';
 import PetAddProfilePostRequest from './model/PetAddProfilePostRequest';
 import PetUpdateProfilePutRequest from './model/PetUpdateProfilePutRequest';
 import Recommendation from './model/Recommendation';
+import Role from './model/Role';
 import SuccessApiResponse from './model/SuccessApiResponse';
 import User from './model/User';
 import UserGetProfileGet200Response from './model/UserGetProfileGet200Response';
@@ -105,6 +106,12 @@ export {
      * @property {module:model/Recommendation}
      */
     Recommendation,
+
+    /**
+     * The Role model constructor.
+     * @property {module:model/Role}
+     */
+    Role,
 
     /**
      * The SuccessApiResponse model constructor.

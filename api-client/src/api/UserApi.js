@@ -15,7 +15,6 @@
 import ApiClient from "../ApiClient";
 import FailureApiResponse from '../model/FailureApiResponse';
 import SuccessApiResponse from '../model/SuccessApiResponse';
-import User from '../model/User';
 import UserGetProfileGet200Response from '../model/UserGetProfileGet200Response';
 import UserLoginPost200Response from '../model/UserLoginPost200Response';
 import UserLoginPostRequest from '../model/UserLoginPostRequest';
@@ -40,46 +39,6 @@ export default class UserApi {
         this.apiClient = apiClient || ApiClient.instance;
     }
 
-
-    /**
-     * Callback function to receive the result of the userAddProfilePost operation.
-     * @callback module:api/UserApi~userAddProfilePostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/User} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * Add a user profile
-     * This can only be done by the logged in user.
-     * @param {Object} opts Optional parameters
-     * @param {module:model/User} [user] Created user object
-     * @param {module:api/UserApi~userAddProfilePostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/User}
-     */
-    userAddProfilePost(opts, callback) {
-      opts = opts || {};
-      let postBody = opts['user'];
-
-      let pathParams = {
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = [];
-      let contentTypes = ['application/json', 'application/xml', 'application/x-www-form-urlencoded'];
-      let accepts = ['application/json', 'application/xml'];
-      let returnType = User;
-      return this.apiClient.callApi(
-        '/user/add-profile', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
-      );
-    }
 
     /**
      * Callback function to receive the result of the userDeleteProfileEmailDelete operation.
@@ -115,7 +74,7 @@ export default class UserApi {
 
       let authNames = ['BearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json', 'application/xml'];
+      let accepts = ['application/json'];
       let returnType = SuccessApiResponse;
       return this.apiClient.callApi(
         '/user/delete-profile/{email}', 'DELETE',
@@ -317,9 +276,9 @@ export default class UserApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['BearerAuth'];
       let contentTypes = ['application/json'];
-      let accepts = ['application/json', 'application/xml'];
+      let accepts = ['application/json'];
       let returnType = SuccessApiResponse;
       return this.apiClient.callApi(
         '/user/update-profile', 'PUT',

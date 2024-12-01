@@ -48,11 +48,7 @@ paths:
                   type: string
                   example: P@ssw0rd
                 role:
-                  type: string
-                  enum:
-                    - Pet Adopter
-                    - Pet Shelter
-                  example: Pet Adopter
+                  $ref: '#/components/schemas/Role'
       responses:
         '201':
           description: User registered successfully
@@ -101,8 +97,10 @@ paths:
                     type: string
                     example: Login successful
                   role:
-                    type: string
-                    example: Pet Adopter
+                    $ref: '#/components/schemas/Role'
+                  profileSet:
+                    type: boolean
+                    example: true
                   token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -146,36 +144,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessApiResponse'
-
-
-  /user/add-profile:
-    post:
-      tags:
-        - user
-      summary: Add a user profile
-      description: This can only be done by the logged in user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Created user object
-      responses:
-        default:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
 
   /user/upload-image:
     post:
@@ -230,9 +198,8 @@ paths:
                   email:
                     type: string
                     example: user@example.com
-                  accountType:
-                    type: string
-                    example: Pet Adopter
+                  role:
+                    $ref: '#/components/schemas/Role'
                   name:
                     type: string
                     example: John Doe
@@ -254,6 +221,8 @@ paths:
       tags:
         - user
       summary: Update a user profile
+      security:
+        - BearerAuth: [ ]
       requestBody:
         required: true
         content:
@@ -261,6 +230,9 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
+                  example: John Doe
                 phone:
                   type: string
                   example: 123-456-7890
@@ -272,9 +244,6 @@ paths:
           description: User contacts updated successfully
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/SuccessApiResponse'
 
@@ -300,16 +269,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessApiResponse'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
         '400':
           description: Invalid username supplied
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/FailureApiResponse'
         '401':
@@ -320,9 +283,6 @@ paths:
           description: User not found
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/FailureApiResponse'
 
@@ -354,16 +314,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessApiResponse'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
         '405':
           description: Invalid input
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/FailureApiResponse'
 
@@ -646,6 +600,12 @@ components:
           type: string
           example: Operation completed successfully
 
+    Role:
+      type: string
+      enum:
+        - adopter
+        - shelter
+      example: adopter
 
     User:
       properties:
@@ -658,8 +618,7 @@ components:
           format: int64
           example: 10
         role:
-          type: string
-          example: Adopter
+          $ref: '#/components/schemas/Role'
         username:
           type: string
           example: theUser
@@ -695,8 +654,6 @@ components:
           format: int32
           example: 1
           description: User Status
-      xml:
-        name: user
       type: object
 
     Recommendation:

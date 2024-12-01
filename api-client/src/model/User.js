@@ -12,6 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
+import Role from './Role';
 
 /**
  * The User model module.
@@ -54,7 +55,7 @@ class User {
                 obj['profileId'] = ApiClient.convertToType(data['profileId'], 'Number');
             }
             if (data.hasOwnProperty('role')) {
-                obj['role'] = ApiClient.convertToType(data['role'], 'String');
+                obj['role'] = Role.constructFromObject(data['role']);
             }
             if (data.hasOwnProperty('username')) {
                 obj['username'] = ApiClient.convertToType(data['username'], 'String');
@@ -99,10 +100,6 @@ class User {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>User</code>.
      */
     static validateJSON(data) {
-        // ensure the json data is a string
-        if (data['role'] && !(typeof data['role'] === 'string' || data['role'] instanceof String)) {
-            throw new Error("Expected the field `role` to be a primitive type in the JSON string but got " + data['role']);
-        }
         // ensure the json data is a string
         if (data['username'] && !(typeof data['username'] === 'string' || data['username'] instanceof String)) {
             throw new Error("Expected the field `username` to be a primitive type in the JSON string but got " + data['username']);
@@ -163,7 +160,7 @@ User.prototype['userId'] = undefined;
 User.prototype['profileId'] = undefined;
 
 /**
- * @member {String} role
+ * @member {module:model/Role} role
  */
 User.prototype['role'] = undefined;
 

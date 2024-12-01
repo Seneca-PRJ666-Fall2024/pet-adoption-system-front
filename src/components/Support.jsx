@@ -7,7 +7,7 @@ import FooterComponent from "./FooterComponent";
 const Support = () => {
   return (
     <>
-      <NavbarComponent userRole="guest" />
+      <NavbarComponent/>
       <Container className="mt-4">
         <h1 className="mb-4 text-center">Support</h1>
         <p>

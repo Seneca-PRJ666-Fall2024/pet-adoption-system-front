@@ -264,7 +264,7 @@ const AdoptionManagement = () => {
 
   return (
     <>
-      <NavbarComponent userRole="adopter" />
+      <NavbarComponent/>
       <Container className="my-4">
         <div className="d-flex justify-content-between align-items-center">
           <h3>Your Adoption Applications</h3>

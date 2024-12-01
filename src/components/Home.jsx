@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col } from "react-bootstrap"; // Make sure Row and Col are imported
 import NavbarComponent from "./NavbarComponent";
 import AdopterView from "./AdopterView";
@@ -9,9 +9,12 @@ import ReviewCard from "./ReviewCard";
 import { Link } from "react-router-dom";
 import FooterComponent from "./FooterComponent";
 import { initBackendApi } from "./BackendApi";
+import AuthContext from "../context/AuthContext";
 
 const Home = () => {
-  const [userRole, setUserRole] = useState("guest"); // guest is the default state
+
+  const { userRole } = useContext(AuthContext);
+
   const backendApi = initBackendApi();
   const [reviews, setReviews] = useState([]);
 
@@ -31,7 +34,7 @@ const Home = () => {
   return (
     <div id="root">
       {/* Navbar */}
-      <NavbarComponent userRole={userRole} />
+      <NavbarComponent/>
 
       {/* Main Content */}
       <div className="flex-grow-1 text-center mt-4">

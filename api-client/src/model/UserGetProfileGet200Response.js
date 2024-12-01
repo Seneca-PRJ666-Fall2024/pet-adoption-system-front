@@ -12,6 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
+import Role from './Role';
 
 /**
  * The UserGetProfileGet200Response model module.
@@ -53,8 +54,8 @@ class UserGetProfileGet200Response {
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');
             }
-            if (data.hasOwnProperty('accountType')) {
-                obj['accountType'] = ApiClient.convertToType(data['accountType'], 'String');
+            if (data.hasOwnProperty('role')) {
+                obj['role'] = Role.constructFromObject(data['role']);
             }
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
@@ -78,10 +79,6 @@ class UserGetProfileGet200Response {
         // ensure the json data is a string
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
-        }
-        // ensure the json data is a string
-        if (data['accountType'] && !(typeof data['accountType'] === 'string' || data['accountType'] instanceof String)) {
-            throw new Error("Expected the field `accountType` to be a primitive type in the JSON string but got " + data['accountType']);
         }
         // ensure the json data is a string
         if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
@@ -115,9 +112,9 @@ UserGetProfileGet200Response.prototype['id'] = undefined;
 UserGetProfileGet200Response.prototype['email'] = undefined;
 
 /**
- * @member {String} accountType
+ * @member {module:model/Role} role
  */
-UserGetProfileGet200Response.prototype['accountType'] = undefined;
+UserGetProfileGet200Response.prototype['role'] = undefined;
 
 /**
  * @member {String} name

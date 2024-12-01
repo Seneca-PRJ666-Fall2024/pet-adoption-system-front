@@ -107,7 +107,7 @@ const PetMatching = () => {
 
   return (
     <>
-      <NavbarComponent userRole="adopter" />
+      <NavbarComponent/>
 
       {/* Available Pets Carousel */}
       <Container className="text-center my-5 bigger-container">

@@ -10,7 +10,7 @@ import { FaHandsHelping } from "react-icons/fa";
 const AboutUs = () => {
   return (
     <>
-      <NavbarComponent userRole="guest" />
+      <NavbarComponent/>
 
       <Container className="mt-4">
         <h1 className="text-center">About Us</h1>

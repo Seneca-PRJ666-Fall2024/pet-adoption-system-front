@@ -3,9 +3,9 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
-const NavbarComponent = ({ userRole }) => {
+const NavbarComponent = () => {
   // Access login state and logout function
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const { isLoggedIn, logout, userRole } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -30,12 +30,25 @@ const NavbarComponent = ({ userRole }) => {
                 </Nav.Link>
 
                 <Nav.Link as={Link} to="/adoption">
-                  Adoption Management
+                  My Adoptions
                 </Nav.Link>
               </>
             )}
+            {userRole === "shelter" && (
+                <>
+                  <Nav.Link as={Link} to="/PetManagementMain">
+                    Pet Management
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/adoption">
+                    Adoption Management
+                  </Nav.Link>
+                </>
+            )}
             {isLoggedIn ? (
-              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+              <>
+                <Nav.Link as={Link} to="/ProfileSetup">Update Profile</Nav.Link>
+                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+              </>
             ) : (
               <>
                 <Nav.Link as={Link} to="/register">

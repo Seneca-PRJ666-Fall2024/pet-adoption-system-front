@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import {
   Container,
   Table,
@@ -11,8 +11,12 @@ import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 import NewPetAdoptionApplication from "./NewPetAdoptionApplication"; // Import the new component
 import "../styles/AdoptionManagement.css";
+import AuthContext from "../context/AuthContext";
 
-const AdoptionManagement = ({ userRole }) => {
+const AdoptionManagement = () => {
+
+    const { userRole } = useContext(AuthContext);
+
   const [applications, setApplications] = useState([
     {
         id: 1,
@@ -302,7 +306,7 @@ const AdoptionManagement = ({ userRole }) => {
 
   return (
     <>
-      <NavbarComponent userRole={userRole}  />
+      <NavbarComponent/>
       <Container className="my-4">
         <div className="d-flex justify-content-between align-items-center">
           <h3>Your Adoption Applications</h3>

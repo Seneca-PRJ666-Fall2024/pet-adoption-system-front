@@ -47,6 +47,9 @@ class UserUpdateProfilePutRequest {
         if (data) {
             obj = obj || new UserUpdateProfilePutRequest();
 
+            if (data.hasOwnProperty('name')) {
+                obj['name'] = ApiClient.convertToType(data['name'], 'String');
+            }
             if (data.hasOwnProperty('phone')) {
                 obj['phone'] = ApiClient.convertToType(data['phone'], 'String');
             }
@@ -64,6 +67,10 @@ class UserUpdateProfilePutRequest {
      */
     static validateJSON(data) {
         // ensure the json data is a string
+        if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
+            throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
+        }
+        // ensure the json data is a string
         if (data['phone'] && !(typeof data['phone'] === 'string' || data['phone'] instanceof String)) {
             throw new Error("Expected the field `phone` to be a primitive type in the JSON string but got " + data['phone']);
         }
@@ -79,6 +86,11 @@ class UserUpdateProfilePutRequest {
 }
 
 
+
+/**
+ * @member {String} name
+ */
+UserUpdateProfilePutRequest.prototype['name'] = undefined;
 
 /**
  * @member {String} phone

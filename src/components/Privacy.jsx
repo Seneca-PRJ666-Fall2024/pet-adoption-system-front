@@ -6,7 +6,7 @@ import FooterComponent from "./FooterComponent";
 const Privacy = () => {
   return (
     <>
-      <NavbarComponent userRole="guest" />
+      <NavbarComponent/>
       <Container className="mt-4">
         <h1 className="mb-4 text-center">Privacy Policy</h1>
         <p>

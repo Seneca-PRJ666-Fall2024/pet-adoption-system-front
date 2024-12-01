@@ -36,13 +36,11 @@ function Login() {
       });
 
       // Call login function from context to update global state
-      login(response.token);
+      login(response.token, response.role);
 
       setLoading(false);
 
-      // Redirect based on role (mock example, adapt as needed)
-      // TODO: Update to a correct page: navigate(response.role === 'adopter' ? '/adopter-dashboard' : '/shelter-dashboard');
-      navigate("/");
+      navigate(response.profileSet ? '/' : '/ProfileSetup');
     } catch (apiError) {
       // Handle errors from the backend
       console.error("Login failed", apiError);
@@ -54,7 +52,7 @@ function Login() {
   return (
     <>
       {/* Navbar */}
-      <NavbarComponent userRole="guest" />
+      <NavbarComponent/>
       <div className={styles.register}>
         <div className={styles.title}>
           <h1>Login to your account</h1>

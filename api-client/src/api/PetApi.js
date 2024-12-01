@@ -70,7 +70,7 @@ export default class PetApi {
 
       let authNames = [];
       let contentTypes = ['application/json'];
-      let accepts = ['application/json', 'application/xml'];
+      let accepts = ['application/json'];
       let returnType = SuccessApiResponse;
       return this.apiClient.callApi(
         '/pet/add-profile', 'POST',
