@@ -1,22 +1,16 @@
-import React, {useContext, useState} from "react";
+import React, { useState } from "react";
 import {
   Container,
   Table,
   Button,
-  ProgressBar,
   Modal,
 } from "react-bootstrap";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
-import NewPetAdoptionApplication from "./NewPetAdoptionApplication"; // Import the new component
 import "../styles/AdoptionManagement.css";
 import PetManagement from "./PetManagement";
-import AuthContext from "../context/AuthContext";
 
 const PetManagementMain = () => {
-
-    const { userRole } = useContext(AuthContext);
-
   const [applications, setApplications] = useState([
     {
         id: 1,
@@ -50,6 +44,7 @@ const PetManagementMain = () => {
         behavioralExpectations: "Well-behaved",
         commitmentAcknowledgement: true,
         references: "Jane Doe, 555-123-4567",
+        petSocial: "cats"
 
     },
     {
@@ -84,6 +79,7 @@ const PetManagementMain = () => {
         behavioralExpectations: "Calm and quiet",
         commitmentAcknowledgement: true,
         references: "Bob Johnson, 555-987-6543",
+        petSocial: "dogs"
     },
     {
         id: 3,
@@ -117,6 +113,7 @@ const PetManagementMain = () => {
         behavioralExpectations: "Playful but calm",
         commitmentAcknowledgement: true,
         references: "Sarah Lee, 444-555-6666",
+        petSocial: "dogs"
     },
   ]);
 
@@ -143,86 +140,63 @@ const PetManagementMain = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [currentApplication, setCurrentApplication] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [applicationToCancel, setApplicationToCancel] = useState(null);
+  const [applicationToDelete, setApplicationToDelete] = useState(null);
 
-  const [newApplication, setNewApplication] = useState({
+  const [newPetProfile, setNewPetProfile] = useState({
     petName: "",
-    adopterInfoType: "new",
-    existingAdopterId: "",
-    adopterName: "",
-    birthday: "",
-    gender: "",
-    homeAddress: "",
-    phoneNumber: "",
-    reasonForAdoption: "",
-    housingType: "",
+    petInfoType: "new",
+    existingPetId: "",
+    PetName: "",
+    petBirthday: "",
+    petGender: "",
   });
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setNewApplication((prev) => ({
+    const { name, value } = e.target;
+    setNewPetProfile((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
-  const handleSubmitApplication = async () => {
+  const handleAddPetProfile = () => {
+    setCurrentApplication({
+      id: applications.length + 1, // Generate a new ID
+      petName: "",
+      petType: "",
+      petGender: "",
+      petBreed: "",
+      petSocial: "",
+      petBirthday: "",
+    }); // Initialize with empty fields
+    setShowModal(true); // Open the modal
+  };
+  
+
+  const handleSave = () => {
+    setIsSaving(true);
     try {
-      const adopterInfo =
-        newApplication.adopterInfoType === "existing"
-          ? existingAdopters.find(
-              (adopter) => adopter.id === parseInt(newApplication.existingAdopterId)
-            )
-          : {
-              name: newApplication.adopterName,
-              birthday: newApplication.birthday,
-              gender: newApplication.gender,
-              homeAddress: newApplication.homeAddress,
-              phoneNumber: newApplication.phoneNumber,
-            };
-
-      const newApp = {
-        id: applications.length + 1,
-        petName: newApplication.petName,
-        petType: "Unknown", // Default value for testing
-        petAge: "Unknown", // Default value for testing
-        petGender: "Unknown", // Default value for testing
-        adopterInfo,
-        status: "Submitted",
-        progress: 10, // Initial progress for a new submission
-      };
-
-      // Simulate sending data to the server
-      setApplications((prevApps) => [...prevApps, newApp]);
-      setShowModal(false);
-      setNewApplication({
-        petName: "",
-        adopterInfoType: "new",
-        existingAdopterId: "",
-        adopterName: "",
-        birthday: "",
-        gender: "",
-        homeAddress: "",
-        phoneNumber: "",
-        reasonForAdoption: "",
-        housingType: "",
-      });
+      updateApplication(formData); // Pass updated data to the parent
+      closeModal(); // Close the modal after saving
+      // alert("Pet details updated successfully!");
     } catch (error) {
-      console.error("Error submitting application:", error);
-      alert("Failed to submit the application. Please try again.");
+      console.error("Error updating pet details:", error);
+      alert("Failed to save pet details. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
+  
 
-  const handleCancelApplication = (id) => {
-    setApplicationToCancel(id);
+  const handleDeleteApplication = (id) => {
+    setApplicationToDelete(id);
     setShowCancelModal(true);
   };
 
-  const confirmCancelApplication = () => {
+  const confirmDeleteApplication = () => {
     setApplications((prevApps) =>
-      prevApps.map((app) =>
-        app.id === applicationToCancel ? { ...app, status: "Cancelled", progress: 0 } : app
-      )
+      prevApps.filter((app) =>
+        app.id !== applicationToDelete)
     );
     setShowCancelModal(false);
   };
@@ -232,43 +206,38 @@ const PetManagementMain = () => {
     setShowDetailsModal(true);
   };
 
-  const getProgressVariant = (progress) => {
-    if (progress === 100) return "success";
-    if (progress > 50) return "info";
-    return "warning";
+  const updateApplication = (updatedApplication) => {
+    setApplications((prevApps) => {
+      // Check if the application already exists
+      const existingIndex = prevApps.findIndex((app) => app.id === updatedApplication.id);
+  
+      if (existingIndex !== -1) {
+        // Update an existing application
+        return prevApps.map((app) =>
+          app.id === updatedApplication.id ? updatedApplication : app
+        );
+      } else {
+        // Add a new application
+        return [...prevApps, updatedApplication];
+      }
+    });
+  
+    setShowModal(false); // Close the modal
   };
-
-  const updateProgress = (status) => {
-    switch (status) {
-      case "Submitted":
-        return 10;
-      case "Reviewing":
-      case "Waitlisted":
-        return 30;
-      case "Interviewing":
-        return 60;
-      case "Decision Making":
-        return 90;
-      case "Adopted":
-      case "Rejected":
-        return 100;
-      case "Cancelled":
-        return 0;
-      default:
-        return 0;
-    }
-  };
+  
+  
+  
   
 
   return (
     <>
-      <NavbarComponent/>
+      <NavbarComponent userRole="shelter" />
       <Container className="my-4">
         <div className="d-flex justify-content-between align-items-center">
-          <h3>Your Adoption Applications</h3>
-          {/* <Button variant="success" onClick={() => setShowModal(true)}>
-            Submit New Application
-          </Button> */}
+          <h3>Pet Profile Management</h3>
+          <Button variant="success" onClick={() => setShowModal(true)}>
+            Add New Pet Profile
+          </Button>
         </div>
 
         <Table striped bordered hover className="mt-3">
@@ -280,8 +249,6 @@ const PetManagementMain = () => {
               <th>Pet Age</th>
               <th>Pet Breed</th>
               <th>Pet Gender</th>
-              <th>Status</th>
-              <th>Progress</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -294,14 +261,6 @@ const PetManagementMain = () => {
                 <td>{app.petAge}</td>
                 <td>{app.petBreed}</td>
                 <td>{app.petGender}</td>
-                <td>{app.status}</td>
-                <td>
-                  <ProgressBar
-                    now={updateProgress(app.status)}
-                    label={`${updateProgress(app.status)}%`}
-                    variant={getProgressVariant(updateProgress(app.status))}
-                  />
-                </td>
                 <td>
                   <Button
                     variant="primary"
@@ -314,9 +273,9 @@ const PetManagementMain = () => {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleCancelApplication(app.id)}
+                    onClick={() => handleDeleteApplication(app.id)}
                   >
-                    Cancel
+                    Delete
                   </Button>
                 </td>
               </tr>
@@ -325,84 +284,49 @@ const PetManagementMain = () => {
         </Table>
       </Container>
 
-      {/* Modal for New Application */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      {/* Modal for Adding New Pet Profile */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Submit New Application</Modal.Title>
+          <Modal.Title>Add New Pet Profile</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <NewPetAdoptionApplication
-            newApplication={newApplication}
-            handleInputChange={handleInputChange}
-            existingAdopters={existingAdopters}
-          />
+        <PetManagement
+           application={newPetProfile}
+           updateApplication={updateApplication}
+           closeModal={() => setShowDetailsModal(false)} // Close modal callback
+         />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmitApplication}
-            disabled={
-              !newApplication.petName.trim() ||
-              (newApplication.adopterInfoType === "new" &&
-                (!newApplication.adopterName.trim() ||
-                  !newApplication.birthday ||
-                  !newApplication.gender ||
-                  !newApplication.homeAddress.trim() ||
-                  !newApplication.phoneNumber.trim())) ||
-              (newApplication.adopterInfoType === "existing" &&
-                !newApplication.existingAdopterId)
-            }
-          >
-            Submit
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       {/* Modal for Viewing Details */}
-      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}size="xl">
+      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Application Details</Modal.Title>
+          <Modal.Title>Pet Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {currentApplication ? (
+          {currentApplication && (
            <PetManagement
            application={currentApplication} // Pass selected pet
-           updateApplication={(updatedApp) =>
-             setApplications((prev) =>
-               prev.map((app) =>
-                 app.id === updatedApp.id ? updatedApp : app
-               )
-             )
-           } // Update the pet list in main state
+           updateApplication={updateApplication}
            closeModal={() => setShowDetailsModal(false)} // Close modal callback
          />
-          ): (
-            <p>Loading Details...</p>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       {/* Modal for Cancel Confirmation */}
       <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Cancel Application</Modal.Title>
+          <Modal.Title>Delete Pet Profile</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to cancel this application?
+          Are you sure you want to delete this pet profile?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             No
           </Button>
-          <Button variant="danger" onClick={confirmCancelApplication}>
+          <Button variant="danger" onClick={confirmDeleteApplication}>
             Yes
           </Button>
         </Modal.Footer>

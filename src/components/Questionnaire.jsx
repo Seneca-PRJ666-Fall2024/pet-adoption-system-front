@@ -3,28 +3,30 @@ import styles from "../styles/ProfileSetup.module.css";
 
 function Questionnaire({
   questions,
-  selectedGender,
-  setSelectedGender,
-  petType,
-  setPetType,
-  otherPetType,
-  setOtherPetType,
-  breedType,
-  setBreedType,
-  petColour,
-  setPetColour,
-  petSize,
-  setPetSize,
-  petActivityLevel,
-  setPetActivityLevel,
-  petEnvironment,
-  setPetEnvironment,
-  petSocial,
-  setPetSocial,
-  otherPetSocial,
-  setOtherPetSocial,
-  userText,
-  setUserText,
+  // selectedGender,
+  // setSelectedGender,
+  // petType,
+  // setPetType,
+  // otherPetType,
+  // setOtherPetType,
+  // breedType,
+  // setBreedType,
+  // petColour,
+  // setPetColour,
+  // petSize,
+  // setPetSize,
+  // petActivityLevel,
+  // setPetActivityLevel,
+  // petEnvironment,
+  // setPetEnvironment,
+  // petSocial,
+  // setPetSocial,
+  // otherPetSocial,
+  // setOtherPetSocial,
+  // userText,
+  // setUserText,
+  formData, 
+  handleInputChange
 }) {
   return (
         <>
@@ -35,10 +37,10 @@ function Questionnaire({
       <label className="me-5">
         <input
           type="radio"
-          name="gender"
+          name="petGender"
           value="male"
-          onChange={() => setSelectedGender("male")}
-          checked={selectedGender === "male"}
+          onChange={handleInputChange}
+          checked={formData.petGender === "male"}
           className="me-1"
         />
         Male
@@ -46,10 +48,10 @@ function Questionnaire({
       <label>
         <input
           type="radio"
-          name="gender"
+          name="petGender"
           value="female"
-          onChange={() => setSelectedGender("female")}
-          checked={selectedGender === "female"}
+          onChange={handleInputChange}
+          checked={formData.petGender === "female"}
           className="me-1"
         />
         Female
@@ -66,8 +68,8 @@ function Questionnaire({
           name="petType"
           value="cat"
           className="me-1"
-          checked={petType === "cat"}
-          onChange={(e) => setPetType(e.target.value)}
+          checked={formData.petType === "cat"}
+          onChange={handleInputChange}
         /> Cat
       </label>
       <label className="me-4" style={{ color: "#1e6262" }}>
@@ -76,8 +78,8 @@ function Questionnaire({
           name="petType"
           value="dog"
           className="me-1"
-          checked={petType === "dog"}
-          onChange={(e) => setPetType(e.target.value)}
+          checked={formData.petType === "dog"}
+          onChange={handleInputChange}
         /> Dog
       </label>
       <label className="me-4" style={{ color: "#1e6262" }}>
@@ -86,8 +88,8 @@ function Questionnaire({
           name="petType"
           value="rabbit"
           className="me-1"
-          checked={petType === "rabbit"}
-          onChange={(e) => setPetType(e.target.value)}
+          checked={formData.petType === "rabbit"}
+          onChange={handleInputChange}
         /> Rabbit
       </label>
       <label className="me-4" style={{ color: "#1e6262" }}>
@@ -96,15 +98,15 @@ function Questionnaire({
           name="petType"
           value="other"
           className="me-1"
-          checked={petType === "other"}
-          onChange={(e) => setPetType(e.target.value)}
+          checked={formData.petType === "other"}
+          onChange={handleInputChange}
         /> Other
-        {petType === "other" && (
+        {formData.petType === "other" && (
           <input
             type="text"
             name="otherPetType"
-            value={otherPetType}
-            onChange={(e) => setOtherPetType(e.target.value)}
+            value={formData.otherPetType}
+            onChange={handleInputChange}
             className="ms-2"
             placeholder="Specify pet type"
           />
@@ -120,9 +122,9 @@ function Questionnaire({
       <br />
       <input
         type="text"
-        name="petBreedType"
-        value={breedType}
-        onChange={(e) => setBreedType(e.target.value)}
+        name="petBreed"
+        value={formData.petBreed}
+        onChange={handleInputChange}
         placeholder="Enter Breed Type"
       />
       <br />
@@ -136,8 +138,8 @@ function Questionnaire({
       <input
         type="text"
         name="petColour"
-        value={petColour}
-        onChange={(e) => setPetColour(e.target.value)}
+        value={formData.petColour}
+        onChange={handleInputChange}
         placeholder="Enter Pet Colour"
       />
       <br />
@@ -153,8 +155,8 @@ function Questionnaire({
           type="radio"
           name="petSize"
           value="small"
-          onChange={() => setPetSize("small")}
-          checked={petSize === "small"}
+          onChange={handleInputChange}
+          checked={formData.petSize === "small"}
           className="me-1"
         /> Small (&lt; 20 Lbs)
       </label>
@@ -163,8 +165,8 @@ function Questionnaire({
           type="radio"
           name="petSize"
           value="medium"
-          onChange={() => setPetSize("medium")}
-          checked={petSize === "medium"}
+          onChange={handleInputChange}
+          checked={formData.petSize === "medium"}
           className="me-1"
         /> Medium (20 - 49 Lbs)
       </label>
@@ -173,8 +175,8 @@ function Questionnaire({
           type="radio"
           name="petSize"
           value="large"
-          onChange={() => setPetSize("large")}
-          checked={petSize === "large"}
+          onChange={handleInputChange}
+          checked={formData.petSize === "large"}
           className="me-1"
         /> Large (50+ Lbs)
       </label>
@@ -191,8 +193,8 @@ function Questionnaire({
           type="radio"
           name="petActivityLevel"
           value="very active"
-          onChange={() => setPetActivityLevel("very active")}
-          checked={petActivityLevel === "very active"}
+          onChange={handleInputChange}
+          checked={formData.petActivityLevel === "very active"}
           className="me-1"
         /> Very Active
       </label>
@@ -201,8 +203,8 @@ function Questionnaire({
           type="radio"
           name="petActivityLevel"
           value="active"
-          onChange={() => setPetActivityLevel("active")}
-          checked={petActivityLevel === "active"}
+          onChange={handleInputChange}
+          checked={formData.petActivityLevel === "active"}
           className="me-1"
         /> Active
       </label>
@@ -211,8 +213,8 @@ function Questionnaire({
           type="radio"
           name="petActivityLevel"
           value="quiet"
-          onChange={() => setPetActivityLevel("quiet")}
-          checked={petActivityLevel === "quiet"}
+          onChange={handleInputChange}
+          checked={formData.petActivityLevel === "quiet"}
           className="me-1"
         /> Quiet
       </label>
@@ -229,8 +231,8 @@ function Questionnaire({
           type="radio"
           name="petEnvironment"
           value="apartment"
-          onChange={() => setPetEnvironment("apartment")}
-          checked={petEnvironment === "apartment"}
+          onChange={handleInputChange}
+          checked={formData.petEnvironment === "apartment"}
           className="me-1"
         /> Apartment
       </label>
@@ -239,8 +241,8 @@ function Questionnaire({
           type="radio"
           name="petEnvironment"
           value="house"
-          onChange={() => setPetEnvironment("house")}
-          checked={petEnvironment === "house"}
+          onChange={handleInputChange}
+          checked={formData.petEnvironment === "house"}
           className="me-1"
         /> House
       </label>
@@ -249,8 +251,8 @@ function Questionnaire({
           type="radio"
           name="petEnvironment"
           value="farm property"
-          onChange={() => setPetEnvironment("farm property")}
-          checked={petEnvironment === "farm property"}
+          onChange={handleInputChange}
+          checked={formData.petEnvironment === "farm property"}
           className="me-1"
         /> Farm Property
       </label>
@@ -258,7 +260,7 @@ function Questionnaire({
       <br />
       <br />
 
-      <label className={styles.mylabel}>
+      {/* <label className={styles.mylabel}>
         {questions.petSocial}
       </label>
       <br />
@@ -267,8 +269,8 @@ function Questionnaire({
           type="radio"
           name="petSocial"
           value="cats"
-          onChange={() => setPetSocial("cats")}
-          checked={petSocial === "cats"}
+          onChange={handleInputChange}
+          checked={formData.petSocial === "cats"}
           className="me-1"
         /> Cats Only
       </label>
@@ -277,8 +279,8 @@ function Questionnaire({
           type="radio"
           name="petSocial"
           value="dogs"
-          onChange={() => setPetSocial("dogs")}
-          checked={petSocial === "dogs"}
+          onChange={handleInputChange}
+          checked={formData.petSocial === "dogs"}
           className="me-1"
         /> Dogs Only
       </label>
@@ -287,8 +289,8 @@ function Questionnaire({
           type="radio"
           name="petSocial"
           value="all animals"
-          onChange={() => setPetSocial("all animals")}
-          checked={petSocial === "all animals"}
+          onChange={handleInputChange}
+          checked={formData.petSocial === "all animals"}
           className="me-1"
         /> All Animals
       </label>
@@ -297,20 +299,32 @@ function Questionnaire({
           type="radio"
           name="petSocial"
           value="other animals"
-          onChange={() => setPetSocial("other animals")}
-          checked={petSocial === "other animals"}
+          onChange={handleInputChange}
+          checked={formData.petSocial === "other animals"}
           className="me-1"
         /> Other Animals Only
         {petSocial === "other animals" && (
           <input
             type="text"
             placeholder="Please specify"
-            value={otherPetSocial}
-            onChange={(e) => setOtherPetSocial(e.target.value)}
+            value={formData.otherPetSocial}
+            onChange={handleInputChange}
             className="ms-3"
           />
         )}
+      </label> */}
+
+      <label className={styles.mylabel}>
+        What is the pet's age?
       </label>
+      <br />
+      <input
+        type="number"
+        name="petAge"
+        value={formData.petAge}
+        onChange={handleInputChange} // Ensure updates to petBirthday
+        className="form-control"
+      />
       <br />
       <br />
       <br />
@@ -323,8 +337,8 @@ function Questionnaire({
         id="textArea"
         rows={5}
         cols={100}
-        value={userText}
-        onChange={(e) => setUserText(e.target.value)}
+        value={formData.userText}
+        onChange={handleInputChange}
         placeholder="Describe animal behaviour here..."
       ></textarea>
         </>

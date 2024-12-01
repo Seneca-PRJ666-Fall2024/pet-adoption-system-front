@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "../styles/ProfileSetup.module.css";
 import Questionnaire from "./Questionnaire";
 
@@ -102,35 +102,30 @@ function PetManagement({ application, updateApplication, closeModal }) {
       };
 
 
-      const handleSave = async () => {
-        setIsSaving(true);
-        try {
-          const response = await fetch(`/api/pets/${formData.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          });
-    
-          if (!response.ok) {
-            throw new Error("Failed to update pet details");
-          }
-    
-          const updatedPet = await response.json();
-    
-          // Notify parent component of the update
-          updateApplication(updatedPet);
-    
-          // Close the modal
-          closeModal();
-    
-          alert("Pet details updated successfully!");
-        } catch (error) {
-          console.error("Error updating pet details:", error);
-          alert("Failed to save pet details. Please try again.");
-        } finally {
-          setIsSaving(false);
+      useEffect(() => {
+        setFormData(application); // Sync formData with the selected application
+      }, [application]);
+      
+
+      const handleSave = () => {
+        if (!formData.petName || !formData.petType || !formData.petGender) {
+          alert("Please fill in all required fields.");
+          return;
         }
+      
+        // If `id` already exists in the table, update the existing row
+        if (application && application.id) {
+          updateApplication({ ...formData });
+        } else {
+          // Create a new pet profile
+          updateApplication({ ...formData, id: Date.now() }); // Use a unique ID
+        }
+      
+        closeModal(); // Close the modal after saving
       };
+      
+      
+      
       
       
 
@@ -138,7 +133,7 @@ function PetManagement({ application, updateApplication, closeModal }) {
         <>
     <h1 className={styles.title}>Pet Profile Management</h1>
         <div class={styles.quesWrap}>
-            <form onSubmit={handleClick}>
+            <form > {/* deleted onSubmit={handleClick} */}
         <p style={{ color: "#1e6262", marginBottom: "3%" }}>
           {shelterQuestions.questionnaire}
         </p>
@@ -204,36 +199,40 @@ function PetManagement({ application, updateApplication, closeModal }) {
           <br />
             <Questionnaire
           questions={shelterQuestions}
-          petName={petName}
-          setPetName={setPetName}
-          selectedGender={selectedGender}
-          setSelectedGender={setSelectedGender}
-          petType={petType}
-          setPetType={setPetType}
-          otherPetType={otherPetType}
-          setOtherPetType={setOtherPetType}
-          breedType={breedType}
-          setBreedType={setBreedType}
-          petColour={petColour}
-          setPetColour={setPetColour}
-          petSize={petSize}
-          setPetSize={setPetSize}
-          petActivityLevel={petActivityLevel}
-          setPetActivityLevel={setPetActivityLevel}
-          petEnvironment={petEnvironment}
-          setPetEnvironment={setPetEnvironment}
-          petSocial={petSocial}
-          setPetSocial={setPetSocial}
-          otherPetSocial={otherPetSocial}
-          setOtherPetSocial={setOtherPetSocial}
-          userText={userText}
-          setUserText={setUserText}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          // petName={petName}
+          // setPetName={setPetName}
+          // selectedGender={formData.selectedGender}
+          //   setSelectedGender={(value) =>
+          //     setFormData((prev) => ({ ...prev, selectedGender: value }))
+          //   }
+          // petType={petType}
+          // setPetType={setPetType}
+          // otherPetType={otherPetType}
+          // setOtherPetType={setOtherPetType}
+          // breedType={breedType}
+          // setBreedType={setBreedType}
+          // petColour={petColour}
+          // setPetColour={setPetColour}
+          // petSize={petSize}
+          // setPetSize={setPetSize}
+          // petActivityLevel={petActivityLevel}
+          // setPetActivityLevel={setPetActivityLevel}
+          // petEnvironment={petEnvironment}
+          // setPetEnvironment={setPetEnvironment}
+          // petSocial={petSocial}
+          // setPetSocial={setPetSocial}
+          // otherPetSocial={otherPetSocial}
+          // setOtherPetSocial={setOtherPetSocial}
+          // userText={userText}
+          // setUserText={setUserText}
         />
         <br />
         <div className={styles.buttonContainer}>
         <button
           type="button"
-          className="btn btn-success"
+          className="btn btn-success mt-3 ms-4 xl"
           onClick={handleSave}
           disabled={isSaving}
         >
