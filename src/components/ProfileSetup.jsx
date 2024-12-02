@@ -15,8 +15,6 @@ function ProfileSetup() {
   const navigate = useNavigate();
 
   const [selectedGender, setSelectedGender] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
   const [petType, setPetType] = useState("animal");
   const [otherPetType, setOtherPetType] = useState("animal");
   const [breedType, setBreedType] = useState("");
@@ -27,9 +25,8 @@ function ProfileSetup() {
   const [petSocial, setPetSocial] = useState("");
   const [otherPetSocial, setOtherPetSocial] = useState("");
   const [userText, setUserText] = useState("");
-  const fileInputRef = useRef(null);
+
 //   const handleRadioChange = (e) => setSelectedGender(e.target.value);
-  const handleUploadClick = () => fileInputRef.current?.click();
 //   const handleOtherPetTypeChange = (e) => setOtherPetType(e.target.value);
 //   const finalPetType = petType === "other" ? otherPetType : petType;
 //   const handleBreedTypeChange = (e) => setBreedType(e.target.value);
@@ -41,7 +38,12 @@ function ProfileSetup() {
 //   const handleOtherPetSocialChange = (e) => setOtherPetSocial(e.target.value);
 //   const handleUserTextChange = (e) => setUserText(e.target.value);
 
-  // Adopter-specific fields
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null); // Add this state to store the image URL
+  const fileInputRef = useRef(null);
+  const handleUploadClick = () => fileInputRef.current?.click();
+
   const [shelterName, setShelterName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -49,17 +51,36 @@ function ProfileSetup() {
   const [province, setProvince] = useState("");
   const [postalCode, setPostalCode] = useState("");
 
+  const [formData, setFormData] = useState({});
+
   const backendApi = initBackendApi(token);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      const fileReader = new FileReader();
-      fileReader.onload = (event) => {
-        setPreviewUrl(event.target.result); // set the preview URL to a data URI
-      };
-      fileReader.readAsDataURL(file); // convert file to base64 data URI
+
+
+      try {
+        // Use the backendApi client to upload the image
+        await new Promise((resolve, reject) => {
+          backendApi.user.userUploadImagePost(file, (error, data, response) => {
+            if (error) {
+              reject(error);
+            } else if(data && data.payload) {
+              const imageUrl = backendApi.imagePath(data.payload);
+              setPreviewUrl(imageUrl);
+              setImageUrl(data.payload); // Store the image URL for form submission
+              resolve(data);
+            } else {
+              console.error("Incorrect API response: " + data);
+            }
+          });
+        });
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Error uploading image");
+      }
     }
   };
   
@@ -69,11 +90,13 @@ function ProfileSetup() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handlePetTypeChange = (e) => {
-    if (e.target && e.target.value) {
-        setPetType(e.target.value);
-        if (e.target.value !== "other") setOtherPetType("animal");
-      }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
 
@@ -104,22 +127,14 @@ function ProfileSetup() {
   const handleClick = async (e) => {
     e.preventDefault();
     if (userRole === "adopter") {
-
-      const adopterPreferences = new Object({
-        gender: toArray(selectedGender),
-        petType: toArray(petType === "other" ? otherPetType : petType),
-        breedType: toArray(breedType),
-        petColour: toArray(petColour),
-        petSize: toArray(petSize),
-        petActivityLevel: toArray(petActivityLevel),
-        petEnvironment: toArray(petEnvironment),
-        petSocial: toArray(petSocial === "other animals" ? otherPetSocial : petSocial),
-        // Include other fields as required
-      });
-
+      const wrappedFormData = Object.fromEntries(
+          Object.entries(formData)
+              .filter(([key, value]) => value !== null && value !== undefined && value !== '')
+              .map(([key, value]) => [key, [value]])
+      );
       try {
         await new Promise((resolve, reject) => {
-          backendApi.user.userPreferencesPost(adopterPreferences, (error, data, response) => {
+          backendApi.user.userPreferencesPost(wrappedFormData, (error, data, response) => {
             if (error) {
               reject(error);
             } else {
@@ -141,11 +156,14 @@ function ProfileSetup() {
 
     } else if (userRole === "shelter") {
       // 1. Update Shelter Contact Information
-      const userUpdateRequest = new UserUpdateProfilePutRequest({
+      const data = {
+        imageUrl: imageUrl,
         name: shelterName,
         phone: phone,
-        address: address + ", " + "city" + ", " + "province" + ", " + postalCode
-      });
+        address: `${address},${city},${province},${postalCode}`
+      };
+
+      const userUpdateRequest = UserUpdateProfilePutRequest.constructFromObject(data);
 
       await new Promise((resolve, reject) => {
         backendApi.user.userUpdateProfilePut(userUpdateRequest, (error, data, response) => {
@@ -207,28 +225,8 @@ function ProfileSetup() {
         </p>
           <Questionnaire
           questions={adopterQuestions}
-          selectedGender={selectedGender}
-          setSelectedGender={setSelectedGender}
-          petType={petType}
-          setPetType={setPetType}
-          otherPetType={otherPetType}
-          setOtherPetType={setOtherPetType}
-          breedType={breedType}
-          setBreedType={setBreedType}
-          petColour={petColour}
-          setPetColour={setPetColour}
-          petSize={petSize}
-          setPetSize={setPetSize}
-          petActivityLevel={petActivityLevel}
-          setPetActivityLevel={setPetActivityLevel}
-          petEnvironment={petEnvironment}
-          setPetEnvironment={setPetEnvironment}
-          petSocial={petSocial}
-          setPetSocial={setPetSocial}
-          otherPetSocial={otherPetSocial}
-          setOtherPetSocial={setOtherPetSocial}
-          userText={userText}
-          setUserText={setUserText}
+          formData={formData}
+          handleInputChange={handleInputChange}
         />
         </>
         )}

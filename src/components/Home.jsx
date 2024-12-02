@@ -25,8 +25,10 @@ const Home = () => {
     backendApi.adoption.adoptionStoryGet({ N }, (error, data, response) => {
       if (error) {
         console.error("Error fetching adoption stories:", error);
+      } else if(data && Array.isArray(data.payload)){
+        setReviews(data.payload);
       } else {
-        setReviews(data);
+        console.error("Incorrect data received:", data);
       }
     });
   };

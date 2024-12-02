@@ -13,22 +13,22 @@
 
 import ApiClient from '../ApiClient';
 import ApiResponse from './ApiResponse';
-import UserLoginPost200ResponseAllOfPayload from './UserLoginPost200ResponseAllOfPayload';
+import Pet from './Pet';
 
 /**
- * The UserLoginPost200Response model module.
- * @module model/UserLoginPost200Response
+ * The PetGetProfilePetIdGet200Response model module.
+ * @module model/PetGetProfilePetIdGet200Response
  * @version 5.0.0
  */
-class UserLoginPost200Response {
+class PetGetProfilePetIdGet200Response {
     /**
-     * Constructs a new <code>UserLoginPost200Response</code>.
-     * @alias module:model/UserLoginPost200Response
+     * Constructs a new <code>PetGetProfilePetIdGet200Response</code>.
+     * @alias module:model/PetGetProfilePetIdGet200Response
      * @implements module:model/ApiResponse
      */
     constructor() { 
         ApiResponse.initialize(this);
-        UserLoginPost200Response.initialize(this);
+        PetGetProfilePetIdGet200Response.initialize(this);
     }
 
     /**
@@ -40,15 +40,15 @@ class UserLoginPost200Response {
     }
 
     /**
-     * Constructs a <code>UserLoginPost200Response</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>PetGetProfilePetIdGet200Response</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/UserLoginPost200Response} obj Optional instance to populate.
-     * @return {module:model/UserLoginPost200Response} The populated <code>UserLoginPost200Response</code> instance.
+     * @param {module:model/PetGetProfilePetIdGet200Response} obj Optional instance to populate.
+     * @return {module:model/PetGetProfilePetIdGet200Response} The populated <code>PetGetProfilePetIdGet200Response</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new UserLoginPost200Response();
+            obj = obj || new PetGetProfilePetIdGet200Response();
             ApiResponse.constructFromObject(data, obj);
 
             if (data.hasOwnProperty('success')) {
@@ -58,16 +58,16 @@ class UserLoginPost200Response {
                 obj['message'] = ApiClient.convertToType(data['message'], 'String');
             }
             if (data.hasOwnProperty('payload')) {
-                obj['payload'] = UserLoginPost200ResponseAllOfPayload.constructFromObject(data['payload']);
+                obj['payload'] = Pet.constructFromObject(data['payload']);
             }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>UserLoginPost200Response</code>.
+     * Validates the JSON data with respect to <code>PetGetProfilePetIdGet200Response</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>UserLoginPost200Response</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PetGetProfilePetIdGet200Response</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
@@ -76,7 +76,7 @@ class UserLoginPost200Response {
         }
         // validate the optional field `payload`
         if (data['payload']) { // data not null
-          UserLoginPost200ResponseAllOfPayload.validateJSON(data['payload']);
+          Pet.validateJSON(data['payload']);
         }
 
         return true;
@@ -90,17 +90,17 @@ class UserLoginPost200Response {
 /**
  * @member {Boolean} success
  */
-UserLoginPost200Response.prototype['success'] = undefined;
+PetGetProfilePetIdGet200Response.prototype['success'] = undefined;
 
 /**
  * @member {String} message
  */
-UserLoginPost200Response.prototype['message'] = undefined;
+PetGetProfilePetIdGet200Response.prototype['message'] = undefined;
 
 /**
- * @member {module:model/UserLoginPost200ResponseAllOfPayload} payload
+ * @member {module:model/Pet} payload
  */
-UserLoginPost200Response.prototype['payload'] = undefined;
+PetGetProfilePetIdGet200Response.prototype['payload'] = undefined;
 
 
 // Implement ApiResponse interface:
@@ -116,5 +116,5 @@ ApiResponse.prototype['message'] = undefined;
 
 
 
-export default UserLoginPost200Response;
+export default PetGetProfilePetIdGet200Response;
 

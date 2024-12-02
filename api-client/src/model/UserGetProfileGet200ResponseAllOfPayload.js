@@ -12,20 +12,21 @@
  */
 
 import ApiClient from '../ApiClient';
+import Role from './Role';
 
 /**
- * The UserUpdateProfilePutRequest model module.
- * @module model/UserUpdateProfilePutRequest
+ * The UserGetProfileGet200ResponseAllOfPayload model module.
+ * @module model/UserGetProfileGet200ResponseAllOfPayload
  * @version 5.0.0
  */
-class UserUpdateProfilePutRequest {
+class UserGetProfileGet200ResponseAllOfPayload {
     /**
-     * Constructs a new <code>UserUpdateProfilePutRequest</code>.
-     * @alias module:model/UserUpdateProfilePutRequest
+     * Constructs a new <code>UserGetProfileGet200ResponseAllOfPayload</code>.
+     * @alias module:model/UserGetProfileGet200ResponseAllOfPayload
      */
     constructor() { 
         
-        UserUpdateProfilePutRequest.initialize(this);
+        UserGetProfileGet200ResponseAllOfPayload.initialize(this);
     }
 
     /**
@@ -37,16 +38,25 @@ class UserUpdateProfilePutRequest {
     }
 
     /**
-     * Constructs a <code>UserUpdateProfilePutRequest</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>UserGetProfileGet200ResponseAllOfPayload</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/UserUpdateProfilePutRequest} obj Optional instance to populate.
-     * @return {module:model/UserUpdateProfilePutRequest} The populated <code>UserUpdateProfilePutRequest</code> instance.
+     * @param {module:model/UserGetProfileGet200ResponseAllOfPayload} obj Optional instance to populate.
+     * @return {module:model/UserGetProfileGet200ResponseAllOfPayload} The populated <code>UserGetProfileGet200ResponseAllOfPayload</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new UserUpdateProfilePutRequest();
+            obj = obj || new UserGetProfileGet200ResponseAllOfPayload();
 
+            if (data.hasOwnProperty('id')) {
+                obj['id'] = ApiClient.convertToType(data['id'], 'String');
+            }
+            if (data.hasOwnProperty('email')) {
+                obj['email'] = ApiClient.convertToType(data['email'], 'String');
+            }
+            if (data.hasOwnProperty('role')) {
+                obj['role'] = Role.constructFromObject(data['role']);
+            }
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
@@ -64,11 +74,19 @@ class UserUpdateProfilePutRequest {
     }
 
     /**
-     * Validates the JSON data with respect to <code>UserUpdateProfilePutRequest</code>.
+     * Validates the JSON data with respect to <code>UserGetProfileGet200ResponseAllOfPayload</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>UserUpdateProfilePutRequest</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>UserGetProfileGet200ResponseAllOfPayload</code>.
      */
     static validateJSON(data) {
+        // ensure the json data is a string
+        if (data['id'] && !(typeof data['id'] === 'string' || data['id'] instanceof String)) {
+            throw new Error("Expected the field `id` to be a primitive type in the JSON string but got " + data['id']);
+        }
+        // ensure the json data is a string
+        if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
+            throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
+        }
         // ensure the json data is a string
         if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
             throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
@@ -95,29 +113,44 @@ class UserUpdateProfilePutRequest {
 
 
 /**
+ * @member {String} id
+ */
+UserGetProfileGet200ResponseAllOfPayload.prototype['id'] = undefined;
+
+/**
+ * @member {String} email
+ */
+UserGetProfileGet200ResponseAllOfPayload.prototype['email'] = undefined;
+
+/**
+ * @member {module:model/Role} role
+ */
+UserGetProfileGet200ResponseAllOfPayload.prototype['role'] = undefined;
+
+/**
  * @member {String} name
  */
-UserUpdateProfilePutRequest.prototype['name'] = undefined;
+UserGetProfileGet200ResponseAllOfPayload.prototype['name'] = undefined;
 
 /**
  * @member {String} phone
  */
-UserUpdateProfilePutRequest.prototype['phone'] = undefined;
+UserGetProfileGet200ResponseAllOfPayload.prototype['phone'] = undefined;
 
 /**
  * @member {String} address
  */
-UserUpdateProfilePutRequest.prototype['address'] = undefined;
+UserGetProfileGet200ResponseAllOfPayload.prototype['address'] = undefined;
 
 /**
  * @member {String} imageUrl
  */
-UserUpdateProfilePutRequest.prototype['imageUrl'] = undefined;
+UserGetProfileGet200ResponseAllOfPayload.prototype['imageUrl'] = undefined;
 
 
 
 
 
 
-export default UserUpdateProfilePutRequest;
+export default UserGetProfileGet200ResponseAllOfPayload;
 

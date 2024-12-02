@@ -35,12 +35,15 @@ function Login() {
         });
       });
 
-      // Call login function from context to update global state
-      login(response.token, response.role);
-
       setLoading(false);
+      if(response && response.payload && response.payload.token && response.payload.role){
+        // Call login function from context to update global state
+        login(response.payload.token, response.payload.role);
 
-      navigate(response.profileSet ? '/' : '/ProfileSetup');
+        navigate(response.payload.profileSet ? '/' : '/ProfileSetup');
+      } else {
+        console.error("Login failed. Invalid response: ", response);
+      }
     } catch (apiError) {
       // Handle errors from the backend
       console.error("Login failed", apiError);

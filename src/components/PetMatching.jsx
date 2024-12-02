@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
@@ -6,206 +6,207 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import petImage from "../assets/images/dog-faces.jpg"; // Replace with actual placeholder image
 import "../styles/Home.css";
+import { initBackendApi } from './BackendApi';
+import AuthContext from "../context/AuthContext";
 
 const PetMatching = () => {
-  const userPKID = 1; // Replace with actual user PK ID
-  const [petProfiles, setPetProfiles] = useState([]);
-  const [currentPetIndex, setCurrentPetIndex] = useState(0);
 
-  // Fetch matched pet profiles
+  const { token } = useContext(AuthContext);
+
+
+  const [backendApi, setBackendApi] = useState(null);
   useEffect(() => {
-    const fetchPetProfiles = async () => {
-      try {
-        // Simulated backend response
-        const response = [
-          {
-            petPKID: 101,
-            adoptionStatus: false,
-            preferenceChecked: null,
-            petName: "Buddy",
-            petGender: "Male",
-            petType: "Dog",
-            petBreed: "Poodle",
-            petColor: "White",
-            petSize: "Medium",
-            petActiveLevel: "High",
-            petLivingEnvironment: "Indoor",
-            petSocialCondition: "Good with other pets",
-            petBehavioralChallenges: "Occasional barking",
-            petAge: 2.5,
-          },
-          {
-            petPKID: 102,
-            adoptionStatus: false,
-            preferenceChecked: null,
-            petName: "Bella",
-            petGender: "Female",
-            petType: "Cat",
-            petBreed: "American Bobtail",
-            petColor: "Brown",
-            petSize: "Small",
-            petActiveLevel: "Moderate",
-            petLivingEnvironment: "Indoor",
-            petSocialCondition: "Prefers solitude",
-            petBehavioralChallenges: "Timid",
-            petAge: 3.0,
-          },
-        ];
-        setPetProfiles(response);
-      } catch (error) {
-        console.error("Error fetching pet profiles:", error);
-      }
-    };
+    if (token) {
+      const apiInstance = initBackendApi(token);
+      setBackendApi(apiInstance);
+    }
+  }, [token]);
 
-    fetchPetProfiles();
-  }, []);
+  const [currentRecommendation, setCurrentRecommendation] = useState(null);
+  const [currentPet, setCurrentPet] = useState(null);
 
-  const handlePreference = async (preferenceChecked) => {
-    const currentPet = petProfiles[currentPetIndex];
-    const payload = {
-      userPKID,
-      petPKID: currentPet.petPKID,
-      preferenceChecked,
-    };
-
+  // Fetch the next pet recommendation
+  const fetchNextPet = () => {
+    if (!backendApi) return;
     try {
-      const response = await fetch("http://localhost:8080/api/preferences", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      backendApi.matching.matchingRecommendationNextGet((error, data, response) => {
+        if (error) {
+          console.error("Error fetching next pet recommendation:", error);
+          setCurrentRecommendation(null);
+          setCurrentPet(null);
+        } else if (data && data.payload) {
+          console.log("Fetched pet recommendation:", data);
+          setCurrentRecommendation(data.payload);
+          // Now, make a second call to retrieve pet profile using data.petId
+          backendApi.pet.petGetProfilePetIdGet(data.payload.petId, (petError, petData, petResponse) => {
+            if (petError) {
+              console.error("Error fetching pet profile:", petError);
+              setCurrentPet(null);
+            } else if(petData && petData.payload) {
+              console.log("Fetched pet profile:", petData.payload);
+              setCurrentPet(petData.payload);
+            } else {
+              console.error("Incorrect response for pet profile: ", petData);
+              setCurrentRecommendation(null);
+              setCurrentPet(null);
+            }
+          });
+        } else {
+          console.error("Incorrect response for pet recommendation: ", data);
+          setCurrentRecommendation(null);
+          setCurrentPet(null);
+        }
       });
-
-      if (response.ok) {
-        console.log("Preference saved successfully.");
-        // Remove the current pet from the list and move to the next pet
-        setPetProfiles((prevProfiles) => {
-          const updatedProfiles = prevProfiles.filter((_, index) => index !== currentPetIndex);
-          if (updatedProfiles.length === 0) {
-            setCurrentPetIndex(0);
-          } else if (currentPetIndex >= updatedProfiles.length) {
-            setCurrentPetIndex(updatedProfiles.length - 1);
-          }
-          return updatedProfiles;
-        });
-      } else {
-        console.error("Failed to save preference.");
-      }
     } catch (error) {
-      console.error("Error saving preference:", error);
+      console.error("Error fetching next pet recommendation:", error);
+      setCurrentRecommendation(null);
+      setCurrentPet(null);
     }
   };
 
-  if (!petProfiles.length) {
-    return (
-      <Container className="text-center my-5">
-        <h3>No more pets to review.</h3>
-      </Container>
-    );
-  }
+  // Fetch the first pet recommendation when the component mounts
+  useEffect(() => {
+    if (backendApi) {
+      fetchNextPet();
+    }
+  }, [backendApi]);
 
-  const currentPet = petProfiles[currentPetIndex];
+  const handlePreference = async (preferenceChecked) => {
+    if (!currentRecommendation || !backendApi) return;
+
+    if (preferenceChecked) {
+      // User accepted the recommendation
+      try {
+        backendApi.matching.matchingRecommendationIdAcceptPut(currentRecommendation.id, (error, data, response) => {
+          if (error) {
+            console.error("Error accepting recommendation:", error);
+          } else {
+            console.log("Recommendation accepted successfully:", data);
+          }
+          // Fetch the next pet recommendation after handling the current one
+        });
+        fetchNextPet();
+      } catch (error) {
+        console.error("Error accepting recommendation:", error);
+        // Still fetch the next pet even if there's an error
+      }
+    } else {
+      try {
+        backendApi.matching.matchingRecommendationIdRejectPut(currentRecommendation.id, (error, data, response) => {
+          if (error) {
+            console.error("Error rejecting recommendation:", error);
+          } else {
+            console.log("Recommendation rejected successfully:", data);
+          }
+          // Fetch the next pet recommendation after handling the current one
+          fetchNextPet();
+        });
+      } catch (error) {
+        console.error("Error accepting recommendation:", error);
+        // Still fetch the next pet even if there's an error
+      }
+    }
+  };
 
   return (
-    <>
-      <NavbarComponent/>
-
-      {/* Available Pets Carousel */}
-      <Container className="text-center my-5 bigger-container">
-        <h2>Available pets you might like:</h2>
-        <Row className="align-items-center justify-content-center mt-4 bigger-row">
-          <Col xs="auto" style={{ color: "#1e6262" }}>
+      <>
+        <NavbarComponent />
+        <Container className="text-center my-5 bigger-container">
+          {currentPet ? (
+              // Render the main content
+              <>
+                <h2>Available pets you might like:</h2>
+                <Row className="align-items-center justify-content-center mt-4 bigger-row">
+                  <Col xs="auto" style={{color: "#1e6262"}}>
             <span
-              className="mx-4"
-              style={{ fontSize: "3rem", position: "relative", top: "-30px", cursor: "pointer" }}
-              onClick={() => handlePreference(false)} // Handle "No" preference
+                className="mx-4"
+                style={{fontSize: "3rem", position: "relative", top: "-30px", cursor: "pointer"}}
+                onClick={() => handlePreference(false)} // Handle "No" preference
             >
               No
             </span>
-            <FontAwesomeIcon
-              icon={faChevronLeft}
-              size="7x"
-              style={{ cursor: "pointer", color: "#1e6262", marginRight: "40px" }}
-              onClick={() =>
-                setCurrentPetIndex(
-                  (prevIndex) => (prevIndex - 1 + petProfiles.length) % petProfiles.length
-                )
-              }
-            />
-          </Col>
-          <Col xs="auto">
-            <Image
-              src={petImage} // Replace with currentPet.image if available
-              alt="Pet"
-              roundedCircle
-              style={{ width: "300px", height: "300px", margin: "0 60px" }}
-            />
-            <p className="mt-3" style={{ fontSize: "2rem" }}>
-              {currentPet.petName}
-            </p>
-          </Col>
-          <Col xs="auto" style={{ color: "#1e6262" }}>
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              size="7x"
-              style={{ cursor: "pointer", color: "#1e6262", marginLeft: "40px" }}
-              onClick={() =>
-                setCurrentPetIndex((prevIndex) => (prevIndex + 1) % petProfiles.length)
-              }
-            />
-            <span
-              className="mx-4"
-              style={{ fontSize: "3rem", position: "relative", top: "-30px", cursor: "pointer" }}
-              onClick={() => handlePreference(true)} // Handle "Yes" preference
-            >
+                    <FontAwesomeIcon
+                        icon={faChevronLeft}
+                        size="7x"
+                        style={{cursor: "pointer", color: "#1e6262", marginRight: "40px"}}
+                        onClick={() => handlePreference(false)} // Handle "No" preference
+                    />
+                  </Col>
+                  <Col xs="auto">
+                    <Image
+                        src={Array.isArray(currentPet.images) && currentPet.images.length > 0 ? backendApi.imagePath(currentPet.images[0]) : ''}
+                        alt="Pet"
+                        roundedCircle
+                        style={{width: "300px", height: "300px", margin: "0 60px"}}
+                    />
+                    <p className="mt-3" style={{fontSize: "2rem"}}>
+                      {currentPet.name}
+                    </p>
+                  </Col>
+                  <Col xs="auto" style={{color: "#1e6262"}}>
+                    <FontAwesomeIcon
+                        icon={faChevronRight}
+                        size="7x"
+                        style={{cursor: "pointer", color: "#1e6262", marginLeft: "40px"}}
+                        onClick={() => handlePreference(true)}
+                    />
+                    <span
+                        className="mx-4"
+                        style={{fontSize: "3rem", position: "relative", top: "-30px", cursor: "pointer"}}
+                        onClick={() => handlePreference(true)} // Handle "Yes" preference
+                    >
               Yes
             </span>
-          </Col>
-        </Row>
-      </Container>
+                  </Col>
+                </Row>
 
-      {/* Pet Profile Section */}
-      <Container className="my-5">
-        <h3 className="text-center">Pet Profile</h3>
-        <Card className="mt-4">
-          <Card.Body>
-            <Row>
-              <Col xs={12} sm={6}>
-                <p><strong>Pet Name:</strong> {currentPet.petName}</p>
-                <p><strong>Pet Type:</strong> {currentPet.petType}</p>
-                <p><strong>Breed:</strong> {currentPet.petBreed}</p>
-                <p><strong>Gender:</strong> {currentPet.petGender}</p>
-                <p><strong>Age:</strong> {currentPet.petAge} years</p>
-              </Col>
-              <Col xs={12} sm={6}>
-                <p><strong>Color:</strong> {currentPet.petColor}</p>
-                <p><strong>Size:</strong> {currentPet.petSize}</p>
-                <p><strong>Active Level:</strong> {currentPet.petActiveLevel}</p>
-                <p><strong>Living Environment:</strong> {currentPet.petLivingEnvironment}</p>
-                <p><strong>Social Condition:</strong> {currentPet.petSocialCondition}</p>
-                <p><strong>Behavioral Challenges:</strong> {currentPet.petBehavioralChallenges}</p>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
-      </Container>
+                <h3 className="text-center">Pet Profile</h3>
+                <Card className="mt-4">
+                  <Card.Body>
+                    <Row>
+                      <Col xs={12} sm={6}>
+                        <p><strong>Pet Name:</strong> {currentPet.name}</p>
+                        <p><strong>Pet Type:</strong> {currentPet.attributes ? currentPet.attributes.petType : ''}</p>
+                        <p><strong>Breed:</strong> {currentPet.attributes ? currentPet.attributes.petBreed : ''}</p>
+                        <p><strong>Gender:</strong> {currentPet.attributes ? currentPet.attributes.petGender : ''}</p>
+                        <p><strong>Age:</strong> {currentPet.attributes ? currentPet.attributes.petAge : ''} years</p>
+                      </Col>
+                      <Col xs={12} sm={6}>
+                        <p><strong>Color:</strong> {currentPet.attributes ? currentPet.petColor : ''}</p>
+                        <p><strong>Size:</strong> {currentPet.attributes ? currentPet.petSize : ''}</p>
+                        <p><strong>Active Level:</strong> {currentPet.attributes ? currentPet.petActiveLevel : ''}</p>
+                        <p><strong>Living
+                          Environment:</strong> {currentPet.attributes ? currentPet.petLivingEnvironment : ''}</p>
+                        <p><strong>Social
+                          Condition:</strong> {currentPet.attributes ? currentPet.petSocialCondition : ''}
+                        </p>
+                        <p><strong>Behavioral
+                          Challenges:</strong> {currentPet.attributes ? currentPet.petBehavioralChallenges : ''}</p>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
 
-         {/* Additional Info Section */}
-         <Container className="mt-5">
-        <h4>Your Adoption application:</h4>
-        <a href="/adoption">
-            Click here to check your submitted adoption application.
-          </a>
+                <h4>Your Adoption application:</h4>
+                <a href="/adoption">
+                  Click here to check your submitted adoption application.
+                </a>
 
-        <h4 className='mt-4'>Your adopter profile:</h4>
-        <p className='mb-5'>
-          <a href="profilesetup">
-            Click here to review or update your profile and preferences.
-          </a>
-        </p>
-      </Container>
+                <h4 className='mt-4'>Your adopter profile:</h4>
+                <p className='mb-5'>
+                  <a href="profilesetup">
+                    Click here to review or update your profile and preferences.
+                  </a>
+                </p>
+              </>
+          ) : (
+              // Display message when no pets are available
+              <h3>No more pets to review.</h3>
 
-      <FooterComponent />
-    </>
+          )}
+        </Container>
+        <FooterComponent/>
+      </>
   );
 };
 

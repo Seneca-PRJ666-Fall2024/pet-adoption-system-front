@@ -13,31 +13,45 @@
 
 import ApiClient from '../ApiClient';
 /**
-* Enum class Role.
+* Enum class AdoptionStatus.
 * @enum {}
 * @readonly
 */
-export default class Role {
+export default class AdoptionStatus {
     
         /**
-         * value: "adopter"
+         * value: "new"
          * @const
          */
-        "adopter" = "adopter";
+        "new" = "new";
 
     
         /**
-         * value: "shelter"
+         * value: "pending"
          * @const
          */
-        "shelter" = "shelter";
+        "pending" = "pending";
+
+    
+        /**
+         * value: "approved"
+         * @const
+         */
+        "approved" = "approved";
+
+    
+        /**
+         * value: "rejected"
+         * @const
+         */
+        "rejected" = "rejected";
 
     
 
     /**
-    * Returns a <code>Role</code> enum value from a Javascript object name.
+    * Returns a <code>AdoptionStatus</code> enum value from a Javascript object name.
     * @param {Object} data The plain JavaScript object containing the name of the enum value.
-    * @return {module:model/Role} The enum <code>Role</code> value.
+    * @return {module:model/AdoptionStatus} The enum <code>AdoptionStatus</code> value.
     */
     static constructFromObject(object) {
         return object;

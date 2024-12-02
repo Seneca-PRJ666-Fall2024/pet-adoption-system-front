@@ -4,14 +4,14 @@ info:
   title: Pet Adoption System API
   description: API for user registration, login, adopter preferences, shelter pet
     management, and recommendations in the Pet Adoption System.
-  version: 4.0.0
+  version: 5.0.0
   contact:
     name: PRJ666 - Group 1 - 'Pet Adoption System' Team
     email: support@petadoption.com
 
 servers:
-  - url: http://localhost:8080/api/v4
-    description: Local development server
+  - url: ${openapi.petAdoptionSystem.base-path}
+    description: Configurable base path for the API
 
 
 tags:
@@ -52,16 +52,10 @@ paths:
       responses:
         '201':
           description: User registered successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
         '400':
           description: Email is already taken
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /user/login:
     post:
@@ -88,35 +82,32 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Login successful
-                  role:
-                    $ref: '#/components/schemas/Role'
-                  profileSet:
-                    type: boolean
-                    example: true
-                  token:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          role:
+                            $ref: '#/components/schemas/Role'
+                          profileSet:
+                            type: boolean
+                            example: true
+                          token:
+                            type: string
+                            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '401':
           description: Invalid email or password
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /user/preferences:
     post:
       tags:
         - user
       summary: Add preferences for pet attributes grouped by attribute groups
+      security:
+        - BearerAuth: [ ]
       description: >
         Submit a set of preferences for different attribute groups. Each key in the JSON object
         represents an attribute group name, and its corresponding value is a list of selected preferences
@@ -140,16 +131,15 @@ paths:
       responses:
         '201':
           description: Preferences added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /user/upload-image:
     post:
       tags:
         - user
       summary: Upload an image for a user
+      security:
+        - BearerAuth: [ ]
       description: Uploads a profile image for a user.
       requestBody:
         required: true
@@ -165,23 +155,28 @@ paths:
                 - image
       responses:
         '200':
-          description: Image uploaded successfully
+          description: Login successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: string
+                        example: /images/someImage.jpg
         '400':
           description: Invalid request or missing parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /user/get-profile:
     get:
       tags:
         - user
       summary: Retrieve user profile information
+      security:
+        - BearerAuth: [ ]
       description: Fetches the profile details of the currently authenticated user
         (adopter or shelter).
       responses:
@@ -190,31 +185,36 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  email:
-                    type: string
-                    example: user@example.com
-                  role:
-                    $ref: '#/components/schemas/Role'
-                  name:
-                    type: string
-                    example: John Doe
-                  phone:
-                    type: string
-                    example: 123-456-7890
-                  address:
-                    type: string
-                    example: 123 Pet Lane
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "12ad3fa..."
+                          email:
+                            type: string
+                            example: user@example.com
+                          role:
+                            $ref: '#/components/schemas/Role'
+                          name:
+                            type: string
+                            example: John Doe
+                          phone:
+                            type: string
+                            example: 123-456-7890
+                          address:
+                            type: string
+                            example: 123 Pet Lane
+                          imageUrl:
+                            type: string
+                            example: http://some.site/images/img.jpg
         '401':
           description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /user/update-profile:
     put:
@@ -239,60 +239,53 @@ paths:
                 address:
                   type: string
                   example: 123 Pet Lane
+                imageUrl:
+                  type: string
+                  example: http://some.site/images/image.jpg
       responses:
         '200':
           description: User contacts updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
-  /user/delete-profile/{email}:
+  /user/delete-profile/{id}:
     delete:
       tags:
         - user
       summary: Delete a user profile
-      description: Deletes the user profile with the specified email (username). Requires authentication and authorization.
+      description: Deletes the user profile with the specified ID. Requires authentication and authorization.
       security:
         - BearerAuth: [ ]
       parameters:
-        - name: email
+        - name: id
           in: path
-          description: The email (username) for the profile that needs to be deleted
+          description: The userId for the profile that needs to be deleted
           required: true
           schema:
             type: string
       responses:
         '204':
           description: User profile successfully deleted.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
         '400':
           description: Invalid username supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
         '401':
           description: Unauthorized access.
+          $ref: '#/components/responses/GenericApiResponse'
         '403':
           description: Forbidden. User does not have permission to delete this profile
+          $ref: '#/components/responses/GenericApiResponse'
         '404':
           description: User not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
-
-
+          $ref: '#/components/responses/GenericApiResponse'
 
   /pet/add-profile:
     post:
       tags:
         - pet
       summary: Add a new pet profile to the system
+      security:
+        - BearerAuth: [ ]
       description: Add a new pet profile to the system.
       requestBody:
         required: true
@@ -310,22 +303,18 @@ paths:
       responses:
         '201':
           description: Pet added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
         '405':
           description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /pet/upload-image:
     post:
       tags:
         - pet
       summary: Upload an image for a pet
+      security:
+        - BearerAuth: [ ]
       description: Uploads an image file for a specific pet.
       requestBody:
         required: true
@@ -335,8 +324,8 @@ paths:
               type: object
               properties:
                 petId:
-                  type: integer
-                  example: 1
+                  type: string
+                  example: "12abd3...."
                 image:
                   type: string
                   format: binary
@@ -346,49 +335,50 @@ paths:
       responses:
         '200':
           description: Image uploaded successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
         '400':
           description: Invalid request or missing parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
-  /pet/get-profile:
+  /pet/get-profile/{petId}:
     get:
       tags:
         - pet
       summary: Retrieve pet profile information
+      security:
+        - BearerAuth: [ ]
       description: Fetches the pet profile details.
+      parameters:
+        - name: petId
+          in: path
+          description: The unique ID of the pet profile to delete.
+          required: true
+          schema:
+            type: string
+            example: "12abd45f...."
       responses:
         '200':
           description: Profile details retrieved successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    example: Buddy
-                  comments:
-                    type: string
-                    example: Friendly and playful
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/Pet'
         '401':
           description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /pet/update-profile:
     put:
       tags:
         - pet
       summary: Update pet profile
+      security:
+        - BearerAuth: [ ]
       requestBody:
         required: true
         content:
@@ -405,16 +395,15 @@ paths:
       responses:
         '200':
           description: Pet profile updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /pet/delete-profile/{petId}:
     delete:
       tags:
         - pet
       summary: Deletes a pet profile
+      security:
+        - BearerAuth: [ ]
       description: Deletes the pet profile with the specified ID.
       parameters:
         - name: petId
@@ -422,69 +411,113 @@ paths:
           description: The unique ID of the pet profile to delete.
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            example: "12abd45f...."
       responses:
         '204':
           description: Pet profile successfully deleted.
+          $ref: '#/components/responses/GenericApiResponse'
         '400':
           description: Invalid pet profile value
+          $ref: '#/components/responses/GenericApiResponse'
         '401':
           description: Unauthorized access.
+          $ref: '#/components/responses/GenericApiResponse'
         '403':
           description: Forbidden. User does not have permission to delete this profile.
+          $ref: '#/components/responses/GenericApiResponse'
         '404':
           description: Pet not found.
-
-
+          $ref: '#/components/responses/GenericApiResponse'
 
   /matching/recommendations:
     get:
       tags:
         - matching
       summary: Get a list of recommended pets based on preferences
+      security:
+        - BearerAuth: [ ]
       responses:
         '200':
           description: A list of recommended pets
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Recommendation'
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Recommendation'
 
   /matching/recommendation/next:
     get:
       tags:
         - matching
       summary: Get the next recommendation for the adopter
+      security:
+        - BearerAuth: [ ]
       responses:
         '200':
           description: The next recommendation item
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Recommendation'
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/Recommendation'
 
   /matching/recommendation/{id}/accept:
-    post:
+    put:
       tags:
         - matching
       summary: Accept a recommendation and create an adoption
+      security:
+        - BearerAuth: [ ]
       parameters:
         - in: path
           name: id
           schema:
-            type: integer
+            type: string
           required: true
           description: The ID of the recommendation to accept
       responses:
         '201':
-          description: Recommendation accepted, adoption created
+          description: The next recommendation item
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessApiResponse'
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: string
+                        example: "adfa4531..."
+
+  /matching/recommendation/{id}/reject:
+    put:
+      tags:
+        - matching
+      summary: Reject a recommendation
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the recommendation to reject
+      responses:
+        '201':
+          description: Recommendation rejected
+          $ref: '#/components/responses/GenericApiResponse'
 
 
   /adoption/status:
@@ -492,6 +525,8 @@ paths:
       tags:
         - adoption
       summary: Retrieve adoption status
+      security:
+        - BearerAuth: [ ]
       description: Fetches the current status of adoptions for the authenticated adopter.
       responses:
         '200':
@@ -499,33 +534,30 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    adoptionId:
-                      type: integer
-                      example: 1
-                    petId:
-                      type: integer
-                      example: 42
-                    status:
-                      type: string
-                      enum:
-                        - Pending
-                        - Approved
-                        - Rejected
-                      example: Pending
-                    date:
-                      type: string
-                      format: date
-                      example: '2023-05-15'
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            adoptionId:
+                              type: string
+                              example: "adf23ee..."
+                            petId:
+                              type: string
+                              example: "adf23ee..."
+                            status:
+                              $ref: '#/components/schemas/AdoptionStatus'
+                            date:
+                              type: string
+                              format: date
+                              example: '2023-05-15'
         '401':
           description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FailureApiResponse'
+          $ref: '#/components/responses/GenericApiResponse'
 
   /adoption/story:
     get:
@@ -548,49 +580,47 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    author:
-                      type: string
-                      description: The author of the adoption story
-                      example: John Doe
-                    title:
-                      type: string
-                      description: The title of the adoption story
-                      example: A Happy Ending for Max
-                    text:
-                      type: string
-                      description: The content of the adoption story
-                      example: Max was found wandering the streets and was taken in
-                        by a local shelter. After weeks of care, he found a loving
-                        home with the Doe family.
-
-
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            author:
+                              type: string
+                              description: The author of the adoption story
+                              example: John Doe
+                            title:
+                              type: string
+                              description: The title of the adoption story
+                              example: A Happy Ending for Max
+                            text:
+                              type: string
+                              description: The content of the adoption story
+                              example: Max was found wandering the streets and was taken in
+                                by a local shelter. After weeks of care, he found a loving
+                                home with the Doe family.
 
 components:
-
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT # Optional, but helps to specify the token type
 
+  responses:
+    GenericApiResponse:
+      description: Generic API response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiResponse'
 
   schemas:
-
-    SuccessApiResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: Operation completed successfully
-
-    FailureApiResponse:
+    ApiResponse:
       type: object
       properties:
         success:
@@ -607,27 +637,63 @@ components:
         - shelter
       example: adopter
 
+    RecommendationStatus:
+      type: string
+      enum:
+        - new
+        - accepted
+        - rejected
+      example: new
+
+    AdoptionStatus:
+      type: string
+      enum:
+        - new
+        - pending
+        - approved
+        - rejected
+      example: new
+
+    Pet:
+      properties:
+        petId:
+          type: string
+          example: "0adf23ff..."
+        shelterId:
+          type: string
+          example: "0adf23ff..."
+        name:
+          type: string
+          example: "Snooppy"
+        images:
+          type: array
+          items:
+            type: string
+          example: ["http://some.site/images/image.jpg"]
+        attributes:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            description: >
+              A map where each key is the name of an attribute group, and the value is a list of
+              selected preferences within that group.
+            example:
+              "gender": [ "male" ]
+              "environment": [ "house", "condo" ]
+      type: object
+
     User:
       properties:
         userId:
-          type: integer
-          format: int64
-          example: 10
-        profileId:
-          type: integer
-          format: int64
-          example: 10
+          type: string
+          example: "0adf23ff..."
         role:
           $ref: '#/components/schemas/Role'
         username:
           type: string
           example: theUser
-        firstName:
-          type: string
-          example: John
-        lastName:
-          type: string
-          example: James
         email:
           type: string
           example: john@email.com
@@ -660,15 +726,14 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
-        pet_id:
-          type: integer
-          example: 42
+          type: string
+          example: "adf12eafd770..."
+        petId:
+          type: string
+          example: "adf12eafd770..."
         date:
           type: string
           format: date
           example: '2023-05-15'
         status:
-          type: integer
-          example: 1
+          $ref: '#/components/schemas/RecommendationStatus'
