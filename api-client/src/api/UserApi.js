@@ -14,11 +14,11 @@
 
 import ApiClient from "../ApiClient";
 import ApiResponse from '../model/ApiResponse';
+import User from '../model/User';
 import UserGetProfileGet200Response from '../model/UserGetProfileGet200Response';
 import UserLoginPost200Response from '../model/UserLoginPost200Response';
 import UserLoginPostRequest from '../model/UserLoginPostRequest';
 import UserRegisterPostRequest from '../model/UserRegisterPostRequest';
-import UserUpdateProfilePutRequest from '../model/UserUpdateProfilePutRequest';
 import UserUploadImagePost200Response from '../model/UserUploadImagePost200Response';
 
 /**
@@ -256,15 +256,15 @@ export default class UserApi {
 
     /**
      * Update a user profile
-     * @param {module:model/UserUpdateProfilePutRequest} userUpdateProfilePutRequest 
+     * @param {module:model/User} user 
      * @param {module:api/UserApi~userUpdateProfilePutCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/ApiResponse}
      */
-    userUpdateProfilePut(userUpdateProfilePutRequest, callback) {
-      let postBody = userUpdateProfilePutRequest;
-      // verify the required parameter 'userUpdateProfilePutRequest' is set
-      if (userUpdateProfilePutRequest === undefined || userUpdateProfilePutRequest === null) {
-        throw new Error("Missing the required parameter 'userUpdateProfilePutRequest' when calling userUpdateProfilePut");
+    userUpdateProfilePut(user, callback) {
+      let postBody = user;
+      // verify the required parameter 'user' is set
+      if (user === undefined || user === null) {
+        throw new Error("Missing the required parameter 'user' when calling userUpdateProfilePut");
       }
 
       let pathParams = {

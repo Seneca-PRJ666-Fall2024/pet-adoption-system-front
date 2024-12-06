@@ -74,10 +74,6 @@ class PetGetProfilePetIdGet200Response {
         if (data['message'] && !(typeof data['message'] === 'string' || data['message'] instanceof String)) {
             throw new Error("Expected the field `message` to be a primitive type in the JSON string but got " + data['message']);
         }
-        // validate the optional field `payload`
-        if (data['payload']) { // data not null
-          Pet.validateJSON(data['payload']);
-        }
 
         return true;
     }

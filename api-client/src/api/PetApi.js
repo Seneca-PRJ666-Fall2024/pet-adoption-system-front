@@ -15,8 +15,10 @@
 import ApiClient from "../ApiClient";
 import ApiResponse from '../model/ApiResponse';
 import PetAddProfilePostRequest from '../model/PetAddProfilePostRequest';
+import PetGetProfileGet200Response from '../model/PetGetProfileGet200Response';
 import PetGetProfilePetIdGet200Response from '../model/PetGetProfilePetIdGet200Response';
 import PetUpdateProfilePutRequest from '../model/PetUpdateProfilePutRequest';
+import UserUploadImagePost200Response from '../model/UserUploadImagePost200Response';
 
 /**
 * Pet service.
@@ -123,6 +125,43 @@ export default class PetApi {
     }
 
     /**
+     * Callback function to receive the result of the petGetProfileGet operation.
+     * @callback module:api/PetApi~petGetProfileGetCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/PetGetProfileGet200Response} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve all pet for the current user (shelter)
+     * Fetches all pet profile details for the current user (shelter).
+     * @param {module:api/PetApi~petGetProfileGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/PetGetProfileGet200Response}
+     */
+    petGetProfileGet(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['BearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = PetGetProfileGet200Response;
+      return this.apiClient.callApi(
+        '/pet/get-profile', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the petGetProfilePetIdGet operation.
      * @callback module:api/PetApi~petGetProfilePetIdGetCallback
      * @param {String} error Error message, if any.
@@ -210,24 +249,19 @@ export default class PetApi {
      * Callback function to receive the result of the petUploadImagePost operation.
      * @callback module:api/PetApi~petUploadImagePostCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/ApiResponse} data The data returned by the service call.
+     * @param {module:model/UserUploadImagePost200Response} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
      * Upload an image for a pet
      * Uploads an image file for a specific pet.
-     * @param {String} petId 
      * @param {File} image 
      * @param {module:api/PetApi~petUploadImagePostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/ApiResponse}
+     * data is of type: {@link module:model/UserUploadImagePost200Response}
      */
-    petUploadImagePost(petId, image, callback) {
+    petUploadImagePost(image, callback) {
       let postBody = null;
-      // verify the required parameter 'petId' is set
-      if (petId === undefined || petId === null) {
-        throw new Error("Missing the required parameter 'petId' when calling petUploadImagePost");
-      }
       // verify the required parameter 'image' is set
       if (image === undefined || image === null) {
         throw new Error("Missing the required parameter 'image' when calling petUploadImagePost");
@@ -240,14 +274,13 @@ export default class PetApi {
       let headerParams = {
       };
       let formParams = {
-        'petId': petId,
         'image': image
       };
 
       let authNames = ['BearerAuth'];
       let contentTypes = ['multipart/form-data'];
       let accepts = ['application/json'];
-      let returnType = ApiResponse;
+      let returnType = UserUploadImagePost200Response;
       return this.apiClient.callApi(
         '/pet/upload-image', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,

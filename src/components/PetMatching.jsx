@@ -165,23 +165,23 @@ const PetMatching = () => {
                   <Card.Body>
                     <Row>
                       <Col xs={12} sm={6}>
-                        <p><strong>Pet Name:</strong> {currentPet.name}</p>
-                        <p><strong>Pet Type:</strong> {currentPet.attributes ? currentPet.attributes.petType : ''}</p>
-                        <p><strong>Breed:</strong> {currentPet.attributes ? currentPet.attributes.petBreed : ''}</p>
-                        <p><strong>Gender:</strong> {currentPet.attributes ? currentPet.attributes.petGender : ''}</p>
-                        <p><strong>Age:</strong> {currentPet.attributes ? currentPet.attributes.petAge : ''} years</p>
+                        <p><strong>Pet Name:</strong> {currentPet.petName}</p>
+                        <p><strong>Pet Type:</strong> {currentPet.petType}</p>
+                        <p><strong>Breed:</strong> {currentPet.petBreed}</p>
+                        <p><strong>Gender:</strong> {currentPet.petGender}</p>
+                        <p><strong>Age:</strong> {currentPet.petAge} years</p>
                       </Col>
                       <Col xs={12} sm={6}>
-                        <p><strong>Color:</strong> {currentPet.attributes ? currentPet.petColor : ''}</p>
-                        <p><strong>Size:</strong> {currentPet.attributes ? currentPet.petSize : ''}</p>
-                        <p><strong>Active Level:</strong> {currentPet.attributes ? currentPet.petActiveLevel : ''}</p>
+                        <p><strong>Color:</strong> {currentPet.petColour}</p>
+                        <p><strong>Size:</strong> {currentPet.petSize}</p>
+                        <p><strong>Active Level:</strong> {currentPet.petActivityLevel}</p>
                         <p><strong>Living
-                          Environment:</strong> {currentPet.attributes ? currentPet.petLivingEnvironment : ''}</p>
+                          Environment:</strong> {currentPet.petEnvironment}</p>
                         <p><strong>Social
-                          Condition:</strong> {currentPet.attributes ? currentPet.petSocialCondition : ''}
+                          Condition:</strong> {currentPet.petSocial}
                         </p>
                         <p><strong>Behavioral
-                          Challenges:</strong> {currentPet.attributes ? currentPet.petBehavioralChallenges : ''}</p>
+                          Challenges:</strong> {currentPet.petBehavioralChallenges}</p>
                       </Col>
                     </Row>
                   </Card.Body>

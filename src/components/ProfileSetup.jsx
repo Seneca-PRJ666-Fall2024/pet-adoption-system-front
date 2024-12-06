@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import styles from "../styles/ProfileSetup.module.css";
@@ -7,36 +7,19 @@ import ShelterRegistration from "./ShelterRegistration";
 import FooterComponent from './FooterComponent';
 import NavbarComponent from './NavbarComponent';  // Import NavbarComponent
 import { initBackendApi } from "./BackendApi";
-import UserUpdateProfilePutRequest from "../../api-client/src/model/UserUpdateProfilePutRequest";
 
 function ProfileSetup() {
 
   const { userRole, token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [selectedGender, setSelectedGender] = useState("");
-  const [petType, setPetType] = useState("animal");
-  const [otherPetType, setOtherPetType] = useState("animal");
-  const [breedType, setBreedType] = useState("");
-  const [petColour, setPetColour] = useState("");
-  const [petSize, setPetSize] = useState("");
-  const [petActivityLevel, setPetActivityLevel] = useState("");
-  const [petEnvironment, setPetEnvironment] = useState("");
-  const [petSocial, setPetSocial] = useState("");
-  const [otherPetSocial, setOtherPetSocial] = useState("");
-  const [userText, setUserText] = useState("");
+  const [backendApi, setBackendApi] = useState(null);
+  useEffect(() => {
+    if(token){
+      setBackendApi(initBackendApi(token));
+    }
+  }, [token]);
 
-//   const handleRadioChange = (e) => setSelectedGender(e.target.value);
-//   const handleOtherPetTypeChange = (e) => setOtherPetType(e.target.value);
-//   const finalPetType = petType === "other" ? otherPetType : petType;
-//   const handleBreedTypeChange = (e) => setBreedType(e.target.value);
-//   const handlePetColourChange = (e) => setPetColour(e.target.value);
-//   const handlePetSizeChange = (e) => setPetSize(e.target.value);
-//   const handlePetActivityChange = (e) => setPetActivityLevel(e.target.value);
-//   const handlePetEnvironmentChange = (e) => setPetEnvironment(e.target.value);
-//   const handlePetSocialChange = (e) => setPetSocial(e.target.value);
-//   const handleOtherPetSocialChange = (e) => setOtherPetSocial(e.target.value);
-//   const handleUserTextChange = (e) => setUserText(e.target.value);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -44,7 +27,8 @@ function ProfileSetup() {
   const fileInputRef = useRef(null);
   const handleUploadClick = () => fileInputRef.current?.click();
 
-  const [shelterName, setShelterName] = useState("");
+  const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -53,7 +37,46 @@ function ProfileSetup() {
 
   const [formData, setFormData] = useState({});
 
-  const backendApi = initBackendApi(token);
+  // Fetch userProfile when component mounts
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        await new Promise((resolve, reject) => {
+          backendApi.user.userGetProfileGet((error, data, response) => {
+            if (error) {
+              reject(error);
+            } else if (data && data.payload) {
+              const profile = data.payload;
+
+              // Set state variables based on the fetched profile
+              setEmail(profile.email || "");
+              setUserName(profile.username || "");
+              setPhone(profile.phone || "");
+              setAddress(profile.address || "");
+              setCity(profile.city || "");
+              setProvince(profile.province || "");
+              setPostalCode(profile.postalCode || "");
+              setImageUrl(profile.imageUrl || "");
+
+              // If there's a profile image, set the preview URL
+              if (profile.imageUrl) {
+                setPreviewUrl(backendApi.imagePath(profile.imageUrl));
+              }
+              resolve(data);
+            } else {
+              console.error("Incorrect API response: " + data);
+            }
+          });
+        });
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+      }
+    };
+
+    if(backendApi){
+      fetchUserProfile();
+    }
+  }, [backendApi]);
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
@@ -115,58 +138,16 @@ function ProfileSetup() {
     userText: "Any additional preferences or comments?",
   };
 
-  const toArray = (value) => {
-    // If the value is already an array, return it; otherwise, wrap it in an array
-    if(!value || value === "")
-      return null;
-    else {
-      return Array.isArray(value) ? value : [value];
-    }
-  };
+  const updateUserPreferences = async (formData) => {
+    const wrappedFormData = Object.fromEntries(
+        Object.entries(formData)
+            .filter(([_, value]) => value !== null && value !== undefined && value !== '')
+            .map(([key, value]) => [key, [value]])
+    );
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    if (userRole === "adopter") {
-      const wrappedFormData = Object.fromEntries(
-          Object.entries(formData)
-              .filter(([key, value]) => value !== null && value !== undefined && value !== '')
-              .map(([key, value]) => [key, [value]])
-      );
-      try {
-        await new Promise((resolve, reject) => {
-          backendApi.user.userPreferencesPost(wrappedFormData, (error, data, response) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(data);
-            }
-          });
-        });
-
-        console.log("Adopter preferences submitted successfully.");
-        alert("Adopter profile and preferences submitted successfully!");
-
-        // Optionally, reset form fields or redirect the user
-        navigate('/');
-      } catch (error) {
-        console.error("API call failed:", error.message);
-        alert("API call failed: " + error.message);
-        // Handle the error (e.g., display a user-friendly message or retry the request)
-      }
-
-    } else if (userRole === "shelter") {
-      // 1. Update Shelter Contact Information
-      const data = {
-        imageUrl: imageUrl,
-        name: shelterName,
-        phone: phone,
-        address: `${address},${city},${province},${postalCode}`
-      };
-
-      const userUpdateRequest = UserUpdateProfilePutRequest.constructFromObject(data);
-
+    try {
       await new Promise((resolve, reject) => {
-        backendApi.user.userUpdateProfilePut(userUpdateRequest, (error, data, response) => {
+        backendApi.user.userPreferencesPost(wrappedFormData, (error, data, response) => {
           if (error) {
             reject(error);
           } else {
@@ -175,10 +156,56 @@ function ProfileSetup() {
         });
       });
 
-      console.log("Shelter pet information submitted successfully.");
-      alert("Shelter profile and pet information submitted successfully!");
+      console.log("Adopter preferences submitted successfully.");
+    } catch (error) {
+      console.error("API call failed:", error.message);
+      throw new Error("Failed to update adopter preferences: " + error.message);
+    }
+  };
+
+  const updateUserProfile = async (userData) => {
+    try {
+      await new Promise((resolve, reject) => {
+        backendApi.user.userUpdateProfilePut(userData, (error, data, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        });
+      });
+
+      console.log("User profile updated successfully.");
+    } catch (error) {
+      console.error("API call failed:", error.message);
+      throw new Error("Failed to update user profile: " + error.message);
+    }
+  };
+
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    try {
+      await updateUserProfile({
+        email: email,
+        imageUrl: imageUrl,
+        username: userName,
+        phone: phone,
+        address: address,
+        city: city,
+        province: province,
+        postalCode: postalCode,
+      });
+      alert("Profile information submitted successfully!");
+      if (userRole === "adopter") {
+        await updateUserPreferences(formData);
+        alert("Adopter preferences submitted successfully!");
+      }
 
       navigate('/');
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -194,8 +221,10 @@ function ProfileSetup() {
 
         {userRole === "shelter" && (
            <ShelterRegistration
-           shelterName={shelterName}
-          setShelterName={setShelterName}
+           shelterName={userName}
+          setShelterName={setUserName}
+           email={email}
+           setEmail={setEmail}
           phone={phone}
           setPhone={setPhone}
           address={address}
@@ -216,35 +245,134 @@ function ProfileSetup() {
         )}
 
         {userRole === "adopter" && (
-          <>
-          <label className={styles.mylabelQuestionnaire}>
-          Questionnaire
-        </label>
-        <p style={{ color: "#1e6262", marginBottom: "3%" }}>
-          {adopterQuestions.questionnaire}
-        </p>
-          <Questionnaire
-          questions={adopterQuestions}
-          formData={formData}
-          handleInputChange={handleInputChange}
-        />
-        </>
+            <>
+              <label className={styles.mylabel}>Upload your Profile Picture:</label>
+              <br/>
+              <input
+                  style={{display: "none"}}
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+              />
+              <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={handleUploadClick}
+              >
+                Please select a photo to upload
+              </button>
+
+              {previewUrl && (
+                  <div className="ms-5">
+                    <br/>
+                    <label className={styles.mylabel}>
+                      Selected File: { selectedFile ? selectedFile.name : previewUrl}
+                    </label>
+                    <br/>
+                    <img src={previewUrl || ""} alt="Preview" style={{width: "200px"}}/>
+                    <button
+                        type="button"
+                        className="btn btn-danger ms-5"
+                        onClick={handleRemovePhoto}
+                    >
+                      Remove Photo
+                    </button>
+                    <br/>
+                    <br/>
+                  </div>
+              )}
+              <br/><br/><br/>
+              <label className={styles.mylabel}>What is your email?</label>
+              <input
+                  className="form-control"
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+              />
+              <br/>
+              <label className={styles.mylabel}>What is your name?</label>
+              <input
+                  className="form-control"
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+              />
+              <br/>
+
+              <label className={styles.mylabel}>What is your phone number?</label>
+              <input
+                  className="form-control"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+              />
+              <br/>
+
+              <label className={styles.mylabel}>Please enter your address:</label>
+              <input
+                  className="form-control"
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+              />
+              <br/>
+
+              <label className={styles.mylabel}>City:</label>
+              <input
+                  className="form-control"
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+              />
+              <br/>
+
+              <label className={styles.mylabel}>Province:</label>
+              <input
+                  className="form-control"
+                  type="text"
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+              />
+              <br/>
+
+              <label className={styles.mylabel}>Postal Code:</label>
+              <input
+                  className="form-control"
+                  type="text"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+              />
+              <br/>
+
+              <label className={styles.mylabelQuestionnaire}>
+                Questionnaire
+              </label>
+              <p style={{color: "#1e6262", marginBottom: "3%"}}>
+                {adopterQuestions.questionnaire}
+              </p>
+              <Questionnaire
+                  questions={adopterQuestions}
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+              />
+            </>
         )}
 
         <div className={styles.buttonContainer}>
           <button
-            className="btn btn-success btn-lg mt-3"
-            onClick={handleClick}
-            type="submit"
+              className="btn btn-success btn-lg mt-3"
+              onClick={handleClick}
+              type="submit"
           >
             Save
           </button>
         </div>
       </form>
     </div>
-    {/* Footer */}
-    <FooterComponent />
-  </>
+      {/* Footer */}
+      <FooterComponent/>
+    </>
   );
 }
 

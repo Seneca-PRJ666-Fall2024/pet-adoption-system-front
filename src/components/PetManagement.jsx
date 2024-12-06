@@ -1,30 +1,23 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, {useRef, useState, useEffect, useContext} from "react";
 import styles from "../styles/ProfileSetup.module.css";
 import Questionnaire from "./Questionnaire";
+import AuthContext from "../context/AuthContext";
+import {initBackendApi} from "./BackendApi";
 
 
 
-function PetManagement({ application, updateApplication, closeModal }) {
+function PetManagement({ petProfile, updateApplication, closeModal }) {
 
-    const [userType, setUserType] = useState("");
-  const [petName, setPetName] = useState("");
-  const [selectedGender, setSelectedGender] = useState("");
+    const { userRole, token } = useContext(AuthContext);
+    const backendApi = initBackendApi(token);
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [petType, setPetType] = useState("animal");
-  const [otherPetType, setOtherPetType] = useState("animal");
-  const [breedType, setBreedType] = useState("");
-  const [petColour, setPetColour] = useState("");
-  const [petSize, setPetSize] = useState("");
-  const [petActivityLevel, setPetActivityLevel] = useState("");
-  const [petEnvironment, setPetEnvironment] = useState("");
-  const [petSocial, setPetSocial] = useState("");
-  const [otherPetSocial, setOtherPetSocial] = useState("");
-  const [userText, setUserText] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
   const [adoptionStatus, setAdoptionStatus] = useState(false);
   const fileInputRef = useRef(null);
   const handleUploadClick = () => fileInputRef.current?.click();
-  const [formData, setFormData] = useState(application);
+  const [formData, setFormData] = useState(petProfile);
   const [isSaving, setIsSaving] = useState(false);
 
     const shelterQuestions = {
@@ -42,35 +35,36 @@ function PetManagement({ application, updateApplication, closeModal }) {
 
       const handleClick = (e) => {
         e.preventDefault();
-        const formData = {
-          adoptionStatus,
-          petName,
-          selectedGender,
-          petType: petType === "other" ? otherPetType : petType,
-          breedType,
-          petColour,
-          petSize,
-          petActivityLevel,
-          petEnvironment,
-          petSocial: petSocial === "other animals" ? otherPetSocial : petSocial,
-          userText,
-          photo: selectedFile ? selectedFile.name : "No file selected",
-        };
         console.log("Form data submitted:", formData);
         alert("Form submitted");
       };
 
-      const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const file = e.target.files?.[0];
         if (file) {
-          setSelectedFile(file);
-          const fileReader = new FileReader();
-          fileReader.onload = (event) => {
-            setPreviewUrl(event.target.result); // set the preview URL to a data URI
-          };
-          fileReader.readAsDataURL(file); // convert file to base64 data URI
+            setSelectedFile(file);
+            try {
+                // Use the backendApi client to upload the image
+                await new Promise((resolve, reject) => {
+                    backendApi.pet.petUploadImagePost(file, (error, data, response) => {
+                        if (error) {
+                            reject(error);
+                        } else if(data && data.payload) {
+                            const imageUrl = backendApi.imagePath(data.payload);
+                            setPreviewUrl(imageUrl);
+                            setImageUrl(data.payload); // Store the image URL for form submission
+                            resolve(data);
+                        } else {
+                            console.error("Incorrect API response: " + data);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                alert("Error uploading image");
+            }
         }
-      };
+    };
       
       const handleRemovePhoto = () => {
         setSelectedFile(null);
@@ -103,18 +97,21 @@ function PetManagement({ application, updateApplication, closeModal }) {
 
 
       useEffect(() => {
-        setFormData(application); // Sync formData with the selected application
-      }, [application]);
+        if(formData && Array.isArray(formData.images) && formData.images.length > 0) {
+            setImageUrl(formData.images[0])
+            setPreviewUrl(backendApi.imagePath(formData.images[0]))
+        }
+      }, [formData]);
       
 
       const handleSave = () => {
-        if (!formData.petName || !formData.petType || !formData.petGender) {
+        if (!formData || !formData.petName || !formData.petType || !formData.petGender) {
           alert("Please fill in all required fields.");
           return;
         }
       
         // If `id` already exists in the table, update the existing row
-        if (application && application.id) {
+        if (formData && formData.petId) {
           updateApplication({ ...formData });
         } else {
           // Create a new pet profile
@@ -123,11 +120,6 @@ function PetManagement({ application, updateApplication, closeModal }) {
       
         closeModal(); // Close the modal after saving
       };
-      
-      
-      
-      
-      
 
     return(
         <>
@@ -155,11 +147,11 @@ function PetManagement({ application, updateApplication, closeModal }) {
         Please select a photo to upload
       </button>
 
-      {selectedFile && (
+      {previewUrl && (
         <div className="ms-5">
           <br />
           <label className={styles.mylabel}>
-            Selected File: {selectedFile.name}
+            Selected File: { selectedFile ? selectedFile.name : ''}
           </label>
           <br />
           <img src={previewUrl || ""} alt="Preview" style={{ width: "200px" }} />
@@ -193,13 +185,13 @@ function PetManagement({ application, updateApplication, closeModal }) {
           <input
             className="form-control"
             name="petName"
-            value={formData.petName}
+            value={formData ? formData.petName : ''}
             onChange={handleInputChange}
           />
           <br />
             <Questionnaire
           questions={shelterQuestions}
-          formData={formData}
+          formData={petProfile}
           handleInputChange={handleInputChange}
           // petName={petName}
           // setPetName={setPetName}

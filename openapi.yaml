@@ -118,7 +118,7 @@ paths:
             schema:
               type: object
               additionalProperties:
-                type: array
+                type: string
                 items:
                   type: string
                 description: >
@@ -190,28 +190,7 @@ paths:
                   - type: object
                     properties:
                       payload:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            example: "12ad3fa..."
-                          email:
-                            type: string
-                            example: user@example.com
-                          role:
-                            $ref: '#/components/schemas/Role'
-                          name:
-                            type: string
-                            example: John Doe
-                          phone:
-                            type: string
-                            example: 123-456-7890
-                          address:
-                            type: string
-                            example: 123 Pet Lane
-                          imageUrl:
-                            type: string
-                            example: http://some.site/images/img.jpg
+                        $ref: '#/components/schemas/User'
         '401':
           description: Unauthorized access
           $ref: '#/components/responses/GenericApiResponse'
@@ -228,20 +207,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: John Doe
-                phone:
-                  type: string
-                  example: 123-456-7890
-                address:
-                  type: string
-                  example: 123 Pet Lane
-                imageUrl:
-                  type: string
-                  example: http://some.site/images/image.jpg
+              $ref: '#/components/schemas/User'
       responses:
         '200':
           description: User contacts updated successfully
@@ -323,21 +289,52 @@ paths:
             schema:
               type: object
               properties:
-                petId:
-                  type: string
-                  example: "12abd3...."
                 image:
                   type: string
                   format: binary
               required:
-                - petId
                 - image
       responses:
         '200':
-          description: Image uploaded successfully
-          $ref: '#/components/responses/GenericApiResponse'
+          description: Image uploaded
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: string
+                        example: /images/someImage.jpg
         '400':
           description: Invalid request or missing parameters
+          $ref: '#/components/responses/GenericApiResponse'
+
+  /pet/get-profile:
+    get:
+      tags:
+        - pet
+      summary: Retrieve all pet for the current user (shelter)
+      security:
+        - BearerAuth: [ ]
+      description: Fetches all pet profile details for the current user (shelter).
+      responses:
+        '200':
+          description: Profile details retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Pet'
+        '401':
+          description: Unauthorized access
           $ref: '#/components/responses/GenericApiResponse'
 
   /pet/get-profile/{petId}:
@@ -659,10 +656,10 @@ components:
         petId:
           type: string
           example: "0adf23ff..."
-        shelterId:
+        shelterUserId:
           type: string
           example: "0adf23ff..."
-        name:
+        petName:
           type: string
           example: "Snooppy"
         images:
@@ -670,18 +667,14 @@ components:
           items:
             type: string
           example: ["http://some.site/images/image.jpg"]
-        attributes:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-            description: >
-              A map where each key is the name of an attribute group, and the value is a list of
-              selected preferences within that group.
-            example:
-              "gender": [ "male" ]
-              "environment": [ "house", "condo" ]
+      additionalProperties:
+        type: string
+        description: >
+          A map where each key is the name of an attribute group, and the value is a list of
+          selected preferences within that group.
+        example:
+          "gender": "male"
+          "environment": "house"
       type: object
 
     User:
@@ -703,7 +696,7 @@ components:
         phone:
           type: string
           example: 12345
-        street:
+        address:
           type: string
           example: 1 Young St.
         city:
@@ -715,11 +708,9 @@ components:
         postalCode:
           type: string
           example: A1B 2C3
-        userStatus:
-          type: integer
-          format: int32
-          example: 1
-          description: User Status
+        imageUrl:
+          type: string
+          example: http://some.site/images.image.jpg
       type: object
 
     Recommendation:

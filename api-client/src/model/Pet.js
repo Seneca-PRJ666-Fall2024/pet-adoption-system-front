@@ -22,6 +22,7 @@ class Pet {
     /**
      * Constructs a new <code>Pet</code>.
      * @alias module:model/Pet
+     * @extends Object
      */
     constructor() { 
         
@@ -47,20 +48,20 @@ class Pet {
         if (data) {
             obj = obj || new Pet();
 
+            ApiClient.constructFromObject(data, obj, 'String');
+            
+
             if (data.hasOwnProperty('petId')) {
                 obj['petId'] = ApiClient.convertToType(data['petId'], 'String');
             }
-            if (data.hasOwnProperty('shelterId')) {
-                obj['shelterId'] = ApiClient.convertToType(data['shelterId'], 'String');
+            if (data.hasOwnProperty('shelterUserId')) {
+                obj['shelterUserId'] = ApiClient.convertToType(data['shelterUserId'], 'String');
             }
-            if (data.hasOwnProperty('name')) {
-                obj['name'] = ApiClient.convertToType(data['name'], 'String');
+            if (data.hasOwnProperty('petName')) {
+                obj['petName'] = ApiClient.convertToType(data['petName'], 'String');
             }
             if (data.hasOwnProperty('images')) {
                 obj['images'] = ApiClient.convertToType(data['images'], ['String']);
-            }
-            if (data.hasOwnProperty('attributes')) {
-                obj['attributes'] = ApiClient.convertToType(data['attributes'], {'String': ['String']});
             }
         }
         return obj;
@@ -77,12 +78,12 @@ class Pet {
             throw new Error("Expected the field `petId` to be a primitive type in the JSON string but got " + data['petId']);
         }
         // ensure the json data is a string
-        if (data['shelterId'] && !(typeof data['shelterId'] === 'string' || data['shelterId'] instanceof String)) {
-            throw new Error("Expected the field `shelterId` to be a primitive type in the JSON string but got " + data['shelterId']);
+        if (data['shelterUserId'] && !(typeof data['shelterUserId'] === 'string' || data['shelterUserId'] instanceof String)) {
+            throw new Error("Expected the field `shelterUserId` to be a primitive type in the JSON string but got " + data['shelterUserId']);
         }
         // ensure the json data is a string
-        if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
-            throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
+        if (data['petName'] && !(typeof data['petName'] === 'string' || data['petName'] instanceof String)) {
+            throw new Error("Expected the field `petName` to be a primitive type in the JSON string but got " + data['petName']);
         }
         // ensure the json data is an array
         if (!Array.isArray(data['images'])) {
@@ -103,24 +104,19 @@ class Pet {
 Pet.prototype['petId'] = undefined;
 
 /**
- * @member {String} shelterId
+ * @member {String} shelterUserId
  */
-Pet.prototype['shelterId'] = undefined;
+Pet.prototype['shelterUserId'] = undefined;
 
 /**
- * @member {String} name
+ * @member {String} petName
  */
-Pet.prototype['name'] = undefined;
+Pet.prototype['petName'] = undefined;
 
 /**
  * @member {Array.<String>} images
  */
 Pet.prototype['images'] = undefined;
-
-/**
- * @member {Object.<String, Array.<String>>} attributes
- */
-Pet.prototype['attributes'] = undefined;
 
 
 

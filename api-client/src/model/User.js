@@ -66,8 +66,8 @@ class User {
             if (data.hasOwnProperty('phone')) {
                 obj['phone'] = ApiClient.convertToType(data['phone'], 'String');
             }
-            if (data.hasOwnProperty('street')) {
-                obj['street'] = ApiClient.convertToType(data['street'], 'String');
+            if (data.hasOwnProperty('address')) {
+                obj['address'] = ApiClient.convertToType(data['address'], 'String');
             }
             if (data.hasOwnProperty('city')) {
                 obj['city'] = ApiClient.convertToType(data['city'], 'String');
@@ -78,8 +78,8 @@ class User {
             if (data.hasOwnProperty('postalCode')) {
                 obj['postalCode'] = ApiClient.convertToType(data['postalCode'], 'String');
             }
-            if (data.hasOwnProperty('userStatus')) {
-                obj['userStatus'] = ApiClient.convertToType(data['userStatus'], 'Number');
+            if (data.hasOwnProperty('imageUrl')) {
+                obj['imageUrl'] = ApiClient.convertToType(data['imageUrl'], 'String');
             }
         }
         return obj;
@@ -112,8 +112,8 @@ class User {
             throw new Error("Expected the field `phone` to be a primitive type in the JSON string but got " + data['phone']);
         }
         // ensure the json data is a string
-        if (data['street'] && !(typeof data['street'] === 'string' || data['street'] instanceof String)) {
-            throw new Error("Expected the field `street` to be a primitive type in the JSON string but got " + data['street']);
+        if (data['address'] && !(typeof data['address'] === 'string' || data['address'] instanceof String)) {
+            throw new Error("Expected the field `address` to be a primitive type in the JSON string but got " + data['address']);
         }
         // ensure the json data is a string
         if (data['city'] && !(typeof data['city'] === 'string' || data['city'] instanceof String)) {
@@ -126,6 +126,10 @@ class User {
         // ensure the json data is a string
         if (data['postalCode'] && !(typeof data['postalCode'] === 'string' || data['postalCode'] instanceof String)) {
             throw new Error("Expected the field `postalCode` to be a primitive type in the JSON string but got " + data['postalCode']);
+        }
+        // ensure the json data is a string
+        if (data['imageUrl'] && !(typeof data['imageUrl'] === 'string' || data['imageUrl'] instanceof String)) {
+            throw new Error("Expected the field `imageUrl` to be a primitive type in the JSON string but got " + data['imageUrl']);
         }
 
         return true;
@@ -167,9 +171,9 @@ User.prototype['password'] = undefined;
 User.prototype['phone'] = undefined;
 
 /**
- * @member {String} street
+ * @member {String} address
  */
-User.prototype['street'] = undefined;
+User.prototype['address'] = undefined;
 
 /**
  * @member {String} city
@@ -187,10 +191,9 @@ User.prototype['province'] = undefined;
 User.prototype['postalCode'] = undefined;
 
 /**
- * User Status
- * @member {Number} userStatus
+ * @member {String} imageUrl
  */
-User.prototype['userStatus'] = undefined;
+User.prototype['imageUrl'] = undefined;
 
 
 

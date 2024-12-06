@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useContext, useState, useEffect} from "react";
 import {
   Container,
   Table,
@@ -9,169 +9,44 @@ import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 import "../styles/AdoptionManagement.css";
 import PetManagement from "./PetManagement";
+import AuthContext from "../context/AuthContext";
+import {initBackendApi} from "./BackendApi";
 
 const PetManagementMain = () => {
-  const [applications, setApplications] = useState([
-    {
-        id: 1,
-        petName: "Buddy",
-        petType: "Dog",
-        petAge: "2 years",
-        petGender: "Male",
-        status: "Waitlisted",
-        petBreed: "Poodle",
-        adopterInfoType: "new",
-        existingAdopterId: "",
-        adopterName: "John Doe",
-        dateOfBirth: "1990-01-01",
-        contactNumber: "123-456-7890",
-        email: "john@example.com",
-        homeAddress: "123 Main St",
-        housingType: "House",
-        rentOrOwn: "own",
-        landlordContact: "",
-        fencedYard: "Yes",
-        activeLifestyle: "Very active",
-        hoursAlone: "2",
-        crateTraining: "Yes",
-        sleepingArrangements: "Inside",
-        priorExperience: "Yes",
-        currentPets: "None",
-        vetContact: "Dr. Smith, 987-654-3210",
-        exercisePlan: "Daily walks",
-        groomingPlan: "Weekly grooming",
-        travelPlan: "Pet sitter",
-        behavioralExpectations: "Well-behaved",
-        commitmentAcknowledgement: true,
-        references: "Jane Doe, 555-123-4567",
-        petSocial: "cats"
+    const { userRole, token } = useContext(AuthContext);
+    const [backendApi, setBackendApi] = useState(null);
+    useEffect(() => {
+        if (token) {
+            const apiInstance = initBackendApi(token);
+            setBackendApi(apiInstance);
+        }
+    }, [token]);
 
-    },
-    {
-        id: 2,
-        petName: "Max",
-        petType: "Dog",
-        petAge: "4 years",
-        petGender: "Male",
-        status: "Interviewing",
-        petBreed: "Chihuahua",
-        adopterInfoType: "existing",
-        existingAdopterId: "1",
-        adopterName: "Jane Smith",
-        dateOfBirth: "1985-05-15",
-        contactNumber: "987-654-3210",
-        email: "jane@example.com",
-        homeAddress: "456 Elm St",
-        housingType: "Apartment",
-        rentOrOwn: "rent",
-        landlordContact: "Mr. Johnson, 123-789-4560",
-        fencedYard: "No",
-        activeLifestyle: "Moderately active",
-        hoursAlone: "4",
-        crateTraining: "No",
-        sleepingArrangements: "On the bed",
-        priorExperience: "No",
-        currentPets: "One cat, 2 years old",
-        vetContact: "Dr. Brown, 123-123-1234",
-        exercisePlan: "Walks every evening",
-        groomingPlan: "Monthly grooming",
-        travelPlan: "Take with us",
-        behavioralExpectations: "Calm and quiet",
-        commitmentAcknowledgement: true,
-        references: "Bob Johnson, 555-987-6543",
-        petSocial: "dogs"
-    },
-    {
-        id: 3,
-        petName: "Bella",
-        petType: "Cat",
-        petAge: "3 years",
-        petGender: "Female",
-        status: "Rejected",
-        petBreed: "American Bobtail",
-        adopterInfoType: "new",
-        existingAdopterId: "",
-        adopterName: "Mike Wilson",
-        dateOfBirth: "1992-02-20",
-        contactNumber: "321-654-9870",
-        email: "mike@example.com",
-        homeAddress: "789 Oak St",
-        housingType: "Townhouse",
-        rentOrOwn: "own",
-        landlordContact: "",
-        fencedYard: "No",
-        activeLifestyle: "Quiet",
-        hoursAlone: "6",
-        crateTraining: "No",
-        sleepingArrangements: "In a pet bed",
-        priorExperience: "Yes, with dogs",
-        currentPets: "None",
-        vetContact: "Dr. Green, 456-789-0123",
-        exercisePlan: "Playtime indoors",
-        groomingPlan: "Brushing twice a week",
-        travelPlan: "Boarding facility",
-        behavioralExpectations: "Playful but calm",
-        commitmentAcknowledgement: true,
-        references: "Sarah Lee, 444-555-6666",
-        petSocial: "dogs"
-    },
-  ]);
+    const [shelterPets, setShelterPets] = useState([])
 
-  const [existingAdopters, setExistingAdopters] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      birthday: "1990-01-01",
-      gender: "Male",
-      homeAddress: "123 Main St",
-      phoneNumber: "123-456-7890",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      birthday: "1985-05-15",
-      gender: "Female",
-      homeAddress: "456 Elm St",
-      phoneNumber: "987-654-3210",
-    },
-  ]);
+    useEffect(() => {
+        if (!backendApi) return;
+        try {
+            backendApi.pet.petGetProfileGet((error, data, response) => {
+                if (error) {
+                    console.error("Error fetching next pet recommendation:", error);
+                } else if (data && Array.isArray(data.payload)) {
+                    console.log("Fetched pet recommendation:", data);
+                    setShelterPets(data.payload);
+                } else {
+                    console.error("Incorrect response for pet recommendation: ", data);
+                }
+            });
+        } catch (error) {
+            console.error("Error fetching next pet recommendation:", error);
+        }
+    }, [backendApi]);
 
   const [showModal, setShowModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [currentApplication, setCurrentApplication] = useState(null);
+  const [currentPet, setCurrentPet] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [applicationToDelete, setApplicationToDelete] = useState(null);
-
-  const [newPetProfile, setNewPetProfile] = useState({
-    petName: "",
-    petInfoType: "new",
-    existingPetId: "",
-    PetName: "",
-    petBirthday: "",
-    petGender: "",
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewPetProfile((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleAddPetProfile = () => {
-    setCurrentApplication({
-      id: applications.length + 1, // Generate a new ID
-      petName: "",
-      petType: "",
-      petGender: "",
-      petBreed: "",
-      petSocial: "",
-      petBirthday: "",
-    }); // Initialize with empty fields
-    setShowModal(true); // Open the modal
-  };
-  
 
   const handleSave = () => {
     setIsSaving(true);
@@ -186,7 +61,16 @@ const PetManagementMain = () => {
       setIsSaving(false);
     }
   };
-  
+
+    const handleViewDetails = (petData) => {
+        setCurrentPet(petData);
+        setShowDetailsModal(true);
+    };
+
+    const handleAddPetProfile = () => {
+        setCurrentPet({}); // Initialize with empty fields
+        setShowModal(true); // Open the modal
+    };
 
   const handleDeleteApplication = (id) => {
     setApplicationToDelete(id);
@@ -201,26 +85,22 @@ const PetManagementMain = () => {
     setShowCancelModal(false);
   };
 
-  const handleViewDetails = (application) => {
-    setCurrentApplication(application);
-    setShowDetailsModal(true);
-  };
-
   const updateApplication = (updatedApplication) => {
-    setApplications((prevApps) => {
-      // Check if the application already exists
-      const existingIndex = prevApps.findIndex((app) => app.id === updatedApplication.id);
-  
-      if (existingIndex !== -1) {
-        // Update an existing application
-        return prevApps.map((app) =>
-          app.id === updatedApplication.id ? updatedApplication : app
-        );
-      } else {
-        // Add a new application
-        return [...prevApps, updatedApplication];
-      }
-    });
+      // TODO: Update pet profile
+    // setApplications((prevApps) => {
+    //   // Check if the application already exists
+    //   const existingIndex = prevApps.findIndex((app) => app.id === updatedApplication.id);
+    //
+    //   if (existingIndex !== -1) {
+    //     // Update an existing application
+    //     return prevApps.map((app) =>
+    //       app.id === updatedApplication.id ? updatedApplication : app
+    //     );
+    //   } else {
+    //     // Add a new application
+    //     return [...prevApps, updatedApplication];
+    //   }
+    // });
   
     setShowModal(false); // Close the modal
   };
@@ -235,50 +115,55 @@ const PetManagementMain = () => {
       <Container className="my-4">
         <div className="d-flex justify-content-between align-items-center">
           <h3>Pet Profile Management</h3>
-          <Button variant="success" onClick={() => setShowModal(true)}>
+          <Button variant="success" onClick={() => handleAddPetProfile()}>
             Add New Pet Profile
           </Button>
         </div>
 
         <Table striped bordered hover className="mt-3">
           <thead>
-            <tr>
+          <tr>
               <th>#</th>
+              <th>Photo</th>
               <th>Pet Name</th>
               <th>Pet Type</th>
               <th>Pet Age</th>
               <th>Pet Breed</th>
               <th>Pet Gender</th>
               <th>Actions</th>
-            </tr>
+          </tr>
           </thead>
           <tbody>
-            {applications.map((app, index) => (
-              <tr key={app.id}>
-                <td>{index + 1}</td>
-                <td>{app.petName}</td>
-                <td>{app.petType}</td>
-                <td>{app.petAge}</td>
-                <td>{app.petBreed}</td>
-                <td>{app.petGender}</td>
-                <td>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="me-2"
-                    onClick={() => handleViewDetails(app)}
-                  >
-                    Update
-                  </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleDeleteApplication(app.id)}
-                  >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
+            {shelterPets.map((pet, index) => (
+                <tr key={pet.petId}>
+                    <td>{index + 1}</td>
+                    <td>
+                        <img src={Array.isArray(pet.images) && pet.images.length > 0 ? backendApi.imagePath(pet.images[0]) : ''}
+                             alt="Preview" style={{height: "40px"}}/>
+                    </td>
+                    <td>{pet.petName}</td>
+                    <td>{pet.petType}</td>
+                    <td>{pet.petAge}</td>
+                    <td>{pet.petBreed}</td>
+                    <td>{pet.petGender}</td>
+                    <td>
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            className="me-2"
+                            onClick={() => handleViewDetails(pet)}
+                        >
+                            Update
+                        </Button>
+                        <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => handleDeleteApplication(pet.petId)}
+                        >
+                            Delete
+                        </Button>
+                    </td>
+                </tr>
             ))}
           </tbody>
         </Table>
@@ -291,7 +176,7 @@ const PetManagementMain = () => {
         </Modal.Header>
         <Modal.Body>
         <PetManagement
-           application={newPetProfile}
+            petProfile={{}}
            updateApplication={updateApplication}
            closeModal={() => setShowDetailsModal(false)} // Close modal callback
          />
@@ -304,9 +189,9 @@ const PetManagementMain = () => {
           <Modal.Title>Pet Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {currentApplication && (
+          {currentPet && (
            <PetManagement
-           application={currentApplication} // Pass selected pet
+           petProfile={currentPet} // Pass selected pet
            updateApplication={updateApplication}
            closeModal={() => setShowDetailsModal(false)} // Close modal callback
          />

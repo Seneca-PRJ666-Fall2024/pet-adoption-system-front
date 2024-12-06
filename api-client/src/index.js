@@ -24,6 +24,7 @@ import MatchingRecommendationNextGet200Response from './model/MatchingRecommenda
 import MatchingRecommendationsGet200Response from './model/MatchingRecommendationsGet200Response';
 import Pet from './model/Pet';
 import PetAddProfilePostRequest from './model/PetAddProfilePostRequest';
+import PetGetProfileGet200Response from './model/PetGetProfileGet200Response';
 import PetGetProfilePetIdGet200Response from './model/PetGetProfilePetIdGet200Response';
 import PetUpdateProfilePutRequest from './model/PetUpdateProfilePutRequest';
 import Recommendation from './model/Recommendation';
@@ -31,12 +32,10 @@ import RecommendationStatus from './model/RecommendationStatus';
 import Role from './model/Role';
 import User from './model/User';
 import UserGetProfileGet200Response from './model/UserGetProfileGet200Response';
-import UserGetProfileGet200ResponseAllOfPayload from './model/UserGetProfileGet200ResponseAllOfPayload';
 import UserLoginPost200Response from './model/UserLoginPost200Response';
 import UserLoginPost200ResponseAllOfPayload from './model/UserLoginPost200ResponseAllOfPayload';
 import UserLoginPostRequest from './model/UserLoginPostRequest';
 import UserRegisterPostRequest from './model/UserRegisterPostRequest';
-import UserUpdateProfilePutRequest from './model/UserUpdateProfilePutRequest';
 import UserUploadImagePost200Response from './model/UserUploadImagePost200Response';
 import AdoptionApi from './api/AdoptionApi';
 import MatchingApi from './api/MatchingApi';
@@ -149,6 +148,12 @@ export {
     PetAddProfilePostRequest,
 
     /**
+     * The PetGetProfileGet200Response model constructor.
+     * @property {module:model/PetGetProfileGet200Response}
+     */
+    PetGetProfileGet200Response,
+
+    /**
      * The PetGetProfilePetIdGet200Response model constructor.
      * @property {module:model/PetGetProfilePetIdGet200Response}
      */
@@ -191,12 +196,6 @@ export {
     UserGetProfileGet200Response,
 
     /**
-     * The UserGetProfileGet200ResponseAllOfPayload model constructor.
-     * @property {module:model/UserGetProfileGet200ResponseAllOfPayload}
-     */
-    UserGetProfileGet200ResponseAllOfPayload,
-
-    /**
      * The UserLoginPost200Response model constructor.
      * @property {module:model/UserLoginPost200Response}
      */
@@ -219,12 +218,6 @@ export {
      * @property {module:model/UserRegisterPostRequest}
      */
     UserRegisterPostRequest,
-
-    /**
-     * The UserUpdateProfilePutRequest model constructor.
-     * @property {module:model/UserUpdateProfilePutRequest}
-     */
-    UserUpdateProfilePutRequest,
 
     /**
      * The UserUploadImagePost200Response model constructor.
