@@ -23,16 +23,39 @@ const PetManagementMain = () => {
     }, [token]);
 
     const [shelterPets, setShelterPets] = useState([])
+    const [petAttributes, setPetAttributes] = useState([])
 
-    useEffect(() => {
-        if (!backendApi) return;
+    const fetchPetProfiles = async () => {
+        if (!backendApi) {
+            console.error("Backend API is not initialized");
+            return;
+        }
+
         try {
             backendApi.pet.petGetProfileGet((error, data, response) => {
                 if (error) {
                     console.error("Error fetching next pet recommendation:", error);
-                } else if (data && Array.isArray(data.payload)) {
+                    return;
+                }
+
+                if (data && Array.isArray(data.payload)) {
                     console.log("Fetched pet recommendation:", data);
                     setShelterPets(data.payload);
+
+                    // Collect unique keys from pet profiles, excluding certain keys
+                    const excludedKeys = new Set(["petName", "petId", "imageUrl", "shelterUserId"]);
+                    const uniqueAttributes = new Set();
+
+                    data.payload.forEach((pet) => {
+                        Object.entries(pet).forEach(([key, value]) => {
+                            if (value !== null && value !== undefined && value !== "" && !excludedKeys.has(key)) {
+                                uniqueAttributes.add(key);
+                            }
+                        });
+                    });
+
+                    // Set the unique attributes
+                    setPetAttributes(Array.from(uniqueAttributes));
                 } else {
                     console.error("Incorrect response for pet recommendation: ", data);
                 }
@@ -40,6 +63,11 @@ const PetManagementMain = () => {
         } catch (error) {
             console.error("Error fetching next pet recommendation:", error);
         }
+    };
+
+    useEffect(() => {
+        if (!backendApi) return;
+        fetchPetProfiles();
     }, [backendApi]);
 
   const [showModal, setShowModal] = useState(false);
@@ -47,20 +75,6 @@ const PetManagementMain = () => {
   const [currentPet, setCurrentPet] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [applicationToDelete, setApplicationToDelete] = useState(null);
-
-  const handleSave = () => {
-    setIsSaving(true);
-    try {
-      updateApplication(formData); // Pass updated data to the parent
-      closeModal(); // Close the modal after saving
-      // alert("Pet details updated successfully!");
-    } catch (error) {
-      console.error("Error updating pet details:", error);
-      alert("Failed to save pet details. Please try again.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
     const handleViewDetails = (petData) => {
         setCurrentPet(petData);
@@ -72,42 +86,62 @@ const PetManagementMain = () => {
         setShowModal(true); // Open the modal
     };
 
-  const handleDeleteApplication = (id) => {
-    setApplicationToDelete(id);
+  const handleDeleteApplication = (petId) => {
+    setApplicationToDelete(petId);
     setShowCancelModal(true);
   };
 
-  const confirmDeleteApplication = () => {
-    setApplications((prevApps) =>
-      prevApps.filter((app) =>
-        app.id !== applicationToDelete)
-    );
+  const confirmDeleteApplication = async () => {
+      try {
+          if(applicationToDelete){
+              await new Promise((resolve, reject) => {
+                  backendApi.pet.petDeleteProfilePetIdDelete(applicationToDelete, (error, data, response) => {
+                      if (error) {
+                          reject(error);
+                      } else {
+                          resolve(data);
+                      }
+                  });
+              });
+              console.log("Pet profile deleted successfully.");
+              fetchPetProfiles();
+          }
+      } catch (error) {
+          console.error("API call failed:", error.message);
+          throw new Error("Failed to delete pet profile: " + error.message);
+      }
     setShowCancelModal(false);
   };
 
-  const updateApplication = (updatedApplication) => {
-      // TODO: Update pet profile
-    // setApplications((prevApps) => {
-    //   // Check if the application already exists
-    //   const existingIndex = prevApps.findIndex((app) => app.id === updatedApplication.id);
-    //
-    //   if (existingIndex !== -1) {
-    //     // Update an existing application
-    //     return prevApps.map((app) =>
-    //       app.id === updatedApplication.id ? updatedApplication : app
-    //     );
-    //   } else {
-    //     // Add a new application
-    //     return [...prevApps, updatedApplication];
-    //   }
-    // });
-  
+const updateApplication = async (petData) => {
+    try {
+        await new Promise((resolve, reject) => {
+            if(petData.petId){
+                backendApi.pet.petUpdateProfilePut(petData, (error, data, response) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            } else {
+                backendApi.pet.petAddProfilePost(petData, (error, data, response) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            }
+        });
+        console.log("Pet profile updated successfully.");
+        fetchPetProfiles();
+    } catch (error) {
+        console.error("API call failed:", error.message);
+        throw new Error("Failed to update pet profile: " + error.message);
+    }
     setShowModal(false); // Close the modal
-  };
-  
-  
-  
-  
+};
 
   return (
     <>
@@ -126,10 +160,9 @@ const PetManagementMain = () => {
               <th>#</th>
               <th>Photo</th>
               <th>Pet Name</th>
-              <th>Pet Type</th>
-              <th>Pet Age</th>
-              <th>Pet Breed</th>
-              <th>Pet Gender</th>
+              {petAttributes.map((attribute) => (
+                  <th key={attribute}>{attribute}</th>
+              ))}
               <th>Actions</th>
           </tr>
           </thead>
@@ -138,14 +171,13 @@ const PetManagementMain = () => {
                 <tr key={pet.petId}>
                     <td>{index + 1}</td>
                     <td>
-                        <img src={Array.isArray(pet.images) && pet.images.length > 0 ? backendApi.imagePath(pet.images[0]) : ''}
+                        <img src={pet.imageUrl ? backendApi.imagePath(pet.imageUrl) : ''}
                              alt="Preview" style={{height: "40px"}}/>
                     </td>
                     <td>{pet.petName}</td>
-                    <td>{pet.petType}</td>
-                    <td>{pet.petAge}</td>
-                    <td>{pet.petBreed}</td>
-                    <td>{pet.petGender}</td>
+                    {petAttributes.map((attribute) => (
+                        <td key={attribute}>{pet[attribute] || '-'}</td>
+                    ))}
                     <td>
                         <Button
                             variant="primary"

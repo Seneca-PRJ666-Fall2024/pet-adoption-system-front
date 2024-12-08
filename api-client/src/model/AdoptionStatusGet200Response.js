@@ -12,7 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
-import AdoptionStatusGet200ResponseAllOfPayloadInner from './AdoptionStatusGet200ResponseAllOfPayloadInner';
+import Adoption from './Adoption';
 import ApiResponse from './ApiResponse';
 
 /**
@@ -58,7 +58,7 @@ class AdoptionStatusGet200Response {
                 obj['message'] = ApiClient.convertToType(data['message'], 'String');
             }
             if (data.hasOwnProperty('payload')) {
-                obj['payload'] = ApiClient.convertToType(data['payload'], [AdoptionStatusGet200ResponseAllOfPayloadInner]);
+                obj['payload'] = ApiClient.convertToType(data['payload'], [Adoption]);
             }
         }
         return obj;
@@ -81,7 +81,7 @@ class AdoptionStatusGet200Response {
             }
             // validate the optional field `payload` (array)
             for (const item of data['payload']) {
-                AdoptionStatusGet200ResponseAllOfPayloadInner.validateJSON(item);
+                Adoption.validateJSON(item);
             };
         }
 
@@ -104,7 +104,7 @@ AdoptionStatusGet200Response.prototype['success'] = undefined;
 AdoptionStatusGet200Response.prototype['message'] = undefined;
 
 /**
- * @member {Array.<module:model/AdoptionStatusGet200ResponseAllOfPayloadInner>} payload
+ * @member {Array.<module:model/Adoption>} payload
  */
 AdoptionStatusGet200Response.prototype['payload'] = undefined;
 

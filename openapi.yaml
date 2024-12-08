@@ -258,14 +258,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: Buddy
-                comments:
-                  type: string
-                  example: Friendly and playful
+              $ref: '#/components/schemas/Pet'
       responses:
         '201':
           description: Pet added successfully
@@ -381,17 +374,13 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: Buddy
-                comments:
-                  type: string
-                  example: Updated comments about Buddy
+              $ref: '#/components/schemas/Pet'
       responses:
         '200':
           description: Pet profile updated successfully
+          $ref: '#/components/responses/GenericApiResponse'
+        '400':
+          description: Invalid pet profile data
           $ref: '#/components/responses/GenericApiResponse'
 
   /pet/delete-profile/{petId}:
@@ -416,15 +405,6 @@ paths:
           $ref: '#/components/responses/GenericApiResponse'
         '400':
           description: Invalid pet profile value
-          $ref: '#/components/responses/GenericApiResponse'
-        '401':
-          description: Unauthorized access.
-          $ref: '#/components/responses/GenericApiResponse'
-        '403':
-          description: Forbidden. User does not have permission to delete this profile.
-          $ref: '#/components/responses/GenericApiResponse'
-        '404':
-          description: Pet not found.
           $ref: '#/components/responses/GenericApiResponse'
 
   /matching/recommendations:
@@ -516,6 +496,57 @@ paths:
           description: Recommendation rejected
           $ref: '#/components/responses/GenericApiResponse'
 
+  /adoption/{id}/cancel:
+    put:
+      tags:
+        - adoption
+      summary: Cancel adoption
+      security:
+        - BearerAuth: [ ]
+      description: Adopter cancels adoption
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the adoption to cancel
+      responses:
+        '200':
+          description: Adoption canceled sussessfuly
+          $ref: '#/components/responses/GenericApiResponse'
+        '401':
+          description: Unauthorized access
+          $ref: '#/components/responses/GenericApiResponse'
+
+  /adoption/{id}/status:
+    put:
+      tags:
+        - adoption
+      summary: Retrieve adoption status
+      security:
+        - BearerAuth: [ ]
+      description: Fetches the current status of adoptions for the authenticated adopter.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the adoption to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Adoption'
+      responses:
+        '200':
+          description: Adoption updated sussessfuly
+          $ref: '#/components/responses/GenericApiResponse'
+        '401':
+          description: Unauthorized access
+          $ref: '#/components/responses/GenericApiResponse'
 
   /adoption/status:
     get:
@@ -538,20 +569,7 @@ paths:
                       payload:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            adoptionId:
-                              type: string
-                              example: "adf23ee..."
-                            petId:
-                              type: string
-                              example: "adf23ee..."
-                            status:
-                              $ref: '#/components/schemas/AdoptionStatus'
-                            date:
-                              type: string
-                              format: date
-                              example: '2023-05-15'
+                          $ref: '#/components/schemas/Adoption'
         '401':
           description: Unauthorized access
           $ref: '#/components/responses/GenericApiResponse'
@@ -645,11 +663,37 @@ components:
     AdoptionStatus:
       type: string
       enum:
-        - new
-        - pending
-        - approved
-        - rejected
-      example: new
+        - Submitted
+        - Reviewing
+        - Waitlisted
+        - Interviewing
+        - Decision Making
+        - Adopted
+        - Rejected
+        - Cancelled
+      example: Submitted
+
+    Adoption:
+      properties:
+        adoptionId:
+          type: string
+          example: "0adf23ff..."
+        adopterId:
+          type: string
+          example: "0adf23ff..."
+        shelterUserId:
+          type: string
+          example: "0adf23ff..."
+        pet:
+          $ref: '#/components/schemas/Pet'
+        adopter:
+          $ref: '#/components/schemas/User'
+        status:
+          $ref: '#/components/schemas/AdoptionStatus'
+        date:
+          type: string
+          format: date
+          example: '2023-05-15'
 
     Pet:
       properties:
@@ -662,10 +706,8 @@ components:
         petName:
           type: string
           example: "Snooppy"
-        images:
-          type: array
-          items:
-            type: string
+        imageUrl:
+          type: string
           example: ["http://some.site/images/image.jpg"]
       additionalProperties:
         type: string

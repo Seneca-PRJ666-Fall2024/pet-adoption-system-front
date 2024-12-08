@@ -13,9 +13,9 @@
 
 
 import ApiClient from './ApiClient';
+import Adoption from './model/Adoption';
 import AdoptionStatus from './model/AdoptionStatus';
 import AdoptionStatusGet200Response from './model/AdoptionStatusGet200Response';
-import AdoptionStatusGet200ResponseAllOfPayloadInner from './model/AdoptionStatusGet200ResponseAllOfPayloadInner';
 import AdoptionStoryGet200Response from './model/AdoptionStoryGet200Response';
 import AdoptionStoryGet200ResponseAllOfPayloadInner from './model/AdoptionStoryGet200ResponseAllOfPayloadInner';
 import ApiResponse from './model/ApiResponse';
@@ -23,10 +23,8 @@ import MatchingRecommendationIdAcceptPut201Response from './model/MatchingRecomm
 import MatchingRecommendationNextGet200Response from './model/MatchingRecommendationNextGet200Response';
 import MatchingRecommendationsGet200Response from './model/MatchingRecommendationsGet200Response';
 import Pet from './model/Pet';
-import PetAddProfilePostRequest from './model/PetAddProfilePostRequest';
 import PetGetProfileGet200Response from './model/PetGetProfileGet200Response';
 import PetGetProfilePetIdGet200Response from './model/PetGetProfilePetIdGet200Response';
-import PetUpdateProfilePutRequest from './model/PetUpdateProfilePutRequest';
 import Recommendation from './model/Recommendation';
 import RecommendationStatus from './model/RecommendationStatus';
 import Role from './model/Role';
@@ -82,6 +80,12 @@ export {
     ApiClient,
 
     /**
+     * The Adoption model constructor.
+     * @property {module:model/Adoption}
+     */
+    Adoption,
+
+    /**
      * The AdoptionStatus model constructor.
      * @property {module:model/AdoptionStatus}
      */
@@ -92,12 +96,6 @@ export {
      * @property {module:model/AdoptionStatusGet200Response}
      */
     AdoptionStatusGet200Response,
-
-    /**
-     * The AdoptionStatusGet200ResponseAllOfPayloadInner model constructor.
-     * @property {module:model/AdoptionStatusGet200ResponseAllOfPayloadInner}
-     */
-    AdoptionStatusGet200ResponseAllOfPayloadInner,
 
     /**
      * The AdoptionStoryGet200Response model constructor.
@@ -142,12 +140,6 @@ export {
     Pet,
 
     /**
-     * The PetAddProfilePostRequest model constructor.
-     * @property {module:model/PetAddProfilePostRequest}
-     */
-    PetAddProfilePostRequest,
-
-    /**
      * The PetGetProfileGet200Response model constructor.
      * @property {module:model/PetGetProfileGet200Response}
      */
@@ -158,12 +150,6 @@ export {
      * @property {module:model/PetGetProfilePetIdGet200Response}
      */
     PetGetProfilePetIdGet200Response,
-
-    /**
-     * The PetUpdateProfilePutRequest model constructor.
-     * @property {module:model/PetUpdateProfilePutRequest}
-     */
-    PetUpdateProfilePutRequest,
 
     /**
      * The Recommendation model constructor.

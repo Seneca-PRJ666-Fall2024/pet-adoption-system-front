@@ -14,10 +14,9 @@
 
 import ApiClient from "../ApiClient";
 import ApiResponse from '../model/ApiResponse';
-import PetAddProfilePostRequest from '../model/PetAddProfilePostRequest';
+import Pet from '../model/Pet';
 import PetGetProfileGet200Response from '../model/PetGetProfileGet200Response';
 import PetGetProfilePetIdGet200Response from '../model/PetGetProfilePetIdGet200Response';
-import PetUpdateProfilePutRequest from '../model/PetUpdateProfilePutRequest';
 import UserUploadImagePost200Response from '../model/UserUploadImagePost200Response';
 
 /**
@@ -50,15 +49,15 @@ export default class PetApi {
     /**
      * Add a new pet profile to the system
      * Add a new pet profile to the system.
-     * @param {module:model/PetAddProfilePostRequest} petAddProfilePostRequest 
+     * @param {module:model/Pet} pet 
      * @param {module:api/PetApi~petAddProfilePostCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/ApiResponse}
      */
-    petAddProfilePost(petAddProfilePostRequest, callback) {
-      let postBody = petAddProfilePostRequest;
-      // verify the required parameter 'petAddProfilePostRequest' is set
-      if (petAddProfilePostRequest === undefined || petAddProfilePostRequest === null) {
-        throw new Error("Missing the required parameter 'petAddProfilePostRequest' when calling petAddProfilePost");
+    petAddProfilePost(pet, callback) {
+      let postBody = pet;
+      // verify the required parameter 'pet' is set
+      if (pet === undefined || pet === null) {
+        throw new Error("Missing the required parameter 'pet' when calling petAddProfilePost");
       }
 
       let pathParams = {
@@ -214,15 +213,15 @@ export default class PetApi {
 
     /**
      * Update pet profile
-     * @param {module:model/PetUpdateProfilePutRequest} petUpdateProfilePutRequest 
+     * @param {module:model/Pet} pet 
      * @param {module:api/PetApi~petUpdateProfilePutCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/ApiResponse}
      */
-    petUpdateProfilePut(petUpdateProfilePutRequest, callback) {
-      let postBody = petUpdateProfilePutRequest;
-      // verify the required parameter 'petUpdateProfilePutRequest' is set
-      if (petUpdateProfilePutRequest === undefined || petUpdateProfilePutRequest === null) {
-        throw new Error("Missing the required parameter 'petUpdateProfilePutRequest' when calling petUpdateProfilePut");
+    petUpdateProfilePut(pet, callback) {
+      let postBody = pet;
+      // verify the required parameter 'pet' is set
+      if (pet === undefined || pet === null) {
+        throw new Error("Missing the required parameter 'pet' when calling petUpdateProfilePut");
       }
 
       let pathParams = {

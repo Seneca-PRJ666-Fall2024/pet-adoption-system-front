@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, Image, Card } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import {Container, Row, Col, Image, Card, Modal, Button} from "react-bootstrap";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,11 +9,13 @@ import petImage from "../assets/images/dog-faces.jpg"; // Replace with actual pl
 import "../styles/Home.css";
 import { initBackendApi } from './BackendApi';
 import AuthContext from "../context/AuthContext";
+import PetManagement from "./PetManagement";
+import NewPetAdoptionApplication from "./NewPetAdoptionApplication";
 
 const PetMatching = () => {
+  const navigate = useNavigate();
 
   const { token } = useContext(AuthContext);
-
 
   const [backendApi, setBackendApi] = useState(null);
   useEffect(() => {
@@ -75,7 +78,6 @@ const PetMatching = () => {
     if (!currentRecommendation || !backendApi) return;
 
     if (preferenceChecked) {
-      // User accepted the recommendation
       try {
         backendApi.matching.matchingRecommendationIdAcceptPut(currentRecommendation.id, (error, data, response) => {
           if (error) {
@@ -85,7 +87,8 @@ const PetMatching = () => {
           }
           // Fetch the next pet recommendation after handling the current one
         });
-        fetchNextPet();
+        alert("You have successfuly started new adoption");
+        navigate('/adoption');
       } catch (error) {
         console.error("Error accepting recommendation:", error);
         // Still fetch the next pet even if there's an error
@@ -134,7 +137,7 @@ const PetMatching = () => {
                   </Col>
                   <Col xs="auto">
                     <Image
-                        src={Array.isArray(currentPet.images) && currentPet.images.length > 0 ? backendApi.imagePath(currentPet.images[0]) : ''}
+                        src={currentPet.imageUrl ? backendApi.imagePath(currentPet.imageUrl) : ''}
                         alt="Pet"
                         roundedCircle
                         style={{width: "300px", height: "300px", margin: "0 60px"}}

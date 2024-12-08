@@ -60,8 +60,8 @@ class Pet {
             if (data.hasOwnProperty('petName')) {
                 obj['petName'] = ApiClient.convertToType(data['petName'], 'String');
             }
-            if (data.hasOwnProperty('images')) {
-                obj['images'] = ApiClient.convertToType(data['images'], ['String']);
+            if (data.hasOwnProperty('imageUrl')) {
+                obj['imageUrl'] = ApiClient.convertToType(data['imageUrl'], 'String');
             }
         }
         return obj;
@@ -85,9 +85,9 @@ class Pet {
         if (data['petName'] && !(typeof data['petName'] === 'string' || data['petName'] instanceof String)) {
             throw new Error("Expected the field `petName` to be a primitive type in the JSON string but got " + data['petName']);
         }
-        // ensure the json data is an array
-        if (!Array.isArray(data['images'])) {
-            throw new Error("Expected the field `images` to be an array in the JSON data but got " + data['images']);
+        // ensure the json data is a string
+        if (data['imageUrl'] && !(typeof data['imageUrl'] === 'string' || data['imageUrl'] instanceof String)) {
+            throw new Error("Expected the field `imageUrl` to be a primitive type in the JSON string but got " + data['imageUrl']);
         }
 
         return true;
@@ -114,9 +114,9 @@ Pet.prototype['shelterUserId'] = undefined;
 Pet.prototype['petName'] = undefined;
 
 /**
- * @member {Array.<String>} images
+ * @member {String} imageUrl
  */
-Pet.prototype['images'] = undefined;
+Pet.prototype['imageUrl'] = undefined;
 
 
 

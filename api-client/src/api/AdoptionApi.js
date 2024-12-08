@@ -13,6 +13,7 @@
 
 
 import ApiClient from "../ApiClient";
+import Adoption from '../model/Adoption';
 import AdoptionStatusGet200Response from '../model/AdoptionStatusGet200Response';
 import AdoptionStoryGet200Response from '../model/AdoptionStoryGet200Response';
 import ApiResponse from '../model/ApiResponse';
@@ -35,6 +36,97 @@ export default class AdoptionApi {
         this.apiClient = apiClient || ApiClient.instance;
     }
 
+
+    /**
+     * Callback function to receive the result of the adoptionIdCancelPut operation.
+     * @callback module:api/AdoptionApi~adoptionIdCancelPutCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/ApiResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Cancel adoption
+     * Adopter cancels adoption
+     * @param {String} id The ID of the adoption to cancel
+     * @param {module:api/AdoptionApi~adoptionIdCancelPutCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/ApiResponse}
+     */
+    adoptionIdCancelPut(id, callback) {
+      let postBody = null;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling adoptionIdCancelPut");
+      }
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['BearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = ApiResponse;
+      return this.apiClient.callApi(
+        '/adoption/{id}/cancel', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the adoptionIdStatusPut operation.
+     * @callback module:api/AdoptionApi~adoptionIdStatusPutCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/ApiResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve adoption status
+     * Fetches the current status of adoptions for the authenticated adopter.
+     * @param {String} id The ID of the adoption to update
+     * @param {module:model/Adoption} adoption 
+     * @param {module:api/AdoptionApi~adoptionIdStatusPutCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/ApiResponse}
+     */
+    adoptionIdStatusPut(id, adoption, callback) {
+      let postBody = adoption;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling adoptionIdStatusPut");
+      }
+      // verify the required parameter 'adoption' is set
+      if (adoption === undefined || adoption === null) {
+        throw new Error("Missing the required parameter 'adoption' when calling adoptionIdStatusPut");
+      }
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['BearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = ApiResponse;
+      return this.apiClient.callApi(
+        '/adoption/{id}/status', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
 
     /**
      * Callback function to receive the result of the adoptionStatusGet operation.

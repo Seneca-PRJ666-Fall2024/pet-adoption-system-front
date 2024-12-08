@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
   Container,
   Table,
@@ -12,113 +12,21 @@ import FooterComponent from "./FooterComponent";
 import NewPetAdoptionApplication from "./NewPetAdoptionApplication"; // Import the new component
 import "../styles/AdoptionManagement.css";
 import AuthContext from "../context/AuthContext";
+import {initBackendApi} from "./BackendApi";
 
 const AdoptionManagement = () => {
 
-    const { userRole } = useContext(AuthContext);
+    const { userRole, token } = useContext(AuthContext);
+    const [backendApi, setBackendApi] = useState(null);
+    useEffect(() => {
+        if (token) {
+            const apiInstance = initBackendApi(token);
+            setBackendApi(apiInstance);
+        }
+    }, [token]);
 
-  const [applications, setApplications] = useState([
-    {
-        id: 1,
-        petName: "Buddy",
-        petType: "Dog",
-        petAge: "2 years",
-        petGender: "Male",
-        status: "Waitlisted",
-        petBreed: "Poodle",
-        adopterInfoType: "new",
-        existingAdopterId: "",
-        adopterName: "John Doe",
-        dateOfBirth: "1990-01-01",
-        contactNumber: "123-456-7890",
-        email: "john@example.com",
-        homeAddress: "123 Main St",
-        housingType: "House",
-        rentOrOwn: "own",
-        landlordContact: "",
-        fencedYard: "Yes",
-        activeLifestyle: "Very active",
-        hoursAlone: "2",
-        crateTraining: "Yes",
-        sleepingArrangements: "Inside",
-        priorExperience: "Yes",
-        currentPets: "None",
-        vetContact: "Dr. Smith, 987-654-3210",
-        exercisePlan: "Daily walks",
-        groomingPlan: "Weekly grooming",
-        travelPlan: "Pet sitter",
-        behavioralExpectations: "Well-behaved",
-        commitmentAcknowledgement: true,
-        references: "Jane Doe, 555-123-4567",
-
-    },
-    {
-        id: 2,
-        petName: "Max",
-        petType: "Dog",
-        petAge: "4 years",
-        petGender: "Male",
-        status: "Interviewing",
-        petBreed: "Chihuahua",
-        adopterInfoType: "existing",
-        existingAdopterId: "1",
-        adopterName: "Jane Smith",
-        dateOfBirth: "1985-05-15",
-        contactNumber: "987-654-3210",
-        email: "jane@example.com",
-        homeAddress: "456 Elm St",
-        housingType: "Apartment",
-        rentOrOwn: "rent",
-        landlordContact: "Mr. Johnson, 123-789-4560",
-        fencedYard: "No",
-        activeLifestyle: "Moderately active",
-        hoursAlone: "4",
-        crateTraining: "No",
-        sleepingArrangements: "On the bed",
-        priorExperience: "No",
-        currentPets: "One cat, 2 years old",
-        vetContact: "Dr. Brown, 123-123-1234",
-        exercisePlan: "Walks every evening",
-        groomingPlan: "Monthly grooming",
-        travelPlan: "Take with us",
-        behavioralExpectations: "Calm and quiet",
-        commitmentAcknowledgement: true,
-        references: "Bob Johnson, 555-987-6543",
-    },
-    {
-        id: 3,
-        petName: "Bella",
-        petType: "Cat",
-        petAge: "3 years",
-        petGender: "Female",
-        status: "Rejected",
-        petBreed: "American Bobtail",
-        adopterInfoType: "new",
-        existingAdopterId: "",
-        adopterName: "Mike Wilson",
-        dateOfBirth: "1992-02-20",
-        contactNumber: "321-654-9870",
-        email: "mike@example.com",
-        homeAddress: "789 Oak St",
-        housingType: "Townhouse",
-        rentOrOwn: "own",
-        landlordContact: "",
-        fencedYard: "No",
-        activeLifestyle: "Quiet",
-        hoursAlone: "6",
-        crateTraining: "No",
-        sleepingArrangements: "In a pet bed",
-        priorExperience: "Yes, with dogs",
-        currentPets: "None",
-        vetContact: "Dr. Green, 456-789-0123",
-        exercisePlan: "Playtime indoors",
-        groomingPlan: "Brushing twice a week",
-        travelPlan: "Boarding facility",
-        behavioralExpectations: "Playful but calm",
-        commitmentAcknowledgement: true,
-        references: "Sarah Lee, 444-555-6666",
-    },
-  ]);
+    const [applications, setApplications] = useState([]);
+    const [petAttributes, setPetAttributes] = useState([])
 
   const [existingAdopters, setExistingAdopters] = useState([
     {
@@ -145,11 +53,7 @@ const AdoptionManagement = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [applicationToCancel, setApplicationToCancel] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [currentStatusChange, setCurrentStatusChange] = useState({
-    applicationId: null,
-    currentStatus: "",
-    newStatus: "",
-  });
+  const [currentStatusChange, setCurrentStatusChange] = useState({});
 
   const [newApplication, setNewApplication] = useState({
     petName: "",
@@ -163,6 +67,53 @@ const AdoptionManagement = () => {
     reasonForAdoption: "",
     housingType: "",
   });
+
+    useEffect(() => {
+        if (!backendApi) return;
+        fetchAdoptions();
+    }, [backendApi]);
+
+    const fetchAdoptions = async () => {
+        if (!backendApi) {
+            console.error("Backend API is not initialized");
+            return;
+        }
+
+        try {
+            backendApi.adoption.adoptionStatusGet((error, data, response) => {
+                if (error) {
+                    console.error("Error fetching adoptions:", error);
+                    return;
+                }
+
+                if (data && Array.isArray(data.payload)) {
+                    console.log("Fetched adoptions:", data);
+                    setApplications(data.payload);
+
+                    // Collect unique keys from pet profiles, excluding certain keys
+                    const excludedKeys = new Set(["petName", "petId", "imageUrl", "shelterUserId"]);
+                    const uniqueAttributes = new Set();
+
+                    data.payload.forEach((adoption) => {
+                        if(adoption && adoption.pet){
+                            Object.entries(adoption.pet).forEach(([key, value]) => {
+                                if (value !== null && value !== undefined && value !== "" && !excludedKeys.has(key)) {
+                                    uniqueAttributes.add(key);
+                                }
+                            });
+                        }
+                    });
+
+                    // Set the unique attributes
+                    setPetAttributes(Array.from(uniqueAttributes));
+                } else {
+                    console.error("Incorrect response for pet recommendation: ", data);
+                }
+            });
+        } catch (error) {
+            console.error("Error fetching next pet recommendation:", error);
+        }
+    };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -196,19 +147,8 @@ const AdoptionManagement = () => {
               phoneNumber: newApplication.phoneNumber,
             };
 
-      const newApp = {
-        id: applications.length + 1,
-        petName: newApplication.petName,
-        petType: "Unknown", // Default value for testing
-        petAge: "Unknown", // Default value for testing
-        petGender: "Unknown", // Default value for testing
-        adopterInfo,
-        status: "Submitted",
-        progress: 10, // Initial progress for a new submission
-      };
-
       // Simulate sending data to the server
-      setApplications((prevApps) => [...prevApps, newApp]);
+      // setApplications((prevApps) => [...prevApps, newApp]);
       setShowModal(false);
       setNewApplication({
         petName: "",
@@ -228,17 +168,31 @@ const AdoptionManagement = () => {
     }
   };
 
-  const handleCancelApplication = (id) => {
-    setApplicationToCancel(id);
+  const handleCancelApplication = (adoptionId) => {
+    setApplicationToCancel(adoptionId);
     setShowCancelModal(true);
   };
 
-  const confirmCancelApplication = () => {
-    setApplications((prevApps) =>
-      prevApps.map((app) =>
-        app.id === applicationToCancel ? { ...app, status: "Cancelled", progress: 0 } : app
-      )
-    );
+  const confirmCancelApplication = async () => {
+      try {
+          if(applicationToCancel){
+              await new Promise((resolve, reject) => {
+                  backendApi.adoption.adoptionIdCancelPut(applicationToCancel, (error, data, response) => {
+                      if (error) {
+                          reject(error);
+                      } else {
+                          resolve(data);
+                      }
+                  });
+              });
+              console.log("Pet profile deleted successfully.");
+              setApplicationToCancel(null);
+              fetchAdoptions();
+          }
+      } catch (error) {
+          console.error("API call failed:", error.message);
+          throw new Error("Failed to delete pet profile: " + error.message);
+      }
     setShowCancelModal(false);
   };
 
@@ -253,21 +207,34 @@ const AdoptionManagement = () => {
     return "warning";
   };
 
-  const handleStatusChangeRequest = (id, currentStatus, newStatus) => {
-    setCurrentStatusChange({ applicationId: id, currentStatus, newStatus });
+  const handleStatusChangeRequest = (adoption, currentStatus, newStatus) => {
+    setCurrentStatusChange({ adoption, currentStatus, newStatus });
     setShowConfirmModal(true);
   };
 
-  const handleConfirmStatusChange = () => {
-    const { applicationId, newStatus } = currentStatusChange;
+  const handleConfirmStatusChange = async () => {
+    const { adoption, _, newStatus  } = currentStatusChange;
 
-    setApplications((prevApplications) =>
-      prevApplications.map((application) =>
-        application.id === applicationId
-          ? { ...application, status: newStatus }
-          : application
-      )
-    );
+      try {
+          if(adoption && newStatus){
+              adoption.status = newStatus;
+              await new Promise((resolve, reject) => {
+                  backendApi.adoption.adoptionIdStatusPut(adoption.adoptionId, adoption, (error, data, response) => {
+                      if (error) {
+                          reject(error);
+                      } else {
+                          resolve(data);
+                      }
+                  });
+              });
+              console.log("Adoption status was updated successfully.");
+              setCurrentStatusChange({});
+              fetchAdoptions();
+          }
+      } catch (error) {
+          console.error("API call failed:", error.message);
+          throw new Error("Failed to delete pet profile: " + error.message);
+      }
 
     setShowConfirmModal(false);
   };
@@ -308,24 +275,27 @@ const AdoptionManagement = () => {
     <>
       <NavbarComponent/>
       <Container className="my-4">
-        <div className="d-flex justify-content-between align-items-center">
-          <h3>Your Adoption Applications</h3>
-          {userRole === "adopter" && (
-            <Button variant="success" onClick={() => setShowModal(true)}>
-              Create New Application
-            </Button>
-          )}
-        </div>
+        {/*<div className="d-flex justify-content-between align-items-center">*/}
+        {/*  <h3>Your Adoption Applications</h3>*/}
+        {/*  {userRole === "adopter" && (*/}
+        {/*    <Button variant="success" onClick={() => setShowModal(true)}>*/}
+        {/*      Create New Application*/}
+        {/*    </Button>*/}
+        {/*  )}*/}
+        {/*</div>*/}
 
         <Table striped bordered hover className="mt-3">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Pet Name</th>
-              <th>Pet Type</th>
-              <th>Pet Age</th>
-              <th>Pet Breed</th>
-              <th>Pet Gender</th>
+                <th>#</th>
+                <th>Photo</th>
+                <th>Pet Name</th>
+                {userRole === "shelter" && (
+                    <th>Adopter Name</th>
+                )}
+                {petAttributes.map((attribute) => (
+                    <th key={attribute}>{attribute}</th>
+                ))}
               <th>Status</th>
               <th>Progress</th>
               <th>Actions</th>
@@ -333,20 +303,26 @@ const AdoptionManagement = () => {
           </thead>
           <tbody>
             {applications.map((app, index) => (
-              <tr key={app.id}>
-                <td>{index + 1}</td>
-                <td>{app.petName}</td>
-                <td>{app.petType}</td>
-                <td>{app.petAge}</td>
-                <td>{app.petBreed}</td>
-                <td>{app.petGender}</td>
+              <tr key={app.adoptionId}>
+                  <td>{index + 1}</td>
+                  <td>
+                      <img src={app.pet.imageUrl ? backendApi.imagePath(app.pet.imageUrl) : ''}
+                           alt="Preview" style={{height: "40px"}}/>
+                  </td>
+                  <td>{app.pet.petName}</td>
+                  {userRole === "shelter" && (
+                      <td>{app.adopter.username}</td>
+                  )}
+                  {petAttributes.map((attribute) => (
+                      <td key={attribute}>{app.pet[attribute] || '-'}</td>
+                  ))}
                 <td>
                   {userRole === "shelter" ? (
                     <Form.Select
                       value={app.status}
                       onChange={(e) =>
                         handleStatusChangeRequest(
-                          app.id,
+                          app,
                           app.status,
                           e.target.value
                         )
@@ -381,7 +357,7 @@ const AdoptionManagement = () => {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleCancelApplication(app.id)}
+                    onClick={() => handleCancelApplication(app.adoptionId)}
                   >
                     Cancel
                   </Button>
@@ -424,53 +400,59 @@ const AdoptionManagement = () => {
         </Modal.Header>
         <Modal.Body>
           {currentApplication && (
-            <>
-              <p><strong>Application Status:</strong> {currentApplication.status}</p>
-              <p style={{ 
-               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
-               width: '100%',                    // Centered at 50% width
-              }} />
-              <p><strong>Pet Name:</strong> {currentApplication.petName}</p>
-              <p><strong>Pet Type:</strong> {currentApplication.petType}</p>
-              <p><strong>Pet Age:</strong> {currentApplication.petAge}</p>
-              <p><strong>Pet Breed:</strong> {currentApplication.petBreed}</p>
-              <p><strong>Pet Gender:</strong> {currentApplication.petGender}</p>
-              <p style={{ 
-               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
-               width: '100%',                    // Centered at 50% width
-              }} />
-              <p><strong>Adopter Info Type:</strong> {currentApplication.adopterInfoType}</p>
-              <p><strong>Adopter Name:</strong> {currentApplication.adopterName}</p>
-              <p><strong>Date of Birth:</strong> {currentApplication.dateOfBirth}</p>
-              <p><strong>Contact Number:</strong> {currentApplication.contactNumber}</p>
-              <p><strong>Email:</strong> {currentApplication.email}</p>
-              <p><strong>Home Address:</strong> {currentApplication.homeAddress}</p>
-              <p style={{ 
-               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
-               width: '100%',                    // Centered at 50% width
-              }} />
-              <p><strong>Housing Type:</strong> {currentApplication.housingType}</p>
-              <p><strong>Rent or Own:</strong> {currentApplication.rentOrOwn}</p>
-              <p><strong>Landlord Contact:</strong> {currentApplication.landlordContact}</p>
-              <p><strong>Fenced Yard:</strong> {currentApplication.fencedYard}</p>
-              <p><strong>Active Lifestyle:</strong> {currentApplication.activeLifestyle}</p>
-              <p><strong>Hours Alone:</strong> {currentApplication.hoursAlone}</p>
-              <p><strong>Crate Training:</strong> {currentApplication.crateTraining}</p>
-              <p><strong>Sleeping Arrangements:</strong> {currentApplication.sleepingArrangements}</p>
-              <p><strong>Prior Experience:</strong> {currentApplication.priorExperience}</p>
-              <p><strong>Current Pets:</strong> {currentApplication.currentPets}</p>
-              <p><strong>Vet Contact:</strong> {currentApplication.vetContact}</p>
-              <p><strong>Exercise Plan:</strong> {currentApplication.exercisePlan}</p>
-              <p><strong>Grooming Plan:</strong> {currentApplication.groomingPlan}</p>
-              <p><strong>Travel Plan:</strong> {currentApplication.travelPlan}</p>
-              <p><strong>Behavioral Expectations:</strong> {currentApplication.behavioralExpectations}</p>
-              <p><strong>Commitment Acknowledgement:</strong> {currentApplication.commitmentAcknowledgement ? "Yes" : "No"}</p>
-              <p><strong>References:</strong> {currentApplication.references}</p>
-            </>
+              <>
+                  <p><strong>Application Status:</strong> {currentApplication.status}</p>
+                  <p style={{
+                      borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
+                      width: '100%',                    // Centered at 50% width
+                  }}/>
+                  <img src={backendApi.imagePath(currentApplication.pet.imageUrl) || ""} alt="Pet Image" style={{width: "200px"}}/>
+                  <p><strong>Pet Name:</strong> {currentApplication.pet.petName}</p>
+                  <p><strong>Pet Type:</strong> {currentApplication.pet.petType}</p>
+                  <p><strong>Pet Age:</strong> {currentApplication.pet.petAge}</p>
+                  <p><strong>Pet Breed:</strong> {currentApplication.pet.petBreed}</p>
+                  <p><strong>Pet Gender:</strong> {currentApplication.pet.petGender}</p>
+                  <p style={{
+                      borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
+                      width: '100%',                    // Centered at 50% width
+                  }}/>
+                  <img src={backendApi.imagePath(currentApplication.adopter.imageUrl) || ""} alt="Adopter Image"
+                       style={{width: "200px"}}/>
+                  <p><strong>Adopter Name:</strong> {currentApplication.adopter.username}</p>
+                  <p><strong>Date of Birth:</strong> {currentApplication.dateOfBirth}</p>
+                  <p><strong>Contact Number:</strong> {currentApplication.adopter.phone}</p>
+                  <p><strong>Email:</strong> {currentApplication.adopter.email}</p>
+                  <p><strong>Home Address:</strong> {currentApplication.adopter.address}</p>
+                  <p><strong>City:</strong> {currentApplication.adopter.city}</p>
+                  <p><strong>Province:</strong> {currentApplication.adopter.province}</p>
+                  <p><strong>Postal Code:</strong> {currentApplication.adopter.postalCode}</p>
+                  <p style={{
+                      borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
+                      width: '100%',                    // Centered at 50% width
+                  }}/>
+                  <p><strong>Housing Type:</strong> {currentApplication.housingType}</p>
+                  <p><strong>Rent or Own:</strong> {currentApplication.rentOrOwn}</p>
+                  <p><strong>Landlord Contact:</strong> {currentApplication.landlordContact}</p>
+                  <p><strong>Fenced Yard:</strong> {currentApplication.fencedYard}</p>
+                  <p><strong>Active Lifestyle:</strong> {currentApplication.activeLifestyle}</p>
+                  <p><strong>Hours Alone:</strong> {currentApplication.hoursAlone}</p>
+                  <p><strong>Crate Training:</strong> {currentApplication.crateTraining}</p>
+                  <p><strong>Sleeping Arrangements:</strong> {currentApplication.sleepingArrangements}</p>
+                  <p><strong>Prior Experience:</strong> {currentApplication.priorExperience}</p>
+                  <p><strong>Current Pets:</strong> {currentApplication.currentPets}</p>
+                  <p><strong>Vet Contact:</strong> {currentApplication.vetContact}</p>
+                  <p><strong>Exercise Plan:</strong> {currentApplication.exercisePlan}</p>
+                  <p><strong>Grooming Plan:</strong> {currentApplication.groomingPlan}</p>
+                  <p><strong>Travel Plan:</strong> {currentApplication.travelPlan}</p>
+                  <p><strong>Behavioral Expectations:</strong> {currentApplication.behavioralExpectations}</p>
+                  <p><strong>Commitment
+                      Acknowledgement:</strong> {currentApplication.commitmentAcknowledgement ? "Yes" : "No"}</p>
+                  <p><strong>References:</strong> {currentApplication.references}</p>
+              </>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+          <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
             Close
           </Button>
         </Modal.Footer>

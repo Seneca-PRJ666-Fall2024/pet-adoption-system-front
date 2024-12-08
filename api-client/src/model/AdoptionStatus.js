@@ -20,31 +20,59 @@ import ApiClient from '../ApiClient';
 export default class AdoptionStatus {
     
         /**
-         * value: "new"
+         * value: "Submitted"
          * @const
          */
-        "new" = "new";
+        "Submitted" = "Submitted";
 
     
         /**
-         * value: "pending"
+         * value: "Reviewing"
          * @const
          */
-        "pending" = "pending";
+        "Reviewing" = "Reviewing";
 
     
         /**
-         * value: "approved"
+         * value: "Waitlisted"
          * @const
          */
-        "approved" = "approved";
+        "Waitlisted" = "Waitlisted";
 
     
         /**
-         * value: "rejected"
+         * value: "Interviewing"
          * @const
          */
-        "rejected" = "rejected";
+        "Interviewing" = "Interviewing";
+
+    
+        /**
+         * value: "Decision Making"
+         * @const
+         */
+        "Decision Making" = "Decision Making";
+
+    
+        /**
+         * value: "Adopted"
+         * @const
+         */
+        "Adopted" = "Adopted";
+
+    
+        /**
+         * value: "Rejected"
+         * @const
+         */
+        "Rejected" = "Rejected";
+
+    
+        /**
+         * value: "Cancelled"
+         * @const
+         */
+        "Cancelled" = "Cancelled";
 
     
 

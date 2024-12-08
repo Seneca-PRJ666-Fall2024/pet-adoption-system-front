@@ -266,12 +266,12 @@ const AdoptionManagement = () => {
     <>
       <NavbarComponent/>
       <Container className="my-4">
-        <div className="d-flex justify-content-between align-items-center">
-          <h3>Your Adoption Applications</h3>
-          <Button variant="success" onClick={() => setShowModal(true)}>
-            Create New Application
-          </Button>
-        </div>
+        {/*<div className="d-flex justify-content-between align-items-center">*/}
+        {/*  <h3>Your Adoption Applications</h3>*/}
+        {/*  <Button variant="success" onClick={() => setShowModal(true)}>*/}
+        {/*    Create New Application*/}
+        {/*  </Button>*/}
+        {/*</div>*/}
 
         <Table striped bordered hover className="mt-3">
           <thead>

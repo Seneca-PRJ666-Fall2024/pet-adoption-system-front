@@ -8,12 +8,11 @@ import {initBackendApi} from "./BackendApi";
 
 function PetManagement({ petProfile, updateApplication, closeModal }) {
 
-    const { userRole, token } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
     const backendApi = initBackendApi(token);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [adoptionStatus, setAdoptionStatus] = useState(false);
   const fileInputRef = useRef(null);
   const handleUploadClick = () => fileInputRef.current?.click();
@@ -33,12 +32,6 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
         userText: "Does this pet have any behavioral challenges?",
       };
 
-      const handleClick = (e) => {
-        e.preventDefault();
-        console.log("Form data submitted:", formData);
-        alert("Form submitted");
-      };
-
     const handleFileChange = async (e) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -52,7 +45,7 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
                         } else if(data && data.payload) {
                             const imageUrl = backendApi.imagePath(data.payload);
                             setPreviewUrl(imageUrl);
-                            setImageUrl(data.payload); // Store the image URL for form submission
+                            petProfile.imageUrl = data.payload; // Store the image URL for form submission
                             resolve(data);
                         } else {
                             console.error("Incorrect API response: " + data);
@@ -71,37 +64,23 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
         setPreviewUrl(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       };
-    
-      const handlePetTypeChange = (e) => {
-        if (e.target && e.target.value) {
-            setPetType(e.target.value);
-            if (e.target.value !== "other") setOtherPetType("animal");
-          }
-      };
 
       const handleAdoptionStatusChange = () => setAdoptionStatus(!adoptionStatus);
 
-      const handleDeletePet = () => {
-        // need to add delete the pet logic to remove from database
-        console.log("Pet information deleted from the database.");
-        alert("Pet removed from the system.");
-      };
-
-      const handleInputChange = (e) => {
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
-          ...prev,
-          [name]: value,
+            ...prev,
+            [name]: value || '', // Ensure the key always exists with a default value
         }));
-      };
+    };
 
 
       useEffect(() => {
-        if(formData && Array.isArray(formData.images) && formData.images.length > 0) {
-            setImageUrl(formData.images[0])
-            setPreviewUrl(backendApi.imagePath(formData.images[0]))
+        if(formData && formData.imageUrl) {
+            setPreviewUrl(backendApi.imagePath(formData.imageUrl))
         }
-      }, [formData]);
+      }, [backendApi, formData]);
       
 
       const handleSave = () => {
@@ -109,14 +88,8 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
           alert("Please fill in all required fields.");
           return;
         }
-      
-        // If `id` already exists in the table, update the existing row
-        if (formData && formData.petId) {
-          updateApplication({ ...formData });
-        } else {
-          // Create a new pet profile
-          updateApplication({ ...formData, id: Date.now() }); // Use a unique ID
-        }
+
+        updateApplication({ ...formData });
       
         closeModal(); // Close the modal after saving
       };
@@ -191,34 +164,8 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
           <br />
             <Questionnaire
           questions={shelterQuestions}
-          formData={petProfile}
+          formData={formData}
           handleInputChange={handleInputChange}
-          // petName={petName}
-          // setPetName={setPetName}
-          // selectedGender={formData.selectedGender}
-          //   setSelectedGender={(value) =>
-          //     setFormData((prev) => ({ ...prev, selectedGender: value }))
-          //   }
-          // petType={petType}
-          // setPetType={setPetType}
-          // otherPetType={otherPetType}
-          // setOtherPetType={setOtherPetType}
-          // breedType={breedType}
-          // setBreedType={setBreedType}
-          // petColour={petColour}
-          // setPetColour={setPetColour}
-          // petSize={petSize}
-          // setPetSize={setPetSize}
-          // petActivityLevel={petActivityLevel}
-          // setPetActivityLevel={setPetActivityLevel}
-          // petEnvironment={petEnvironment}
-          // setPetEnvironment={setPetEnvironment}
-          // petSocial={petSocial}
-          // setPetSocial={setPetSocial}
-          // otherPetSocial={otherPetSocial}
-          // setOtherPetSocial={setOtherPetSocial}
-          // userText={userText}
-          // setUserText={setUserText}
         />
         <br />
         <div className={styles.buttonContainer}>
