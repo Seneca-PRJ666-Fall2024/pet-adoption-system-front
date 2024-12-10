@@ -14,6 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import Adoption from '../model/Adoption';
+import AdoptionPostRequest from '../model/AdoptionPostRequest';
 import AdoptionStatusGet200Response from '../model/AdoptionStatusGet200Response';
 import AdoptionStoryGet200Response from '../model/AdoptionStoryGet200Response';
 import ApiResponse from '../model/ApiResponse';
@@ -123,6 +124,48 @@ export default class AdoptionApi {
       let returnType = ApiResponse;
       return this.apiClient.callApi(
         '/adoption/{id}/status', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the adoptionPost operation.
+     * @callback module:api/AdoptionApi~adoptionPostCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/ApiResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Creates new adoption
+     * Creates new adoption
+     * @param {module:model/AdoptionPostRequest} adoptionPostRequest 
+     * @param {module:api/AdoptionApi~adoptionPostCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/ApiResponse}
+     */
+    adoptionPost(adoptionPostRequest, callback) {
+      let postBody = adoptionPostRequest;
+      // verify the required parameter 'adoptionPostRequest' is set
+      if (adoptionPostRequest === undefined || adoptionPostRequest === null) {
+        throw new Error("Missing the required parameter 'adoptionPostRequest' when calling adoptionPost");
+      }
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['BearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = ApiResponse;
+      return this.apiClient.callApi(
+        '/adoption', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

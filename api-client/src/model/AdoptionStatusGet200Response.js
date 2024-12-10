@@ -74,15 +74,9 @@ class AdoptionStatusGet200Response {
         if (data['message'] && !(typeof data['message'] === 'string' || data['message'] instanceof String)) {
             throw new Error("Expected the field `message` to be a primitive type in the JSON string but got " + data['message']);
         }
-        if (data['payload']) { // data not null
-            // ensure the json data is an array
-            if (!Array.isArray(data['payload'])) {
-                throw new Error("Expected the field `payload` to be an array in the JSON data but got " + data['payload']);
-            }
-            // validate the optional field `payload` (array)
-            for (const item of data['payload']) {
-                Adoption.validateJSON(item);
-            };
+        // ensure the json data is an array
+        if (!Array.isArray(data['payload'])) {
+            throw new Error("Expected the field `payload` to be an array in the JSON data but got " + data['payload']);
         }
 
         return true;

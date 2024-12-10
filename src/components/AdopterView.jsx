@@ -1,25 +1,65 @@
-import React from 'react';
-import {Container, Nav, Row} from 'react-bootstrap';
+import React, {useContext, useEffect, useState} from 'react';
+import {Container, Modal, Nav, Row} from 'react-bootstrap';
 import PetCard from './PetCard';
 import {Link} from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+import {initBackendApi} from "./BackendApi";
+import PetManagement from "./PetManagement";
+import PetProfile from "./PetProfile";
 // import catImage from '../assets/images/cat.jpg';
 // import dogImage from '../assets/images/dog.jpg';
 // import hamsterImage from '../assets/images/hamster.jpg';
 
 const AdopterView = () => {
+    const { token, userRole, userName } = useContext(AuthContext);
+    const [backendApi, setBackendApi] = useState(null);
+    const [recommendations, setRecommendations] = useState([]);
+
+    useEffect(() => {
+        if (token) {
+            const apiInstance = initBackendApi(token);
+            setBackendApi(apiInstance);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if (backendApi) {
+            try {
+                backendApi.matching.matchingRecommendationNextGet({num : 3},(error, data, response) => {
+                    if (error) {
+                        console.error("Error fetching next pet recommendation:", error);
+                    } else if (data && Array.isArray(data.payload)) {
+                        console.log("Fetched pet recommendation:", data);
+                        setRecommendations(data.payload);
+                    } else {
+                        console.error("Incorrect response for pet recommendation: ", data);
+                        setRecommendations(null);
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching next pet recommendation:", error);
+                setRecommendations(null);
+            }
+        }
+    }, [backendApi]);
+
   return (
     <>
       <Container className="text-center mt-4">
-        <h1>Welcome, Jessie!</h1>
+          <h1>Welcome, {userName}!</h1>
       </Container>
 
-      <Container className="mt-4">
+        <Container className="mt-4">
         <h3>Checkout available pet's status:</h3>
-        <Row className="mt-4 text-center">
-          <PetCard imageSrc='{catImage}' status="adopted" />
-          <PetCard imageSrc='{dogImage}' status="available" />
-          <PetCard imageSrc='{hamsterImage}' status="available" />
-        </Row>
+            <Row className="mt-4 text-center">
+                {recommendations && recommendations.map((rec) => (
+                    <PetCard
+                        key={rec.pet.petId}
+                        pet={rec.pet}
+                        imageSrc={rec.pet.imageUrl ? backendApi.imagePath(rec.pet.imageUrl) : ''}
+                    />
+                ))}
+            </Row>
       </Container>
 
       <Container className="mt-4">

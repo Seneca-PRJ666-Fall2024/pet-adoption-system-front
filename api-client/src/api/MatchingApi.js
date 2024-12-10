@@ -13,10 +13,8 @@
 
 
 import ApiClient from "../ApiClient";
-import ApiResponse from '../model/ApiResponse';
-import MatchingRecommendationIdAcceptPut201Response from '../model/MatchingRecommendationIdAcceptPut201Response';
-import MatchingRecommendationNextGet200Response from '../model/MatchingRecommendationNextGet200Response';
-import MatchingRecommendationsGet200Response from '../model/MatchingRecommendationsGet200Response';
+import MatchingRecommendationAcceptedGet200Response from '../model/MatchingRecommendationAcceptedGet200Response';
+import MatchingRecommendationIdAcceptPut200Response from '../model/MatchingRecommendationIdAcceptPut200Response';
 
 /**
 * Matching service.
@@ -38,10 +36,46 @@ export default class MatchingApi {
 
 
     /**
+     * Callback function to receive the result of the matchingRecommendationAcceptedGet operation.
+     * @callback module:api/MatchingApi~matchingRecommendationAcceptedGetCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/MatchingRecommendationAcceptedGet200Response} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get a list of accepted recommendations
+     * @param {module:api/MatchingApi~matchingRecommendationAcceptedGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/MatchingRecommendationAcceptedGet200Response}
+     */
+    matchingRecommendationAcceptedGet(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['BearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = MatchingRecommendationAcceptedGet200Response;
+      return this.apiClient.callApi(
+        '/matching/recommendation/accepted', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the matchingRecommendationIdAcceptPut operation.
      * @callback module:api/MatchingApi~matchingRecommendationIdAcceptPutCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/MatchingRecommendationIdAcceptPut201Response} data The data returned by the service call.
+     * @param {module:model/MatchingRecommendationIdAcceptPut200Response} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -49,7 +83,7 @@ export default class MatchingApi {
      * Accept a recommendation and create an adoption
      * @param {String} id The ID of the recommendation to accept
      * @param {module:api/MatchingApi~matchingRecommendationIdAcceptPutCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/MatchingRecommendationIdAcceptPut201Response}
+     * data is of type: {@link module:model/MatchingRecommendationIdAcceptPut200Response}
      */
     matchingRecommendationIdAcceptPut(id, callback) {
       let postBody = null;
@@ -71,7 +105,7 @@ export default class MatchingApi {
       let authNames = ['BearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = MatchingRecommendationIdAcceptPut201Response;
+      let returnType = MatchingRecommendationIdAcceptPut200Response;
       return this.apiClient.callApi(
         '/matching/recommendation/{id}/accept', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -83,7 +117,7 @@ export default class MatchingApi {
      * Callback function to receive the result of the matchingRecommendationIdRejectPut operation.
      * @callback module:api/MatchingApi~matchingRecommendationIdRejectPutCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/ApiResponse} data The data returned by the service call.
+     * @param {module:model/MatchingRecommendationIdAcceptPut200Response} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -91,7 +125,7 @@ export default class MatchingApi {
      * Reject a recommendation
      * @param {String} id The ID of the recommendation to reject
      * @param {module:api/MatchingApi~matchingRecommendationIdRejectPutCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/ApiResponse}
+     * data is of type: {@link module:model/MatchingRecommendationIdAcceptPut200Response}
      */
     matchingRecommendationIdRejectPut(id, callback) {
       let postBody = null;
@@ -113,7 +147,7 @@ export default class MatchingApi {
       let authNames = ['BearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = ApiResponse;
+      let returnType = MatchingRecommendationIdAcceptPut200Response;
       return this.apiClient.callApi(
         '/matching/recommendation/{id}/reject', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -125,21 +159,25 @@ export default class MatchingApi {
      * Callback function to receive the result of the matchingRecommendationNextGet operation.
      * @callback module:api/MatchingApi~matchingRecommendationNextGetCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/MatchingRecommendationNextGet200Response} data The data returned by the service call.
+     * @param {module:model/MatchingRecommendationAcceptedGet200Response} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
      * Get the next recommendation for the adopter
+     * @param {Object} opts Optional parameters
+     * @param {Number} [num = 1)] The number of recomendations to return
      * @param {module:api/MatchingApi~matchingRecommendationNextGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/MatchingRecommendationNextGet200Response}
+     * data is of type: {@link module:model/MatchingRecommendationAcceptedGet200Response}
      */
-    matchingRecommendationNextGet(callback) {
+    matchingRecommendationNextGet(opts, callback) {
+      opts = opts || {};
       let postBody = null;
 
       let pathParams = {
       };
       let queryParams = {
+        'num': opts['num']
       };
       let headerParams = {
       };
@@ -149,45 +187,9 @@ export default class MatchingApi {
       let authNames = ['BearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = MatchingRecommendationNextGet200Response;
+      let returnType = MatchingRecommendationAcceptedGet200Response;
       return this.apiClient.callApi(
         '/matching/recommendation/next', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
-      );
-    }
-
-    /**
-     * Callback function to receive the result of the matchingRecommendationsGet operation.
-     * @callback module:api/MatchingApi~matchingRecommendationsGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/MatchingRecommendationsGet200Response} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * Get a list of recommended pets based on preferences
-     * @param {module:api/MatchingApi~matchingRecommendationsGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/MatchingRecommendationsGet200Response}
-     */
-    matchingRecommendationsGet(callback) {
-      let postBody = null;
-
-      let pathParams = {
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = ['BearerAuth'];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = MatchingRecommendationsGet200Response;
-      return this.apiClient.callApi(
-        '/matching/recommendations', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

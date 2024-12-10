@@ -25,6 +25,7 @@ class Adoption {
     /**
      * Constructs a new <code>Adoption</code>.
      * @alias module:model/Adoption
+     * @extends Object
      */
     constructor() { 
         
@@ -49,6 +50,9 @@ class Adoption {
     static constructFromObject(data, obj) {
         if (data) {
             obj = obj || new Adoption();
+
+            ApiClient.constructFromObject(data, obj, 'String');
+            
 
             if (data.hasOwnProperty('adoptionId')) {
                 obj['adoptionId'] = ApiClient.convertToType(data['adoptionId'], 'String');

@@ -48,6 +48,9 @@ class UserLoginPost200ResponseAllOfPayload {
         if (data) {
             obj = obj || new UserLoginPost200ResponseAllOfPayload();
 
+            if (data.hasOwnProperty('username')) {
+                obj['username'] = ApiClient.convertToType(data['username'], 'String');
+            }
             if (data.hasOwnProperty('role')) {
                 obj['role'] = Role.constructFromObject(data['role']);
             }
@@ -68,6 +71,10 @@ class UserLoginPost200ResponseAllOfPayload {
      */
     static validateJSON(data) {
         // ensure the json data is a string
+        if (data['username'] && !(typeof data['username'] === 'string' || data['username'] instanceof String)) {
+            throw new Error("Expected the field `username` to be a primitive type in the JSON string but got " + data['username']);
+        }
+        // ensure the json data is a string
         if (data['token'] && !(typeof data['token'] === 'string' || data['token'] instanceof String)) {
             throw new Error("Expected the field `token` to be a primitive type in the JSON string but got " + data['token']);
         }
@@ -79,6 +86,11 @@ class UserLoginPost200ResponseAllOfPayload {
 }
 
 
+
+/**
+ * @member {String} username
+ */
+UserLoginPost200ResponseAllOfPayload.prototype['username'] = undefined;
 
 /**
  * @member {module:model/Role} role

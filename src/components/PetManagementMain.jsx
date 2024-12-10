@@ -11,6 +11,7 @@ import "../styles/AdoptionManagement.css";
 import PetManagement from "./PetManagement";
 import AuthContext from "../context/AuthContext";
 import {initBackendApi} from "./BackendApi";
+import { useLocation } from 'react-router-dom';
 
 const PetManagementMain = () => {
     const { userRole, token } = useContext(AuthContext);
@@ -22,8 +23,30 @@ const PetManagementMain = () => {
         }
     }, [token]);
 
-    const [shelterPets, setShelterPets] = useState([])
-    const [petAttributes, setPetAttributes] = useState([])
+    const [shelterPets, setShelterPets] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [currentPet, setCurrentPet] = useState(null);
+
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [applicationToDelete, setApplicationToDelete] = useState(null);
+
+    const location = useLocation();
+
+    useEffect(() => {
+        console.log("Location object:", location);
+        console.log("Location State:", location.state);
+        // if (petId) {
+        //     // Find the target pet only if it's not already being handled
+        //     const targetPet = data.payload.find(p => p.petId == petId);
+        //
+        //     if (targetPet && !showDetailsModal) {
+        //         handleViewDetails(targetPet);
+        //     } else {
+        //         console.warn("Target pet not found or modal already shown.");
+        //     }
+        // }
+    }, [location, shelterPets]);
 
     const fetchPetProfiles = async () => {
         if (!backendApi) {
@@ -41,21 +64,6 @@ const PetManagementMain = () => {
                 if (data && Array.isArray(data.payload)) {
                     console.log("Fetched pet recommendation:", data);
                     setShelterPets(data.payload);
-
-                    // Collect unique keys from pet profiles, excluding certain keys
-                    const excludedKeys = new Set(["petName", "petId", "imageUrl", "shelterUserId"]);
-                    const uniqueAttributes = new Set();
-
-                    data.payload.forEach((pet) => {
-                        Object.entries(pet).forEach(([key, value]) => {
-                            if (value !== null && value !== undefined && value !== "" && !excludedKeys.has(key)) {
-                                uniqueAttributes.add(key);
-                            }
-                        });
-                    });
-
-                    // Set the unique attributes
-                    setPetAttributes(Array.from(uniqueAttributes));
                 } else {
                     console.error("Incorrect response for pet recommendation: ", data);
                 }
@@ -68,13 +76,7 @@ const PetManagementMain = () => {
     useEffect(() => {
         if (!backendApi) return;
         fetchPetProfiles();
-    }, [backendApi]);
-
-  const [showModal, setShowModal] = useState(false);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [currentPet, setCurrentPet] = useState(null);
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [applicationToDelete, setApplicationToDelete] = useState(null);
+    }, [backendApi, location.search]);
 
     const handleViewDetails = (petData) => {
         setCurrentPet(petData);
@@ -160,9 +162,8 @@ const updateApplication = async (petData) => {
               <th>#</th>
               <th>Photo</th>
               <th>Pet Name</th>
-              {petAttributes.map((attribute) => (
-                  <th key={attribute}>{attribute}</th>
-              ))}
+              <th>Pet Gender</th>
+              <th>Pet Type</th>
               <th>Actions</th>
           </tr>
           </thead>
@@ -175,9 +176,8 @@ const updateApplication = async (petData) => {
                              alt="Preview" style={{height: "40px"}}/>
                     </td>
                     <td>{pet.petName}</td>
-                    {petAttributes.map((attribute) => (
-                        <td key={attribute}>{pet[attribute] || '-'}</td>
-                    ))}
+                    <td>{pet.petGender}</td>
+                    <td>{pet.petType}</td>
                     <td>
                         <Button
                             variant="primary"

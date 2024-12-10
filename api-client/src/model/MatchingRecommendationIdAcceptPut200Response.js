@@ -16,19 +16,19 @@ import ApiResponse from './ApiResponse';
 import Recommendation from './Recommendation';
 
 /**
- * The MatchingRecommendationNextGet200Response model module.
- * @module model/MatchingRecommendationNextGet200Response
+ * The MatchingRecommendationIdAcceptPut200Response model module.
+ * @module model/MatchingRecommendationIdAcceptPut200Response
  * @version 5.0.0
  */
-class MatchingRecommendationNextGet200Response {
+class MatchingRecommendationIdAcceptPut200Response {
     /**
-     * Constructs a new <code>MatchingRecommendationNextGet200Response</code>.
-     * @alias module:model/MatchingRecommendationNextGet200Response
+     * Constructs a new <code>MatchingRecommendationIdAcceptPut200Response</code>.
+     * @alias module:model/MatchingRecommendationIdAcceptPut200Response
      * @implements module:model/ApiResponse
      */
     constructor() { 
         ApiResponse.initialize(this);
-        MatchingRecommendationNextGet200Response.initialize(this);
+        MatchingRecommendationIdAcceptPut200Response.initialize(this);
     }
 
     /**
@@ -40,15 +40,15 @@ class MatchingRecommendationNextGet200Response {
     }
 
     /**
-     * Constructs a <code>MatchingRecommendationNextGet200Response</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>MatchingRecommendationIdAcceptPut200Response</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/MatchingRecommendationNextGet200Response} obj Optional instance to populate.
-     * @return {module:model/MatchingRecommendationNextGet200Response} The populated <code>MatchingRecommendationNextGet200Response</code> instance.
+     * @param {module:model/MatchingRecommendationIdAcceptPut200Response} obj Optional instance to populate.
+     * @return {module:model/MatchingRecommendationIdAcceptPut200Response} The populated <code>MatchingRecommendationIdAcceptPut200Response</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new MatchingRecommendationNextGet200Response();
+            obj = obj || new MatchingRecommendationIdAcceptPut200Response();
             ApiResponse.constructFromObject(data, obj);
 
             if (data.hasOwnProperty('success')) {
@@ -65,9 +65,9 @@ class MatchingRecommendationNextGet200Response {
     }
 
     /**
-     * Validates the JSON data with respect to <code>MatchingRecommendationNextGet200Response</code>.
+     * Validates the JSON data with respect to <code>MatchingRecommendationIdAcceptPut200Response</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchingRecommendationNextGet200Response</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchingRecommendationIdAcceptPut200Response</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
@@ -90,17 +90,17 @@ class MatchingRecommendationNextGet200Response {
 /**
  * @member {Boolean} success
  */
-MatchingRecommendationNextGet200Response.prototype['success'] = undefined;
+MatchingRecommendationIdAcceptPut200Response.prototype['success'] = undefined;
 
 /**
  * @member {String} message
  */
-MatchingRecommendationNextGet200Response.prototype['message'] = undefined;
+MatchingRecommendationIdAcceptPut200Response.prototype['message'] = undefined;
 
 /**
  * @member {module:model/Recommendation} payload
  */
-MatchingRecommendationNextGet200Response.prototype['payload'] = undefined;
+MatchingRecommendationIdAcceptPut200Response.prototype['payload'] = undefined;
 
 
 // Implement ApiResponse interface:
@@ -116,5 +116,5 @@ ApiResponse.prototype['message'] = undefined;
 
 
 
-export default MatchingRecommendationNextGet200Response;
+export default MatchingRecommendationIdAcceptPut200Response;
 

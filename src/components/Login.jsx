@@ -38,7 +38,7 @@ function Login() {
       setLoading(false);
       if(response && response.payload && response.payload.token && response.payload.role){
         // Call login function from context to update global state
-        login(response.payload.token, response.payload.role);
+        login(response.payload.token, response.payload.role, response.payload.username);
 
         navigate(response.payload.profileSet ? '/' : '/ProfileSetup');
       } else {

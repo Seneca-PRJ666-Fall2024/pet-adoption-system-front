@@ -5,15 +5,11 @@ import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import petImage from "../assets/images/dog-faces.jpg"; // Replace with actual placeholder image
 import "../styles/Home.css";
 import { initBackendApi } from './BackendApi';
 import AuthContext from "../context/AuthContext";
-import PetManagement from "./PetManagement";
-import NewPetAdoptionApplication from "./NewPetAdoptionApplication";
 
 const PetMatching = () => {
-  const navigate = useNavigate();
 
   const { token } = useContext(AuthContext);
 
@@ -26,96 +22,64 @@ const PetMatching = () => {
   }, [token]);
 
   const [currentRecommendation, setCurrentRecommendation] = useState(null);
-  const [currentPet, setCurrentPet] = useState(null);
-
-  // Fetch the next pet recommendation
-  const fetchNextPet = () => {
-    if (!backendApi) return;
-    try {
-      backendApi.matching.matchingRecommendationNextGet((error, data, response) => {
-        if (error) {
-          console.error("Error fetching next pet recommendation:", error);
-          setCurrentRecommendation(null);
-          setCurrentPet(null);
-        } else if (data && data.payload) {
-          console.log("Fetched pet recommendation:", data);
-          setCurrentRecommendation(data.payload);
-          // Now, make a second call to retrieve pet profile using data.petId
-          backendApi.pet.petGetProfilePetIdGet(data.payload.petId, (petError, petData, petResponse) => {
-            if (petError) {
-              console.error("Error fetching pet profile:", petError);
-              setCurrentPet(null);
-            } else if(petData && petData.payload) {
-              console.log("Fetched pet profile:", petData.payload);
-              setCurrentPet(petData.payload);
-            } else {
-              console.error("Incorrect response for pet profile: ", petData);
-              setCurrentRecommendation(null);
-              setCurrentPet(null);
-            }
-          });
-        } else {
-          console.error("Incorrect response for pet recommendation: ", data);
-          setCurrentRecommendation(null);
-          setCurrentPet(null);
-        }
-      });
-    } catch (error) {
-      console.error("Error fetching next pet recommendation:", error);
-      setCurrentRecommendation(null);
-      setCurrentPet(null);
-    }
-  };
 
   // Fetch the first pet recommendation when the component mounts
   useEffect(() => {
     if (backendApi) {
-      fetchNextPet();
+      try {
+        backendApi.matching.matchingRecommendationNextGet({},(error, data, response) => {
+          if (error) {
+            console.error("Error fetching next pet recommendation:", error);
+            setCurrentRecommendation(null);
+          } else if (data && Array.isArray(data.payload)) {
+            console.log("Fetched pet recommendation:", data);
+            if(data.payload.length > 0){
+              setCurrentRecommendation(data.payload[0]);
+            } else {
+              setCurrentRecommendation(null);
+            }
+          } else {
+            console.error("Incorrect response for pet recommendation: ", data);
+            setCurrentRecommendation(null);
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching next pet recommendation:", error);
+        setCurrentRecommendation(null);
+      }
     }
   }, [backendApi]);
 
   const handlePreference = async (preferenceChecked) => {
     if (!currentRecommendation || !backendApi) return;
 
-    if (preferenceChecked) {
+    const target = preferenceChecked ?
+        (id, callback) => backendApi.matching.matchingRecommendationIdAcceptPut(id, callback) :
+        (id, callback) => backendApi.matching.matchingRecommendationIdRejectPut(id, callback);
+
       try {
-        backendApi.matching.matchingRecommendationIdAcceptPut(currentRecommendation.id, (error, data, response) => {
+        target(currentRecommendation.id, (error, data, response) => {
           if (error) {
-            console.error("Error accepting recommendation:", error);
+            console.error("Error processing recommendation:", error);
+          } else if (data) {
+            console.log("Recommendation processed successfully. Next recommendation:", data);
+            setCurrentRecommendation(data.payload);
           } else {
-            console.log("Recommendation accepted successfully:", data);
+            console.log("Recommendation processed successfully:", data);
           }
-          // Fetch the next pet recommendation after handling the current one
-        });
-        alert("You have successfuly started new adoption");
-        navigate('/adoption');
-      } catch (error) {
-        console.error("Error accepting recommendation:", error);
-        // Still fetch the next pet even if there's an error
-      }
-    } else {
-      try {
-        backendApi.matching.matchingRecommendationIdRejectPut(currentRecommendation.id, (error, data, response) => {
-          if (error) {
-            console.error("Error rejecting recommendation:", error);
-          } else {
-            console.log("Recommendation rejected successfully:", data);
-          }
-          // Fetch the next pet recommendation after handling the current one
-          fetchNextPet();
         });
       } catch (error) {
-        console.error("Error accepting recommendation:", error);
+        console.error("Error processing recommendation:", error);
         // Still fetch the next pet even if there's an error
       }
-    }
+
   };
 
   return (
       <>
         <NavbarComponent />
         <Container className="text-center my-5 bigger-container">
-          {currentPet ? (
+          {currentRecommendation ? (
               // Render the main content
               <>
                 <h2>Available pets you might like:</h2>
@@ -137,13 +101,13 @@ const PetMatching = () => {
                   </Col>
                   <Col xs="auto">
                     <Image
-                        src={currentPet.imageUrl ? backendApi.imagePath(currentPet.imageUrl) : ''}
+                        src={currentRecommendation.pet.imageUrl ? backendApi.imagePath(currentRecommendation.pet.imageUrl) : ''}
                         alt="Pet"
-                        roundedCircle
-                        style={{width: "300px", height: "300px", margin: "0 60px"}}
+                        className="rounded-circle"
+                        style={{width: "300px", height: "300px", margin: "0 60px", objectFit: "cover"}}
                     />
                     <p className="mt-3" style={{fontSize: "2rem"}}>
-                      {currentPet.name}
+                      {currentRecommendation.pet.petName}
                     </p>
                   </Col>
                   <Col xs="auto" style={{color: "#1e6262"}}>
@@ -168,23 +132,23 @@ const PetMatching = () => {
                   <Card.Body>
                     <Row>
                       <Col xs={12} sm={6}>
-                        <p><strong>Pet Name:</strong> {currentPet.petName}</p>
-                        <p><strong>Pet Type:</strong> {currentPet.petType}</p>
-                        <p><strong>Breed:</strong> {currentPet.petBreed}</p>
-                        <p><strong>Gender:</strong> {currentPet.petGender}</p>
-                        <p><strong>Age:</strong> {currentPet.petAge} years</p>
+                        <p><strong>Pet Name:</strong> {currentRecommendation.pet.petName}</p>
+                        <p><strong>Pet Type:</strong> {currentRecommendation.pet.petType}</p>
+                        <p><strong>Breed:</strong> {currentRecommendation.pet.petBreed}</p>
+                        <p><strong>Gender:</strong> {currentRecommendation.pet.petGender}</p>
+                        <p><strong>Age:</strong> {currentRecommendation.pet.petAge} years</p>
                       </Col>
                       <Col xs={12} sm={6}>
-                        <p><strong>Color:</strong> {currentPet.petColour}</p>
-                        <p><strong>Size:</strong> {currentPet.petSize}</p>
-                        <p><strong>Active Level:</strong> {currentPet.petActivityLevel}</p>
+                        <p><strong>Color:</strong> {currentRecommendation.pet.petColour}</p>
+                        <p><strong>Size:</strong> {currentRecommendation.pet.petSize}</p>
+                        <p><strong>Active Level:</strong> {currentRecommendation.pet.petActivityLevel}</p>
                         <p><strong>Living
-                          Environment:</strong> {currentPet.petEnvironment}</p>
+                          Environment:</strong> {currentRecommendation.pet.petEnvironment}</p>
                         <p><strong>Social
-                          Condition:</strong> {currentPet.petSocial}
+                          Condition:</strong> {currentRecommendation.pet.petSocial}
                         </p>
                         <p><strong>Behavioral
-                          Challenges:</strong> {currentPet.petBehavioralChallenges}</p>
+                          Challenges:</strong> {currentRecommendation.pet.petBehavioralChallenges}</p>
                       </Col>
                     </Row>
                   </Card.Body>

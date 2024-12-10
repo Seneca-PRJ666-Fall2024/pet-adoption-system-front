@@ -12,6 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
+import Pet from './Pet';
 import RecommendationStatus from './RecommendationStatus';
 
 /**
@@ -60,6 +61,9 @@ class Recommendation {
             if (data.hasOwnProperty('status')) {
                 obj['status'] = RecommendationStatus.constructFromObject(data['status']);
             }
+            if (data.hasOwnProperty('pet')) {
+                obj['pet'] = Pet.constructFromObject(data['pet']);
+            }
         }
         return obj;
     }
@@ -106,6 +110,11 @@ Recommendation.prototype['date'] = undefined;
  * @member {module:model/RecommendationStatus} status
  */
 Recommendation.prototype['status'] = undefined;
+
+/**
+ * @member {module:model/Pet} pet
+ */
+Recommendation.prototype['pet'] = undefined;
 
 
 

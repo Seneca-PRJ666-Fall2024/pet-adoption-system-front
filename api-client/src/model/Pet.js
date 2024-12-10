@@ -63,6 +63,9 @@ class Pet {
             if (data.hasOwnProperty('imageUrl')) {
                 obj['imageUrl'] = ApiClient.convertToType(data['imageUrl'], 'String');
             }
+            if (data.hasOwnProperty('status')) {
+                obj['status'] = ApiClient.convertToType(data['status'], 'String');
+            }
         }
         return obj;
     }
@@ -88,6 +91,10 @@ class Pet {
         // ensure the json data is a string
         if (data['imageUrl'] && !(typeof data['imageUrl'] === 'string' || data['imageUrl'] instanceof String)) {
             throw new Error("Expected the field `imageUrl` to be a primitive type in the JSON string but got " + data['imageUrl']);
+        }
+        // ensure the json data is a string
+        if (data['status'] && !(typeof data['status'] === 'string' || data['status'] instanceof String)) {
+            throw new Error("Expected the field `status` to be a primitive type in the JSON string but got " + data['status']);
         }
 
         return true;
@@ -118,8 +125,34 @@ Pet.prototype['petName'] = undefined;
  */
 Pet.prototype['imageUrl'] = undefined;
 
+/**
+ * @member {module:model/Pet.StatusEnum} status
+ */
+Pet.prototype['status'] = undefined;
 
 
+
+
+
+/**
+ * Allowed values for the <code>status</code> property.
+ * @enum {String}
+ * @readonly
+ */
+Pet['StatusEnum'] = {
+
+    /**
+     * value: "available"
+     * @const
+     */
+    "available": "available",
+
+    /**
+     * value: "adopted"
+     * @const
+     */
+    "adopted": "adopted"
+};
 
 
 

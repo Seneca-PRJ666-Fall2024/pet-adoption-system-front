@@ -14,14 +14,14 @@
 
 import ApiClient from './ApiClient';
 import Adoption from './model/Adoption';
+import AdoptionPostRequest from './model/AdoptionPostRequest';
 import AdoptionStatus from './model/AdoptionStatus';
 import AdoptionStatusGet200Response from './model/AdoptionStatusGet200Response';
 import AdoptionStoryGet200Response from './model/AdoptionStoryGet200Response';
 import AdoptionStoryGet200ResponseAllOfPayloadInner from './model/AdoptionStoryGet200ResponseAllOfPayloadInner';
 import ApiResponse from './model/ApiResponse';
-import MatchingRecommendationIdAcceptPut201Response from './model/MatchingRecommendationIdAcceptPut201Response';
-import MatchingRecommendationNextGet200Response from './model/MatchingRecommendationNextGet200Response';
-import MatchingRecommendationsGet200Response from './model/MatchingRecommendationsGet200Response';
+import MatchingRecommendationAcceptedGet200Response from './model/MatchingRecommendationAcceptedGet200Response';
+import MatchingRecommendationIdAcceptPut200Response from './model/MatchingRecommendationIdAcceptPut200Response';
 import Pet from './model/Pet';
 import PetGetProfileGet200Response from './model/PetGetProfileGet200Response';
 import PetGetProfilePetIdGet200Response from './model/PetGetProfilePetIdGet200Response';
@@ -86,6 +86,12 @@ export {
     Adoption,
 
     /**
+     * The AdoptionPostRequest model constructor.
+     * @property {module:model/AdoptionPostRequest}
+     */
+    AdoptionPostRequest,
+
+    /**
      * The AdoptionStatus model constructor.
      * @property {module:model/AdoptionStatus}
      */
@@ -116,22 +122,16 @@ export {
     ApiResponse,
 
     /**
-     * The MatchingRecommendationIdAcceptPut201Response model constructor.
-     * @property {module:model/MatchingRecommendationIdAcceptPut201Response}
+     * The MatchingRecommendationAcceptedGet200Response model constructor.
+     * @property {module:model/MatchingRecommendationAcceptedGet200Response}
      */
-    MatchingRecommendationIdAcceptPut201Response,
+    MatchingRecommendationAcceptedGet200Response,
 
     /**
-     * The MatchingRecommendationNextGet200Response model constructor.
-     * @property {module:model/MatchingRecommendationNextGet200Response}
+     * The MatchingRecommendationIdAcceptPut200Response model constructor.
+     * @property {module:model/MatchingRecommendationIdAcceptPut200Response}
      */
-    MatchingRecommendationNextGet200Response,
-
-    /**
-     * The MatchingRecommendationsGet200Response model constructor.
-     * @property {module:model/MatchingRecommendationsGet200Response}
-     */
-    MatchingRecommendationsGet200Response,
+    MatchingRecommendationIdAcceptPut200Response,
 
     /**
      * The Pet model constructor.

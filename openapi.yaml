@@ -89,6 +89,9 @@ paths:
                       payload:
                         type: object
                         properties:
+                          username:
+                            type: string
+                            example: "John Doe"
                           role:
                             $ref: '#/components/schemas/Role'
                           profileSet:
@@ -407,11 +410,11 @@ paths:
           description: Invalid pet profile value
           $ref: '#/components/responses/GenericApiResponse'
 
-  /matching/recommendations:
+  /matching/recommendation/accepted:
     get:
       tags:
         - matching
-      summary: Get a list of recommended pets based on preferences
+      summary: Get a list of accepted recommendations
       security:
         - BearerAuth: [ ]
       responses:
@@ -436,6 +439,14 @@ paths:
       summary: Get the next recommendation for the adopter
       security:
         - BearerAuth: [ ]
+      parameters:
+        - in: query
+          name: num
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: The number of recomendations to return
       responses:
         '200':
           description: The next recommendation item
@@ -447,7 +458,9 @@ paths:
                   - type: object
                     properties:
                       payload:
-                        $ref: '#/components/schemas/Recommendation'
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Recommendation'
 
   /matching/recommendation/{id}/accept:
     put:
@@ -464,7 +477,7 @@ paths:
           required: true
           description: The ID of the recommendation to accept
       responses:
-        '201':
+        '200':
           description: The next recommendation item
           content:
             application/json:
@@ -474,8 +487,7 @@ paths:
                   - type: object
                     properties:
                       payload:
-                        type: string
-                        example: "adfa4531..."
+                        $ref: '#/components/schemas/Recommendation'
 
   /matching/recommendation/{id}/reject:
     put:
@@ -492,9 +504,49 @@ paths:
           required: true
           description: The ID of the recommendation to reject
       responses:
-        '201':
-          description: Recommendation rejected
+        '200':
+          description: The next recommendation item
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/Recommendation'
+
+  /adoption:
+    post:
+      tags:
+        - adoption
+      summary: Creates new adoption
+      security:
+        - BearerAuth: [ ]
+      description: Creates new adoption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recommendationId:
+                  type: string
+                  example: "0adf23ff..."
+              additionalProperties:
+                type: string
+                description: Additional questions
+                example:
+                  "question": "Answer"
+      responses:
+        '200':
+          description: Adoption updated sussessfuly
           $ref: '#/components/responses/GenericApiResponse'
+        '401':
+          description: Unauthorized access
+          $ref: '#/components/responses/GenericApiResponse'
+
 
   /adoption/{id}/cancel:
     put:
@@ -694,6 +746,14 @@ components:
           type: string
           format: date
           example: '2023-05-15'
+      additionalProperties:
+        type: string
+        description: >
+          A map where each key is the name of an attribute group, and the value is a list of
+          selected preferences within that group.
+        example:
+          "gender": "male"
+          "environment": "house"
 
     Pet:
       properties:
@@ -709,6 +769,10 @@ components:
         imageUrl:
           type: string
           example: ["http://some.site/images/image.jpg"]
+        status:
+          enum:
+            - available
+            - adopted
       additionalProperties:
         type: string
         description: >
@@ -770,3 +834,5 @@ components:
           example: '2023-05-15'
         status:
           $ref: '#/components/schemas/RecommendationStatus'
+        pet:
+          $ref: '#/components/schemas/Pet'

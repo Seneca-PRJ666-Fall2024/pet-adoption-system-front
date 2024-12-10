@@ -16,19 +16,19 @@ import ApiResponse from './ApiResponse';
 import Recommendation from './Recommendation';
 
 /**
- * The MatchingRecommendationsGet200Response model module.
- * @module model/MatchingRecommendationsGet200Response
+ * The MatchingRecommendationAcceptedGet200Response model module.
+ * @module model/MatchingRecommendationAcceptedGet200Response
  * @version 5.0.0
  */
-class MatchingRecommendationsGet200Response {
+class MatchingRecommendationAcceptedGet200Response {
     /**
-     * Constructs a new <code>MatchingRecommendationsGet200Response</code>.
-     * @alias module:model/MatchingRecommendationsGet200Response
+     * Constructs a new <code>MatchingRecommendationAcceptedGet200Response</code>.
+     * @alias module:model/MatchingRecommendationAcceptedGet200Response
      * @implements module:model/ApiResponse
      */
     constructor() { 
         ApiResponse.initialize(this);
-        MatchingRecommendationsGet200Response.initialize(this);
+        MatchingRecommendationAcceptedGet200Response.initialize(this);
     }
 
     /**
@@ -40,15 +40,15 @@ class MatchingRecommendationsGet200Response {
     }
 
     /**
-     * Constructs a <code>MatchingRecommendationsGet200Response</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>MatchingRecommendationAcceptedGet200Response</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/MatchingRecommendationsGet200Response} obj Optional instance to populate.
-     * @return {module:model/MatchingRecommendationsGet200Response} The populated <code>MatchingRecommendationsGet200Response</code> instance.
+     * @param {module:model/MatchingRecommendationAcceptedGet200Response} obj Optional instance to populate.
+     * @return {module:model/MatchingRecommendationAcceptedGet200Response} The populated <code>MatchingRecommendationAcceptedGet200Response</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new MatchingRecommendationsGet200Response();
+            obj = obj || new MatchingRecommendationAcceptedGet200Response();
             ApiResponse.constructFromObject(data, obj);
 
             if (data.hasOwnProperty('success')) {
@@ -65,9 +65,9 @@ class MatchingRecommendationsGet200Response {
     }
 
     /**
-     * Validates the JSON data with respect to <code>MatchingRecommendationsGet200Response</code>.
+     * Validates the JSON data with respect to <code>MatchingRecommendationAcceptedGet200Response</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchingRecommendationsGet200Response</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchingRecommendationAcceptedGet200Response</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
@@ -96,17 +96,17 @@ class MatchingRecommendationsGet200Response {
 /**
  * @member {Boolean} success
  */
-MatchingRecommendationsGet200Response.prototype['success'] = undefined;
+MatchingRecommendationAcceptedGet200Response.prototype['success'] = undefined;
 
 /**
  * @member {String} message
  */
-MatchingRecommendationsGet200Response.prototype['message'] = undefined;
+MatchingRecommendationAcceptedGet200Response.prototype['message'] = undefined;
 
 /**
  * @member {Array.<module:model/Recommendation>} payload
  */
-MatchingRecommendationsGet200Response.prototype['payload'] = undefined;
+MatchingRecommendationAcceptedGet200Response.prototype['payload'] = undefined;
 
 
 // Implement ApiResponse interface:
@@ -122,5 +122,5 @@ ApiResponse.prototype['message'] = undefined;
 
 
 
-export default MatchingRecommendationsGet200Response;
+export default MatchingRecommendationAcceptedGet200Response;
 
