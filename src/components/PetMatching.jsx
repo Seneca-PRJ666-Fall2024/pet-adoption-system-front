@@ -237,7 +237,7 @@ const PetMatching = () => {
 
             <h4 className="mt-4">Your adopter profile:</h4>
             <p className="mb-5">
-              <a href="profilesetup">
+              <a href="/profilesetup">
                 Click here to review or update your profile and preferences.
               </a>
             </p>
