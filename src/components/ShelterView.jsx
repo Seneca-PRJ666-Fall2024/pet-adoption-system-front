@@ -83,7 +83,7 @@ const ShelterView = () => {
   return (
       <>
           <Container className="text-center mt-4">
-              <h1>Welcome, {userName}!</h1>
+              <h1>Welcome{userName ? ", " + userName : ""}!</h1>
           </Container>
 
           <Container className="mt-4">
