@@ -64,8 +64,9 @@ function ProfileSetup() {
               if (profile.imageUrl) {
                 setPreviewUrl(backendApi.imagePath(profile.imageUrl));
               }
-
-              setFormData(profile.preferences)
+              if(profile.preferences){
+                setFormData(profile.preferences);
+              }
               resolve(data);
             } else {
               console.error("Incorrect API response: " + data);

@@ -13,7 +13,7 @@ function Questionnaire({
                 <div key={group.name + "-" + groupIndex}>
                   <label className={styles.mylabel}>{group.question}</label>
                   <br/>
-                    {group.values && group.values.map((attribute, index) => (
+                    {formData && group.values && group.values.map((attribute, index) => (
                         <label className="me-5" key={group.name + "-" + attribute + "-" + index}>
                           <input
                               type={multivalue ? "checkbox" : "radio"}

@@ -6,20 +6,20 @@ import AuthContext from "../context/AuthContext";
 import {initBackendApi} from "./BackendApi";
 
 const AdopterView = () => {
-    const { token, userRole, userName } = useContext(AuthContext);
+    const { token, logout, userName } = useContext(AuthContext);
     const [backendApi, setBackendApi] = useState(null);
     const [recommendations, setRecommendations] = useState([]);
     const [attributeGroups, setAttributeGroups] = useState([]);
 
     useEffect(() => {
         if (token) {
-            const apiInstance = initBackendApi(token);
+            const apiInstance = initBackendApi(token,(res) => {if(res.status === 403){logout()}});
             setBackendApi(apiInstance);
         }
     }, [token]);
 
     useEffect(() => {
-        if (backendApi) {
+        if (backendApi && token) {
             try {
                 backendApi.matching.matchingRecommendationNextGet({num : 3},(error, data, response) => {
                     if (error) {
@@ -38,7 +38,7 @@ const AdopterView = () => {
                 setRecommendations(null);
             }
         }
-    }, [backendApi]);
+    }, [backendApi, token]);
 
     const loadAttributeGroups = async () => {
         try {
@@ -56,7 +56,6 @@ const AdopterView = () => {
             console.log("Attribute groups loaded successfully.");
         } catch (error) {
             console.error("API call failed:", error.message);
-            throw new Error("Failed to load attribute groups: " + error.message);
         }
     };
 
@@ -69,7 +68,7 @@ const AdopterView = () => {
         <Container className="mt-4">
         <h3>Checkout available pet's status:</h3>
             <Row className="mt-4 text-center">
-                {recommendations && recommendations.map((rec) => (
+                {recommendations && recommendations.filter(r =>  r && r.pet).map((rec) => (
                     <PetCard
                         key={rec.pet.petId}
                         pet={rec.pet}

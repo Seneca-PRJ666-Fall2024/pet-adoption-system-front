@@ -6,7 +6,7 @@ import AuthContext from "../context/AuthContext";
 import {initBackendApi} from "./BackendApi";
 
 const ShelterView = () => {
-    const { token, userRole, userName } = useContext(AuthContext);
+    const { token, logout, userName } = useContext(AuthContext);
     const [backendApi, setBackendApi] = useState(null);
     const [shelterPets, setShelterPets] = useState([]);
     const [newAdoptions, setNewAdoptions] = useState(0);
@@ -14,7 +14,7 @@ const ShelterView = () => {
 
     useEffect(() => {
         if (token) {
-            const apiInstance = initBackendApi(token);
+            const apiInstance = initBackendApi(token,(res) => {if(res.status === 403){logout()}});
             setBackendApi(apiInstance);
         }
     }, [token]);
@@ -41,7 +41,6 @@ const ShelterView = () => {
             console.log("Attribute groups loaded successfully.");
         } catch (error) {
             console.error("API call failed:", error.message);
-            throw new Error("Failed to load attribute groups: " + error.message);
         }
     };
 
