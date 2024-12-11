@@ -20,9 +20,11 @@ import AdoptionStatusGet200Response from './model/AdoptionStatusGet200Response';
 import AdoptionStoryGet200Response from './model/AdoptionStoryGet200Response';
 import AdoptionStoryGet200ResponseAllOfPayloadInner from './model/AdoptionStoryGet200ResponseAllOfPayloadInner';
 import ApiResponse from './model/ApiResponse';
+import AttributeGroup from './model/AttributeGroup';
 import MatchingRecommendationAcceptedGet200Response from './model/MatchingRecommendationAcceptedGet200Response';
 import MatchingRecommendationIdAcceptPut200Response from './model/MatchingRecommendationIdAcceptPut200Response';
 import Pet from './model/Pet';
+import PetAttributesGet200Response from './model/PetAttributesGet200Response';
 import PetGetProfileGet200Response from './model/PetGetProfileGet200Response';
 import PetGetProfilePetIdGet200Response from './model/PetGetProfilePetIdGet200Response';
 import Recommendation from './model/Recommendation';
@@ -122,6 +124,12 @@ export {
     ApiResponse,
 
     /**
+     * The AttributeGroup model constructor.
+     * @property {module:model/AttributeGroup}
+     */
+    AttributeGroup,
+
+    /**
      * The MatchingRecommendationAcceptedGet200Response model constructor.
      * @property {module:model/MatchingRecommendationAcceptedGet200Response}
      */
@@ -138,6 +146,12 @@ export {
      * @property {module:model/Pet}
      */
     Pet,
+
+    /**
+     * The PetAttributesGet200Response model constructor.
+     * @property {module:model/PetAttributesGet200Response}
+     */
+    PetAttributesGet200Response,
 
     /**
      * The PetGetProfileGet200Response model constructor.

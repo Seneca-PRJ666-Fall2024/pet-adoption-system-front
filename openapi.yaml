@@ -410,6 +410,29 @@ paths:
           description: Invalid pet profile value
           $ref: '#/components/responses/GenericApiResponse'
 
+  /pet/attributes:
+    get:
+      tags:
+        - pet
+      summary: Get a list of all pet attributes grouped by Attribute Group
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: A list of attributes
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AttributeGroup'
+
+
   /matching/recommendation/accepted:
     get:
       tags:
@@ -817,6 +840,19 @@ components:
         imageUrl:
           type: string
           example: http://some.site/images.image.jpg
+        preferences:
+          type: object
+          additionalProperties:
+            type: string
+            items:
+              type: string
+            description: >
+              A map where each key is the name of an attribute group, and the value is a list of
+              selected preferences within that group.
+            example:
+              "Physical Attributes": [ "Brown", "Black" ]
+              "Behavioral Attributes": [ "Active", "Calm" ]
+              "Health Attributes": [ "Vaccinated", "Neutered" ]
       type: object
 
     Recommendation:
@@ -836,3 +872,24 @@ components:
           $ref: '#/components/schemas/RecommendationStatus'
         pet:
           $ref: '#/components/schemas/Pet'
+
+    AttributeGroup:
+      type: object
+      properties:
+        name:
+          type: string
+          example: petGender
+        description:
+          type: string
+          example: Pet Gender
+        supportsOther:
+          type: boolean
+          example: true
+        values:
+          type: array
+          items:
+            type: string
+          example: [ "male", "female" ]
+        question:
+          type: string
+          example: What is the preferred Gender for your pet?

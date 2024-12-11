@@ -4,7 +4,7 @@ import {initBackendApi} from "./BackendApi";
 import AuthContext from "../context/AuthContext";
 import PetProfile from "./PetProfile";
 
-const NewPetAdoptionApplication = ({ newApplication, handleInputChange }) => {
+const NewPetAdoptionApplication = ({ newApplication, handleInputChange, attributeGroups }) => {
   const [matchedRecommendations, setMatchedRecommendations] = useState([])
 
   const [selectedRecommendation, setSelectedRecommendation] = useState(null)
@@ -80,6 +80,7 @@ const NewPetAdoptionApplication = ({ newApplication, handleInputChange }) => {
           <h3 className="text-center">Pet Profile</h3>
           {selectedRecommendation && (
               <PetProfile
+                  attributeGroups={attributeGroups}
                   pet={selectedRecommendation.pet}
                   imageSrc={selectedRecommendation.pet.imageUrl ? backendApi.imagePath(selectedRecommendation.pet.imageUrl) : ''}
               />

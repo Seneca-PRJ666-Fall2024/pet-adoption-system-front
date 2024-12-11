@@ -37,6 +37,8 @@ function ProfileSetup() {
 
   const [formData, setFormData] = useState({});
 
+  const [attributeGroups, setAttributeGroups] = useState([]);
+
   // Fetch userProfile when component mounts
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -62,6 +64,8 @@ function ProfileSetup() {
               if (profile.imageUrl) {
                 setPreviewUrl(backendApi.imagePath(profile.imageUrl));
               }
+
+              setFormData(profile.preferences)
               resolve(data);
             } else {
               console.error("Incorrect API response: " + data);
@@ -75,6 +79,9 @@ function ProfileSetup() {
 
     if(backendApi){
       fetchUserProfile();
+      if(userRole === "adopter"){
+        loadAttributeGroups();
+      }
     }
   }, [backendApi]);
 
@@ -115,34 +122,33 @@ function ProfileSetup() {
 
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    const { name, value, type, checked } = e.target;
 
-
-
-  // Adopter-specific labels for questions
-  const adopterQuestions = {
-    questionnaire: "Please Complete the Questionnaire to start matching with Pets!",
-    gender: "What is the preferred Gender for your pet?",
-    petType: "What type of pet are you interested in adopting?",
-    breedType: "Do you have a preferred breed?",
-    petColour: "Do you have a preferred pet colour?",
-    petSize: "What size of pet are you interested in?",
-    petActivityLevel: "What activity level do you prefer in a pet?",
-    petEnvironment: "What is your living environment like?",
-    petSocial: "Do you have other pets at home?",
-    userText: "Any additional preferences or comments?",
+    setFormData((prev) => {
+      if (type === "checkbox") {
+        const currentValues = Array.isArray(prev[name]) ? prev[name] : [];
+        return {
+          ...prev,
+          [name]: checked
+              ? [...currentValues, value] // Add the value if checked
+              : currentValues.filter((item) => item !== value), // Remove the value if unchecked
+        };
+      } else {
+        return {
+          ...prev,
+          [name]: value,
+        };
+      }
+      // Default case (if needed for other input types)
+      return prev;
+    });
   };
 
   const updateUserPreferences = async (formData) => {
     const wrappedFormData = Object.fromEntries(
         Object.entries(formData)
             .filter(([_, value]) => value !== null && value !== undefined && value !== '')
-            .map(([key, value]) => [key, [value]])
+            .map(([key, value]) => Array.isArray(value) ? [key, value]: [key, value.split(",")])
     );
 
     try {
@@ -160,6 +166,26 @@ function ProfileSetup() {
     } catch (error) {
       console.error("API call failed:", error.message);
       throw new Error("Failed to update adopter preferences: " + error.message);
+    }
+  };
+
+  const loadAttributeGroups = async () => {
+    try {
+      await new Promise((resolve, reject) => {
+        backendApi.pet.petAttributesGet((error, data, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            setAttributeGroups(data.payload)
+            resolve(data);
+          }
+        });
+      });
+
+      console.log("Attribute groups loaded successfully.");
+    } catch (error) {
+      console.error("API call failed:", error.message);
+      throw new Error("Failed to load attribute groups: " + error.message);
     }
   };
 
@@ -349,12 +375,13 @@ function ProfileSetup() {
                 Questionnaire
               </label>
               <p style={{color: "#1e6262", marginBottom: "3%"}}>
-                {adopterQuestions.questionnaire}
+                Please Complete the Questionnaire to start matching with Pets!
               </p>
               <Questionnaire
-                  questions={adopterQuestions}
+                  attributeGroups={attributeGroups}
                   formData={formData}
                   handleInputChange={handleInputChange}
+                  multivalue={true}
               />
             </>
         )}

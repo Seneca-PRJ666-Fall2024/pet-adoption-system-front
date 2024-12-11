@@ -4,16 +4,12 @@ import PetCard from './PetCard';
 import {Link} from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import {initBackendApi} from "./BackendApi";
-import PetManagement from "./PetManagement";
-import PetProfile from "./PetProfile";
-// import catImage from '../assets/images/cat.jpg';
-// import dogImage from '../assets/images/dog.jpg';
-// import hamsterImage from '../assets/images/hamster.jpg';
 
 const AdopterView = () => {
     const { token, userRole, userName } = useContext(AuthContext);
     const [backendApi, setBackendApi] = useState(null);
     const [recommendations, setRecommendations] = useState([]);
+    const [attributeGroups, setAttributeGroups] = useState([]);
 
     useEffect(() => {
         if (token) {
@@ -36,12 +32,33 @@ const AdopterView = () => {
                         setRecommendations(null);
                     }
                 });
+                loadAttributeGroups();
             } catch (error) {
                 console.error("Error fetching next pet recommendation:", error);
                 setRecommendations(null);
             }
         }
     }, [backendApi]);
+
+    const loadAttributeGroups = async () => {
+        try {
+            await new Promise((resolve, reject) => {
+                backendApi.pet.petAttributesGet((error, data, response) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        setAttributeGroups(data.payload)
+                        resolve(data);
+                    }
+                });
+            });
+
+            console.log("Attribute groups loaded successfully.");
+        } catch (error) {
+            console.error("API call failed:", error.message);
+            throw new Error("Failed to load attribute groups: " + error.message);
+        }
+    };
 
   return (
     <>
@@ -57,6 +74,7 @@ const AdopterView = () => {
                         key={rec.pet.petId}
                         pet={rec.pet}
                         imageSrc={rec.pet.imageUrl ? backendApi.imagePath(rec.pet.imageUrl) : ''}
+                        attributeGroups={attributeGroups}
                     />
                 ))}
             </Row>

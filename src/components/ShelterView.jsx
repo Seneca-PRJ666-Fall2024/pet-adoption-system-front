@@ -4,16 +4,13 @@ import PetCard from './PetCard';
 import {Link} from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import {initBackendApi} from "./BackendApi";
-import PetManagement from "./PetManagement";
-// import catImage from '../assets/images/cat.jpg';
-// import dogImage from '../assets/images/dog.jpg';
-// import hamsterImage from '../assets/images/hamster.jpg';
 
 const ShelterView = () => {
     const { token, userRole, userName } = useContext(AuthContext);
     const [backendApi, setBackendApi] = useState(null);
     const [shelterPets, setShelterPets] = useState([]);
     const [newAdoptions, setNewAdoptions] = useState(0);
+    const [attributeGroups, setAttributeGroups] = useState([]);
 
     useEffect(() => {
         if (token) {
@@ -25,7 +22,28 @@ const ShelterView = () => {
     useEffect(() => {
         if (!backendApi) return;
         fetchAdoptions();
+        loadAttributeGroups();
     }, [backendApi]);
+
+    const loadAttributeGroups = async () => {
+        try {
+            await new Promise((resolve, reject) => {
+                backendApi.pet.petAttributesGet((error, data, response) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        setAttributeGroups(data.payload)
+                        resolve(data);
+                    }
+                });
+            });
+
+            console.log("Attribute groups loaded successfully.");
+        } catch (error) {
+            console.error("API call failed:", error.message);
+            throw new Error("Failed to load attribute groups: " + error.message);
+        }
+    };
 
     const fetchAdoptions = async () => {
         if (!backendApi) {
@@ -77,6 +95,7 @@ const ShelterView = () => {
                       key={pet.petId}
                       pet={pet}
                       imageSrc={pet.imageUrl ? backendApi.imagePath(pet.imageUrl) : ''}
+                      attributeGroups ={attributeGroups}
                   />
               ))}
               </Row>

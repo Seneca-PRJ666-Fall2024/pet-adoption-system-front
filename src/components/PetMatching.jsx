@@ -22,6 +22,27 @@ const PetMatching = () => {
   }, [token]);
 
   const [currentRecommendation, setCurrentRecommendation] = useState(null);
+  const [attributeGroups, setAttributeGroups] = useState([]);
+
+  const loadAttributeGroups = async () => {
+    try {
+      await new Promise((resolve, reject) => {
+        backendApi.pet.petAttributesGet((error, data, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            setAttributeGroups(data.payload)
+            resolve(data);
+          }
+        });
+      });
+
+      console.log("Attribute groups loaded successfully.");
+    } catch (error) {
+      console.error("API call failed:", error.message);
+      throw new Error("Failed to load attribute groups: " + error.message);
+    }
+  };
 
   // Fetch the first pet recommendation when the component mounts
   useEffect(() => {
@@ -43,6 +64,7 @@ const PetMatching = () => {
             setCurrentRecommendation(null);
           }
         });
+        loadAttributeGroups();
       } catch (error) {
         console.error("Error fetching next pet recommendation:", error);
         setCurrentRecommendation(null);
@@ -132,23 +154,18 @@ const PetMatching = () => {
                   <Card.Body>
                     <Row>
                       <Col xs={12} sm={6}>
-                        <p><strong>Pet Name:</strong> {currentRecommendation.pet.petName}</p>
-                        <p><strong>Pet Type:</strong> {currentRecommendation.pet.petType}</p>
-                        <p><strong>Breed:</strong> {currentRecommendation.pet.petBreed}</p>
-                        <p><strong>Gender:</strong> {currentRecommendation.pet.petGender}</p>
-                        <p><strong>Age:</strong> {currentRecommendation.pet.petAge} years</p>
+                        {attributeGroups.slice(0, Math.ceil(attributeGroups.length / 2)).map((group, index) => (
+                            <p key={group.name}>
+                              <strong>{group.description}:</strong> {currentRecommendation.pet[group.name]}
+                            </p>
+                        ))}
                       </Col>
                       <Col xs={12} sm={6}>
-                        <p><strong>Color:</strong> {currentRecommendation.pet.petColour}</p>
-                        <p><strong>Size:</strong> {currentRecommendation.pet.petSize}</p>
-                        <p><strong>Active Level:</strong> {currentRecommendation.pet.petActivityLevel}</p>
-                        <p><strong>Living
-                          Environment:</strong> {currentRecommendation.pet.petEnvironment}</p>
-                        <p><strong>Social
-                          Condition:</strong> {currentRecommendation.pet.petSocial}
-                        </p>
-                        <p><strong>Behavioral
-                          Challenges:</strong> {currentRecommendation.pet.petBehavioralChallenges}</p>
+                        {attributeGroups.slice(Math.ceil(attributeGroups.length / 2)).map((group, index) => (
+                            <p key={group.name}>
+                              <strong>{group.description}:</strong> {currentRecommendation.pet[group.name]}
+                            </p>
+                        ))}
                       </Col>
                     </Row>
                   </Card.Body>

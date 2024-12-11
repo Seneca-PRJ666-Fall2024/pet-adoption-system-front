@@ -15,6 +15,7 @@
 import ApiClient from "../ApiClient";
 import ApiResponse from '../model/ApiResponse';
 import Pet from '../model/Pet';
+import PetAttributesGet200Response from '../model/PetAttributesGet200Response';
 import PetGetProfileGet200Response from '../model/PetGetProfileGet200Response';
 import PetGetProfilePetIdGet200Response from '../model/PetGetProfilePetIdGet200Response';
 import UserUploadImagePost200Response from '../model/UserUploadImagePost200Response';
@@ -75,6 +76,42 @@ export default class PetApi {
       let returnType = ApiResponse;
       return this.apiClient.callApi(
         '/pet/add-profile', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the petAttributesGet operation.
+     * @callback module:api/PetApi~petAttributesGetCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/PetAttributesGet200Response} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get a list of all pet attributes grouped by Attribute Group
+     * @param {module:api/PetApi~petAttributesGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/PetAttributesGet200Response}
+     */
+    petAttributesGet(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['BearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = PetAttributesGet200Response;
+      return this.apiClient.callApi(
+        '/pet/attributes', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

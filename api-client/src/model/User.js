@@ -81,6 +81,9 @@ class User {
             if (data.hasOwnProperty('imageUrl')) {
                 obj['imageUrl'] = ApiClient.convertToType(data['imageUrl'], 'String');
             }
+            if (data.hasOwnProperty('preferences')) {
+                obj['preferences'] = ApiClient.convertToType(data['preferences'], {'String': ['String']});
+            }
         }
         return obj;
     }
@@ -194,6 +197,11 @@ User.prototype['postalCode'] = undefined;
  * @member {String} imageUrl
  */
 User.prototype['imageUrl'] = undefined;
+
+/**
+ * @member {Object.<String, Array.<String>>} preferences
+ */
+User.prototype['preferences'] = undefined;
 
 
 

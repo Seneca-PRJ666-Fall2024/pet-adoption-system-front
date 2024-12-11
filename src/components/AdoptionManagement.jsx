@@ -37,6 +37,8 @@ const AdoptionManagement = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentStatusChange, setCurrentStatusChange] = useState({});
 
+  const [attributeGroups, setAttributeGroups] = useState([]);
+
   const questions = ["housingType", "rentOrOwn", "landlordContact", "activeLifestyle", "hoursAlone", "fencedYard",
       "crateTraining", "sleepingArrangements", "priorExperience", "currentPets", "vetContact", "exercisePlan", "groomingPlan",
       "travelPlan", "behavioralExpectations", "references","commitmentAcknowledgement"]
@@ -51,7 +53,28 @@ const AdoptionManagement = () => {
     useEffect(() => {
         if (!backendApi) return;
         fetchAdoptions();
+        loadAttributeGroups();
     }, [backendApi]);
+
+    const loadAttributeGroups = async () => {
+        try {
+            await new Promise((resolve, reject) => {
+                backendApi.pet.petAttributesGet((error, data, response) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        setAttributeGroups(data.payload)
+                        resolve(data);
+                    }
+                });
+            });
+
+            console.log("Attribute groups loaded successfully.");
+        } catch (error) {
+            console.error("API call failed:", error.message);
+            throw new Error("Failed to load attribute groups: " + error.message);
+        }
+    };
 
     const fetchAdoptions = async () => {
         if (!backendApi) {
@@ -323,6 +346,7 @@ const AdoptionManagement = () => {
           <NewPetAdoptionApplication
               newApplication={newApplication}
               handleInputChange={handleInputChange}
+              attributeGroups={attributeGroups}
           />
         </Modal.Body>
         <Modal.Footer>
@@ -352,6 +376,7 @@ const AdoptionManagement = () => {
                       width: '100%',                    // Centered at 50% width
                   }}/>
                   <PetProfile
+                      attributeGroups={attributeGroups}
                       pet={currentApplication.pet}
                       imageSrc={currentApplication.pet.imageUrl ? backendApi.imagePath(currentApplication.pet.imageUrl) : ''}
                   />

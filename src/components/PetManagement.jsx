@@ -6,10 +6,17 @@ import {initBackendApi} from "./BackendApi";
 
 
 
-function PetManagement({ petProfile, updateApplication, closeModal }) {
+function PetManagement({ petProfile, updateApplication, closeModal, attributeGroups }) {
 
     const { token } = useContext(AuthContext);
-    const backendApi = initBackendApi(token);
+    const [backendApi, setBackendApi] = useState(null);
+
+    useEffect(() => {
+        if (token) {
+            const apiInstance = initBackendApi(token);
+            setBackendApi(apiInstance);
+        }
+    }, [token]);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -19,22 +26,9 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
   const [formData, setFormData] = useState(petProfile);
   const [isSaving, setIsSaving] = useState(false);
 
-    const shelterQuestions = {
-        questionnaire: "Please Edit the Questionnaire to keep this Pet's information up to date!",
-        gender: "What is the Gender of this Pet?",
-        petType: "What type of pet is this?",
-        breedType: "What is the breed of this pet?",
-        petColour: "What colour is this pet?",
-        petSize: "What size is this pet?",
-        petActivityLevel: "How active is this pet?",
-        petEnvironment: "What type of living environment suits this pet?",
-        petSocial: "Is this pet social with other animals?",
-        userText: "Does this pet have any behavioral challenges?",
-      };
-
     const handleFileChange = async (e) => {
         const file = e.target.files?.[0];
-        if (file) {
+        if (backendApi && file) {
             setSelectedFile(file);
             try {
                 // Use the backendApi client to upload the image
@@ -77,7 +71,7 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
 
 
       useEffect(() => {
-        if(formData && formData.imageUrl) {
+        if(backendApi && formData && formData.imageUrl) {
             setPreviewUrl(backendApi.imagePath(formData.imageUrl))
         }
       }, [backendApi, formData]);
@@ -97,10 +91,10 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
     return(
         <>
     <h1 className={styles.title}>Pet Profile Management</h1>
-        <div class={styles.quesWrap}>
+        <div className={styles.quesWrap}>
             <form > {/* deleted onSubmit={handleClick} */}
         <p style={{ color: "#1e6262", marginBottom: "3%" }}>
-          {shelterQuestions.questionnaire}
+            Please Edit the Questionnaire to keep this Pet's information up to date!
         </p>
         <br />
         <label className={styles.mylabel}>Upload or Change your Profile Picture:</label>
@@ -163,9 +157,10 @@ function PetManagement({ petProfile, updateApplication, closeModal }) {
           />
           <br />
             <Questionnaire
-          questions={shelterQuestions}
+                attributeGroups={attributeGroups}
           formData={formData}
           handleInputChange={handleInputChange}
+          multivalue={false}
         />
         <br />
         <div className={styles.buttonContainer}>

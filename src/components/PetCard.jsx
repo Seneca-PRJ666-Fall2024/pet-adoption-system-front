@@ -3,7 +3,7 @@ import {Card, Button, Row, Col, Image, Modal} from 'react-bootstrap';
 import { Link, useNavigate } from "react-router-dom";
 import PetProfile from "./PetProfile";
 
-const PetCard = ({ pet, imageSrc }) => {
+const PetCard = ({ pet, imageSrc, attributeGroups }) => {
 
     const [showModal, setShowModal] = useState(false);
 
@@ -59,6 +59,7 @@ const PetCard = ({ pet, imageSrc }) => {
             </Modal.Header>
             <Modal.Body>
                 <PetProfile
+                    attributeGroups={attributeGroups}
                     pet={pet}
                     imageSrc={imageSrc}
                 />

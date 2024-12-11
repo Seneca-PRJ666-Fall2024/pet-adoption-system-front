@@ -30,23 +30,28 @@ const PetManagementMain = () => {
 
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [applicationToDelete, setApplicationToDelete] = useState(null);
+    const [attributeGroups, setAttributeGroups] = useState([]);
 
-    const location = useLocation();
+    const loadAttributeGroups = async () => {
+        try {
+            await new Promise((resolve, reject) => {
+                backendApi.pet.petAttributesGet((error, data, response) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        setAttributeGroups(data.payload)
+                        resolve(data);
+                    }
+                });
+            });
 
-    useEffect(() => {
-        console.log("Location object:", location);
-        console.log("Location State:", location.state);
-        // if (petId) {
-        //     // Find the target pet only if it's not already being handled
-        //     const targetPet = data.payload.find(p => p.petId == petId);
-        //
-        //     if (targetPet && !showDetailsModal) {
-        //         handleViewDetails(targetPet);
-        //     } else {
-        //         console.warn("Target pet not found or modal already shown.");
-        //     }
-        // }
-    }, [location, shelterPets]);
+            console.log("Attribute groups loaded successfully.");
+        } catch (error) {
+            console.error("API call failed:", error.message);
+            throw new Error("Failed to load attribute groups: " + error.message);
+        }
+    };
+
 
     const fetchPetProfiles = async () => {
         if (!backendApi) {
@@ -76,7 +81,8 @@ const PetManagementMain = () => {
     useEffect(() => {
         if (!backendApi) return;
         fetchPetProfiles();
-    }, [backendApi, location.search]);
+        loadAttributeGroups();
+    }, [backendApi]);
 
     const handleViewDetails = (petData) => {
         setCurrentPet(petData);
@@ -138,6 +144,7 @@ const updateApplication = async (petData) => {
         });
         console.log("Pet profile updated successfully.");
         fetchPetProfiles();
+        loadAttributeGroups();
     } catch (error) {
         console.error("API call failed:", error.message);
         throw new Error("Failed to update pet profile: " + error.message);
@@ -210,7 +217,8 @@ const updateApplication = async (petData) => {
         <PetManagement
             petProfile={{}}
            updateApplication={updateApplication}
-           closeModal={() => setShowDetailsModal(false)} // Close modal callback
+           closeModal={() => setShowModal(false)} // Close modal callback
+            attributeGroups={attributeGroups}
          />
         </Modal.Body>
       </Modal>
@@ -226,6 +234,7 @@ const updateApplication = async (petData) => {
            petProfile={currentPet} // Pass selected pet
            updateApplication={updateApplication}
            closeModal={() => setShowDetailsModal(false)} // Close modal callback
+           attributeGroups={attributeGroups}
          />
           )}
         </Modal.Body>
