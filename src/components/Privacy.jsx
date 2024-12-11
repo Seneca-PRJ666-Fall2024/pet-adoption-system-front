@@ -3,10 +3,23 @@ import { Container } from "react-bootstrap";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 
+// The Privacy component displays the Privacy Policy for the Pet Adoption Platform.
+// It outlines the platform's approach to data privacy and user rights.
+// The key sections include:
+// 1. Information We Collect: Describes the types of personal and non-personal information collected.
+// 2. How We Use Your Information: Explains the purposes for which user information is utilized.
+// 3. Sharing Your Information: Details the entities with whom user information may be shared, such as shelters, service providers, and legal authorities.
+// 4. Data Security: Emphasizes the platform's efforts to protect user data, while acknowledging limitations in security.
+// 5. Your Rights: Lists user rights, including access to personal data, corrections, and deletion requests.
+// 6. Cookies and Tracking Technologies: Describes the platform's use of cookies and other tracking technologies to improve user experience.
+// 7. Third-Party Links: Provides a disclaimer regarding external links on the platform.
+// 8. Changes to This Privacy Policy: Informs users that the policy may be updated over time.
+// 9. Contact Us: Offers contact information for users with questions or concerns about the privacy policy.
+// The layout utilizes React-Bootstrap components for a clean, responsive design, and custom styling is applied using CSS.
 const Privacy = () => {
   return (
     <>
-      <NavbarComponent/>
+      <NavbarComponent />
       <Container className="mt-4">
         <h1 className="mb-4 text-center">Privacy Policy</h1>
         <p>

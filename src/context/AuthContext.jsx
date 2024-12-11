@@ -1,18 +1,18 @@
 import React, { createContext, useState, useEffect } from "react";
 
-// Create the context
+// Create the AuthContext to manage authentication state
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState(null);
-  const [userRole, setUserRole] = useState("guest"); // Add userRole to the context
-  const [userName, setUserName] = useState("guest");
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Tracks if the user is logged in
+  const [token, setToken] = useState(null); // Stores the authentication token
+  const [userRole, setUserRole] = useState("guest"); // Stores the user's role
+  const [userName, setUserName] = useState("guest"); // Stores the user's name
 
   useEffect(() => {
-    // Check if a token exists in localStorage when the app loads
+    // Load authentication data from localStorage on app load
     const storedToken = localStorage.getItem("token");
-    const storedRole = localStorage.getItem("userRole"); // Retrieve the stored role
+    const storedRole = localStorage.getItem("userRole");
     const storedName = localStorage.getItem("userName");
     if (storedToken) {
       setToken(storedToken);
@@ -20,11 +20,12 @@ export const AuthProvider = ({ children }) => {
       setUserName(storedName);
       setIsLoggedIn(true);
     }
-  }, []);
+  }, []); // Runs only once on component mount
 
   const login = (newToken, role, userName) => {
+    // Save authentication data to localStorage and update state
     localStorage.setItem("token", newToken);
-    localStorage.setItem("userRole", role); // Store the role
+    localStorage.setItem("userRole", role);
     localStorage.setItem("userName", userName);
     setToken(newToken);
     setUserRole(role);
@@ -33,6 +34,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    // Clear authentication data from localStorage and reset state
     localStorage.removeItem("token");
     localStorage.removeItem("userRole");
     localStorage.removeItem("userName");
@@ -42,8 +44,11 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false);
   };
 
+  // Provide authentication state and functions to child components
   return (
-    <AuthContext.Provider value={{ isLoggedIn, token, userRole, userName, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, token, userRole, userName, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

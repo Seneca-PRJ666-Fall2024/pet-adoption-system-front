@@ -12,12 +12,16 @@ import { initBackendApi } from "./BackendApi";
 import AuthContext from "../context/AuthContext";
 
 const Home = () => {
-
+  // Accessing user role from AuthContext
   const { userRole } = useContext(AuthContext);
 
+  // Initializing backend API for adoption data
   const backendApi = initBackendApi();
+
+  // State to store adoption reviews
   const [reviews, setReviews] = useState([]);
 
+  // Fetch reviews on component mount
   useEffect(() => fetchReviews(), []);
 
   const fetchReviews = () => {
@@ -25,7 +29,7 @@ const Home = () => {
     backendApi.adoption.adoptionStoryGet({ N }, (error, data, response) => {
       if (error) {
         console.error("Error fetching adoption stories:", error);
-      } else if(data && Array.isArray(data.payload)){
+      } else if (data && Array.isArray(data.payload)) {
         setReviews(data.payload);
       } else {
         console.error("Incorrect data received:", data);
@@ -36,7 +40,7 @@ const Home = () => {
   return (
     <div id="root">
       {/* Navbar */}
-      <NavbarComponent/>
+      <NavbarComponent />
 
       {/* Main Content */}
       <div className="flex-grow-1 text-center mt-4">

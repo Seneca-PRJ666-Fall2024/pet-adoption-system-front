@@ -1,7 +1,7 @@
-// src/components/ReviewCard.jsx
-import React from 'react';
-import { Card } from 'react-bootstrap';
+import React from "react";
+import { Card } from "react-bootstrap";
 
+// ReviewCard component to display a review with title, story, and author
 const ReviewCard = ({ title, story, author }) => {
   return (
     <Card className="mb-4 shadow-sm">

@@ -4,10 +4,18 @@ import styles from "../styles/Support.module.css";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 
+// The Support component provides users with essential support and contact information.
+// It features the following sections:
+// 1. A welcome message introducing the page's purpose of offering assistance.
+// 2. Contact Information: Includes email and phone support options for users to reach out for help.
+// 3. Frequently Asked Questions (FAQ): Common inquiries from users regarding the adoption process and pet tracking.
+// 4. A "Need More Help?" section that encourages users to contact support if their questions are not answered in the FAQ.
+// 5. A button that redirects users to the support email, providing easy access for further inquiries.
+// The layout utilizes React-Bootstrap components for responsive design, with custom styling applied from an external CSS file.
 const Support = () => {
   return (
     <>
-      <NavbarComponent/>
+      <NavbarComponent />
       <Container className="mt-4">
         <h1 className="mb-4 text-center">Support</h1>
         <p>

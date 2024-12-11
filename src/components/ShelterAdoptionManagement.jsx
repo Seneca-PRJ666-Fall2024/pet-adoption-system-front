@@ -1,119 +1,114 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Table,
-  Button,
-  ProgressBar,
-  Modal,
-} from "react-bootstrap";
+import { Container, Table, Button, ProgressBar, Modal } from "react-bootstrap";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 import "../styles/AdoptionManagement.css";
 
 const AdoptionManagement = () => {
+  // State to manage the list of adoption applications
   const [applications, setApplications] = useState([
     {
-        id: 1,
-        petName: "Buddy",
-        petType: "Dog",
-        petAge: "2 years",
-        petGender: "Male",
-        status: "Waitlisted",
-        petBreed: "Poodle",
-        adopterInfoType: "new",
-        existingAdopterId: "",
-        adopterName: "John Doe",
-        dateOfBirth: "1990-01-01",
-        contactNumber: "123-456-7890",
-        email: "john@example.com",
-        homeAddress: "123 Main St",
-        housingType: "House",
-        rentOrOwn: "own",
-        landlordContact: "",
-        fencedYard: "Yes",
-        activeLifestyle: "Very active",
-        hoursAlone: "2",
-        crateTraining: "Yes",
-        sleepingArrangements: "Inside",
-        priorExperience: "Yes",
-        currentPets: "None",
-        vetContact: "Dr. Smith, 987-654-3210",
-        exercisePlan: "Daily walks",
-        groomingPlan: "Weekly grooming",
-        travelPlan: "Pet sitter",
-        behavioralExpectations: "Well-behaved",
-        commitmentAcknowledgement: true,
-        references: "Jane Doe, 555-123-4567",
-
+      id: 1,
+      petName: "Buddy",
+      petType: "Dog",
+      petAge: "2 years",
+      petGender: "Male",
+      status: "Waitlisted",
+      petBreed: "Poodle",
+      adopterInfoType: "new",
+      existingAdopterId: "",
+      adopterName: "John Doe",
+      dateOfBirth: "1990-01-01",
+      contactNumber: "123-456-7890",
+      email: "john@example.com",
+      homeAddress: "123 Main St",
+      housingType: "House",
+      rentOrOwn: "own",
+      landlordContact: "",
+      fencedYard: "Yes",
+      activeLifestyle: "Very active",
+      hoursAlone: "2",
+      crateTraining: "Yes",
+      sleepingArrangements: "Inside",
+      priorExperience: "Yes",
+      currentPets: "None",
+      vetContact: "Dr. Smith, 987-654-3210",
+      exercisePlan: "Daily walks",
+      groomingPlan: "Weekly grooming",
+      travelPlan: "Pet sitter",
+      behavioralExpectations: "Well-behaved",
+      commitmentAcknowledgement: true,
+      references: "Jane Doe, 555-123-4567",
     },
     {
-        id: 2,
-        petName: "Max",
-        petType: "Dog",
-        petAge: "4 years",
-        petGender: "Male",
-        status: "Interviewing",
-        petBreed: "Chihuahua",
-        adopterInfoType: "existing",
-        existingAdopterId: "1",
-        adopterName: "Jane Smith",
-        dateOfBirth: "1985-05-15",
-        contactNumber: "987-654-3210",
-        email: "jane@example.com",
-        homeAddress: "456 Elm St",
-        housingType: "Apartment",
-        rentOrOwn: "rent",
-        landlordContact: "Mr. Johnson, 123-789-4560",
-        fencedYard: "No",
-        activeLifestyle: "Moderately active",
-        hoursAlone: "4",
-        crateTraining: "No",
-        sleepingArrangements: "On the bed",
-        priorExperience: "No",
-        currentPets: "One cat, 2 years old",
-        vetContact: "Dr. Brown, 123-123-1234",
-        exercisePlan: "Walks every evening",
-        groomingPlan: "Monthly grooming",
-        travelPlan: "Take with us",
-        behavioralExpectations: "Calm and quiet",
-        commitmentAcknowledgement: true,
-        references: "Bob Johnson, 555-987-6543",
+      id: 2,
+      petName: "Max",
+      petType: "Dog",
+      petAge: "4 years",
+      petGender: "Male",
+      status: "Interviewing",
+      petBreed: "Chihuahua",
+      adopterInfoType: "existing",
+      existingAdopterId: "1",
+      adopterName: "Jane Smith",
+      dateOfBirth: "1985-05-15",
+      contactNumber: "987-654-3210",
+      email: "jane@example.com",
+      homeAddress: "456 Elm St",
+      housingType: "Apartment",
+      rentOrOwn: "rent",
+      landlordContact: "Mr. Johnson, 123-789-4560",
+      fencedYard: "No",
+      activeLifestyle: "Moderately active",
+      hoursAlone: "4",
+      crateTraining: "No",
+      sleepingArrangements: "On the bed",
+      priorExperience: "No",
+      currentPets: "One cat, 2 years old",
+      vetContact: "Dr. Brown, 123-123-1234",
+      exercisePlan: "Walks every evening",
+      groomingPlan: "Monthly grooming",
+      travelPlan: "Take with us",
+      behavioralExpectations: "Calm and quiet",
+      commitmentAcknowledgement: true,
+      references: "Bob Johnson, 555-987-6543",
     },
     {
-        id: 3,
-        petName: "Bella",
-        petType: "Cat",
-        petAge: "3 years",
-        petGender: "Female",
-        status: "Rejected",
-        petBreed: "American Bobtail",
-        adopterInfoType: "new",
-        existingAdopterId: "",
-        adopterName: "Mike Wilson",
-        dateOfBirth: "1992-02-20",
-        contactNumber: "321-654-9870",
-        email: "mike@example.com",
-        homeAddress: "789 Oak St",
-        housingType: "Townhouse",
-        rentOrOwn: "own",
-        landlordContact: "",
-        fencedYard: "No",
-        activeLifestyle: "Quiet",
-        hoursAlone: "6",
-        crateTraining: "No",
-        sleepingArrangements: "In a pet bed",
-        priorExperience: "Yes, with dogs",
-        currentPets: "None",
-        vetContact: "Dr. Green, 456-789-0123",
-        exercisePlan: "Playtime indoors",
-        groomingPlan: "Brushing twice a week",
-        travelPlan: "Boarding facility",
-        behavioralExpectations: "Playful but calm",
-        commitmentAcknowledgement: true,
-        references: "Sarah Lee, 444-555-6666",
+      id: 3,
+      petName: "Bella",
+      petType: "Cat",
+      petAge: "3 years",
+      petGender: "Female",
+      status: "Rejected",
+      petBreed: "American Bobtail",
+      adopterInfoType: "new",
+      existingAdopterId: "",
+      adopterName: "Mike Wilson",
+      dateOfBirth: "1992-02-20",
+      contactNumber: "321-654-9870",
+      email: "mike@example.com",
+      homeAddress: "789 Oak St",
+      housingType: "Townhouse",
+      rentOrOwn: "own",
+      landlordContact: "",
+      fencedYard: "No",
+      activeLifestyle: "Quiet",
+      hoursAlone: "6",
+      crateTraining: "No",
+      sleepingArrangements: "In a pet bed",
+      priorExperience: "Yes, with dogs",
+      currentPets: "None",
+      vetContact: "Dr. Green, 456-789-0123",
+      exercisePlan: "Playtime indoors",
+      groomingPlan: "Brushing twice a week",
+      travelPlan: "Boarding facility",
+      behavioralExpectations: "Playful but calm",
+      commitmentAcknowledgement: true,
+      references: "Sarah Lee, 444-555-6666",
     },
   ]);
 
+  // State to store the list of existing adopters
   const [existingAdopters, setExistingAdopters] = useState([
     {
       id: 1,
@@ -133,12 +128,14 @@ const AdoptionManagement = () => {
     },
   ]);
 
+  // Modal control state
   const [showModal, setShowModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [currentApplication, setCurrentApplication] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [applicationToCancel, setApplicationToCancel] = useState(null);
 
+  // State for the new application form
   const [newApplication, setNewApplication] = useState({
     petName: "",
     adopterInfoType: "new",
@@ -152,29 +149,32 @@ const AdoptionManagement = () => {
     housingType: "",
   });
 
+  // Function to handle changes in the new application form input fields
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-  
+
     setNewApplication((prev) => {
       const updatedApplication = {
         ...prev,
         [name]: type === "checkbox" ? checked : value,
       };
-  
+
       // Log the updated application state
       console.log(updatedApplication);
-  
+
       return updatedApplication;
     });
   };
-  
 
+  // Function to submit the new application
   const handleSubmitApplication = async () => {
     try {
+      // Determine adopter info based on adopterInfoType
       const adopterInfo =
         newApplication.adopterInfoType === "existing"
           ? existingAdopters.find(
-              (adopter) => adopter.id === parseInt(newApplication.existingAdopterId)
+              (adopter) =>
+                adopter.id === parseInt(newApplication.existingAdopterId)
             )
           : {
               name: newApplication.adopterName,
@@ -184,6 +184,7 @@ const AdoptionManagement = () => {
               phoneNumber: newApplication.phoneNumber,
             };
 
+      // Create a new application object with default pet info
       const newApp = {
         id: applications.length + 1,
         petName: newApplication.petName,
@@ -195,7 +196,7 @@ const AdoptionManagement = () => {
         progress: 10, // Initial progress for a new submission
       };
 
-      // Simulate sending data to the server
+      // Update applications state by adding the new application
       setApplications((prevApps) => [...prevApps, newApp]);
       setShowModal(false);
       setNewApplication({
@@ -216,31 +217,38 @@ const AdoptionManagement = () => {
     }
   };
 
+  // Function to initiate application cancellation
   const handleCancelApplication = (id) => {
     setApplicationToCancel(id);
     setShowCancelModal(true);
   };
 
+  // Function to confirm cancellation of an application
   const confirmCancelApplication = () => {
     setApplications((prevApps) =>
       prevApps.map((app) =>
-        app.id === applicationToCancel ? { ...app, status: "Cancelled", progress: 0 } : app
+        app.id === applicationToCancel
+          ? { ...app, status: "Cancelled", progress: 0 }
+          : app
       )
     );
     setShowCancelModal(false);
   };
 
+  // Function to view details of a specific application
   const handleViewDetails = (application) => {
     setCurrentApplication(application);
     setShowDetailsModal(true);
   };
 
+  // Function to determine the progress bar variant based on progress value
   const getProgressVariant = (progress) => {
     if (progress === 100) return "success";
     if (progress > 50) return "info";
     return "warning";
   };
 
+  // Function to calculate the progress based on the application status
   const updateProgress = (status) => {
     switch (status) {
       case "Submitted":
@@ -264,15 +272,10 @@ const AdoptionManagement = () => {
 
   return (
     <>
-      <NavbarComponent/>
-      <Container className="my-4">
-        {/*<div className="d-flex justify-content-between align-items-center">*/}
-        {/*  <h3>Your Adoption Applications</h3>*/}
-        {/*  <Button variant="success" onClick={() => setShowModal(true)}>*/}
-        {/*    Create New Application*/}
-        {/*  </Button>*/}
-        {/*</div>*/}
+      <NavbarComponent />
 
+      <Container className="my-4">
+        {/* Table displaying adoption applications */}
         <Table striped bordered hover className="mt-3">
           <thead>
             <tr>
@@ -328,7 +331,7 @@ const AdoptionManagement = () => {
       </Container>
 
       {/* Modal for New Application */}
-      <Modal show={showModal}  size="xl" onHide={() => setShowModal(false)}>
+      <Modal show={showModal} size="xl" onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Create New Application</Modal.Title>
         </Modal.Header>
@@ -343,69 +346,148 @@ const AdoptionManagement = () => {
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Close
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmitApplication}
-          >
+          <Button variant="primary" onClick={handleSubmitApplication}>
             Submit
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Modal for Viewing Details */}
-      <Modal size="lg" show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
+      <Modal
+        size="lg"
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Application Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currentApplication && (
             <>
-              <p><strong>Application Status:</strong> {currentApplication.status}</p>
-              <p style={{ 
-               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
-               width: '100%',                    // Centered at 50% width
-              }} />
-              <p><strong>Pet Name:</strong> {currentApplication.petName}</p>
-              <p><strong>Pet Type:</strong> {currentApplication.petType}</p>
-              <p><strong>Pet Age:</strong> {currentApplication.petAge}</p>
-              <p><strong>Pet Breed:</strong> {currentApplication.petBreed}</p>
-              <p><strong>Pet Gender:</strong> {currentApplication.petGender}</p>
-              <p style={{ 
-               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
-               width: '100%',                    // Centered at 50% width
-              }} />
-              <p><strong>Adopter Info Type:</strong> {currentApplication.adopterInfoType}</p>
-              <p><strong>Adopter Name:</strong> {currentApplication.adopterName}</p>
-              <p><strong>Date of Birth:</strong> {currentApplication.dateOfBirth}</p>
-              <p><strong>Contact Number:</strong> {currentApplication.contactNumber}</p>
-              <p><strong>Email:</strong> {currentApplication.email}</p>
-              <p><strong>Home Address:</strong> {currentApplication.homeAddress}</p>
-              <p style={{ 
-               borderTop: '2px solid rgba(45, 118, 127, 0.7)', // Thicker line with 50% opacity
-               width: '100%',                    // Centered at 50% width
-              }} />
-              <p><strong>Housing Type:</strong> {currentApplication.housingType}</p>
-              <p><strong>Rent or Own:</strong> {currentApplication.rentOrOwn}</p>
-              <p><strong>Landlord Contact:</strong> {currentApplication.landlordContact}</p>
-              <p><strong>Fenced Yard:</strong> {currentApplication.fencedYard}</p>
-              <p><strong>Active Lifestyle:</strong> {currentApplication.activeLifestyle}</p>
-              <p><strong>Hours Alone:</strong> {currentApplication.hoursAlone}</p>
-              <p><strong>Crate Training:</strong> {currentApplication.crateTraining}</p>
-              <p><strong>Sleeping Arrangements:</strong> {currentApplication.sleepingArrangements}</p>
-              <p><strong>Prior Experience:</strong> {currentApplication.priorExperience}</p>
-              <p><strong>Current Pets:</strong> {currentApplication.currentPets}</p>
-              <p><strong>Vet Contact:</strong> {currentApplication.vetContact}</p>
-              <p><strong>Exercise Plan:</strong> {currentApplication.exercisePlan}</p>
-              <p><strong>Grooming Plan:</strong> {currentApplication.groomingPlan}</p>
-              <p><strong>Travel Plan:</strong> {currentApplication.travelPlan}</p>
-              <p><strong>Behavioral Expectations:</strong> {currentApplication.behavioralExpectations}</p>
-              <p><strong>Commitment Acknowledgement:</strong> {currentApplication.commitmentAcknowledgement ? "Yes" : "No"}</p>
-              <p><strong>References:</strong> {currentApplication.references}</p>
+              <p>
+                <strong>Application Status:</strong> {currentApplication.status}
+              </p>
+              <p
+                style={{
+                  borderTop: "2px solid rgba(45, 118, 127, 0.7)", // Thicker line with 50% opacity
+                  width: "100%", // Centered at 50% width
+                }}
+              />
+              <p>
+                <strong>Pet Name:</strong> {currentApplication.petName}
+              </p>
+              <p>
+                <strong>Pet Type:</strong> {currentApplication.petType}
+              </p>
+              <p>
+                <strong>Pet Age:</strong> {currentApplication.petAge}
+              </p>
+              <p>
+                <strong>Pet Breed:</strong> {currentApplication.petBreed}
+              </p>
+              <p>
+                <strong>Pet Gender:</strong> {currentApplication.petGender}
+              </p>
+              <p
+                style={{
+                  borderTop: "2px solid rgba(45, 118, 127, 0.7)", // Thicker line with 50% opacity
+                  width: "100%", // Centered at 50% width
+                }}
+              />
+              <p>
+                <strong>Adopter Info Type:</strong>{" "}
+                {currentApplication.adopterInfoType}
+              </p>
+              <p>
+                <strong>Adopter Name:</strong> {currentApplication.adopterName}
+              </p>
+              <p>
+                <strong>Date of Birth:</strong> {currentApplication.dateOfBirth}
+              </p>
+              <p>
+                <strong>Contact Number:</strong>{" "}
+                {currentApplication.contactNumber}
+              </p>
+              <p>
+                <strong>Email:</strong> {currentApplication.email}
+              </p>
+              <p>
+                <strong>Home Address:</strong> {currentApplication.homeAddress}
+              </p>
+              <p
+                style={{
+                  borderTop: "2px solid rgba(45, 118, 127, 0.7)", // Thicker line with 50% opacity
+                  width: "100%", // Centered at 50% width
+                }}
+              />
+              <p>
+                <strong>Housing Type:</strong> {currentApplication.housingType}
+              </p>
+              <p>
+                <strong>Rent or Own:</strong> {currentApplication.rentOrOwn}
+              </p>
+              <p>
+                <strong>Landlord Contact:</strong>{" "}
+                {currentApplication.landlordContact}
+              </p>
+              <p>
+                <strong>Fenced Yard:</strong> {currentApplication.fencedYard}
+              </p>
+              <p>
+                <strong>Active Lifestyle:</strong>{" "}
+                {currentApplication.activeLifestyle}
+              </p>
+              <p>
+                <strong>Hours Alone:</strong> {currentApplication.hoursAlone}
+              </p>
+              <p>
+                <strong>Crate Training:</strong>{" "}
+                {currentApplication.crateTraining}
+              </p>
+              <p>
+                <strong>Sleeping Arrangements:</strong>{" "}
+                {currentApplication.sleepingArrangements}
+              </p>
+              <p>
+                <strong>Prior Experience:</strong>{" "}
+                {currentApplication.priorExperience}
+              </p>
+              <p>
+                <strong>Current Pets:</strong> {currentApplication.currentPets}
+              </p>
+              <p>
+                <strong>Vet Contact:</strong> {currentApplication.vetContact}
+              </p>
+              <p>
+                <strong>Exercise Plan:</strong>{" "}
+                {currentApplication.exercisePlan}
+              </p>
+              <p>
+                <strong>Grooming Plan:</strong>{" "}
+                {currentApplication.groomingPlan}
+              </p>
+              <p>
+                <strong>Travel Plan:</strong> {currentApplication.travelPlan}
+              </p>
+              <p>
+                <strong>Behavioral Expectations:</strong>{" "}
+                {currentApplication.behavioralExpectations}
+              </p>
+              <p>
+                <strong>Commitment Acknowledgement:</strong>{" "}
+                {currentApplication.commitmentAcknowledgement ? "Yes" : "No"}
+              </p>
+              <p>
+                <strong>References:</strong> {currentApplication.references}
+              </p>
             </>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDetailsModal(false)}
+          >
             Close
           </Button>
         </Modal.Footer>

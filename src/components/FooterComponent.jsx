@@ -2,6 +2,7 @@ import React from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
+// FooterComponent: A reusable footer section with navigation links.
 const FooterComponent = () => {
   return (
     <footer className="custom-footer py-3">

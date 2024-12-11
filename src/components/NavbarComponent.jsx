@@ -8,14 +8,16 @@ const NavbarComponent = () => {
   const { isLoggedIn, logout, userRole } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Handle logout, clearing authentication state and redirecting to home
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    logout(); // Clear authentication state
+    navigate("/"); // Redirect to home page after logout
   };
 
   return (
     <Navbar expand="lg" className="custom-navbar">
       <Container>
+        {/* Navbar Brand and Home link */}
         <Navbar.Brand href="/">Pet Adoption Platform</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -23,6 +25,7 @@ const NavbarComponent = () => {
             <Nav.Link as={Link} to="/aboutus">
               About Us
             </Nav.Link>
+            {/* Display links specific to adopters */}
             {userRole === "adopter" && (
               <>
                 <Nav.Link as={Link} to="/matching">
@@ -34,23 +37,28 @@ const NavbarComponent = () => {
                 </Nav.Link>
               </>
             )}
+            {/* Display links specific to shelters */}
             {userRole === "shelter" && (
-                <>
-                  <Nav.Link as={Link} to="/PetManagementMain">
-                    Pet Management
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/adoption">
-                    Adoption Management
-                  </Nav.Link>
-                </>
+              <>
+                <Nav.Link as={Link} to="/PetManagementMain">
+                  Pet Management
+                </Nav.Link>
+                <Nav.Link as={Link} to="/adoption">
+                  Adoption Management
+                </Nav.Link>
+              </>
             )}
+            {/* Display login/logout options based on authentication state */}
             {isLoggedIn ? (
               <>
-                <Nav.Link as={Link} to="/ProfileSetup">Update Profile</Nav.Link>
+                <Nav.Link as={Link} to="/ProfileSetup">
+                  Update Profile
+                </Nav.Link>
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
               </>
             ) : (
               <>
+                {/* Links to login and register pages */}
                 <Nav.Link as={Link} to="/register">
                   Register
                 </Nav.Link>

@@ -4,10 +4,15 @@ import { Link } from "react-router-dom";
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
 
+// Terms component displays the Terms and Conditions page for the Pet Adoption Platform.
+// This component provides an overview of the platform's rules, adoption process, privacy policy,
+// intellectual property rights, limitations of liability, and more. The content is organized into
+// sections with links for easy navigation. The page includes a navbar and footer for consistent
+// user experience across the site.
 const Terms = () => {
   return (
     <>
-      <NavbarComponent/>
+      <NavbarComponent />
       <Container className="mt-4">
         <h1 className="mb-4 text-center">Terms and Conditions</h1>
         <p>

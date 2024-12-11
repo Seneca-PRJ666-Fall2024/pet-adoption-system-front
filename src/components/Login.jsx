@@ -7,14 +7,20 @@ import { initBackendApi } from "./BackendApi";
 import AuthContext from "../context/AuthContext";
 
 function Login() {
+  // State hooks for managing email, password, errors, and loading state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Initialize backend API and context functions
   const backendApi = initBackendApi();
   const navigate = useNavigate();
+
+  // Login function from context
   const { login } = useContext(AuthContext);
 
+  // Handle login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous errors
@@ -27,7 +33,7 @@ function Login() {
     };
 
     try {
-      // Call the backend login API
+      // Make API request to login
       const response = await new Promise((resolve, reject) => {
         backendApi.user.userLoginPost(loginRequest, (error, data, response) => {
           if (error) reject(error);
@@ -36,11 +42,22 @@ function Login() {
       });
 
       setLoading(false);
-      if(response && response.payload && response.payload.token && response.payload.role){
-        // Call login function from context to update global state
-        login(response.payload.token, response.payload.role, response.payload.username);
 
-        navigate(response.payload.profileSet ? '/' : '/ProfileSetup');
+      // Check response and handle successful login
+      if (
+        response &&
+        response.payload &&
+        response.payload.token &&
+        response.payload.role
+      ) {
+        // Call login function from context to update global state
+        login(
+          response.payload.token,
+          response.payload.role,
+          response.payload.username
+        );
+
+        navigate(response.payload.profileSet ? "/" : "/ProfileSetup");
       } else {
         console.error("Login failed. Invalid response: ", response);
       }
@@ -55,7 +72,7 @@ function Login() {
   return (
     <>
       {/* Navbar */}
-      <NavbarComponent/>
+      <NavbarComponent />
       <div className={styles.register}>
         <div className={styles.title}>
           <h1>Login to your account</h1>
@@ -63,6 +80,7 @@ function Login() {
 
         <div className={styles.regform}>
           <form onSubmit={handleLogin}>
+            {/* Input fields for email and password */}
             <div className={styles.username}>
               <label className={styles.question}>Email:</label>
               <input
@@ -94,6 +112,7 @@ function Login() {
           </form>
         </div>
 
+        {/* Link to registration page */}
         <div className={styles.signin}>
           <p>
             Not registered yet?{" "}
@@ -103,6 +122,7 @@ function Login() {
           </p>
         </div>
       </div>
+
       {/* Footer */}
       <FooterComponent />
     </>

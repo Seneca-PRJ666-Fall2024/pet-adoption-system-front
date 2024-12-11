@@ -10,10 +10,15 @@ import { FaHandsHelping } from "react-icons/fa";
 const AboutUs = () => {
   return (
     <>
-      <NavbarComponent/>
+      {/* Navbar at the top */}
+      <NavbarComponent />
 
+      {/* Main content container */}
       <Container className="mt-4">
+        {/* Page title */}
         <h1 className="text-center">About Us</h1>
+
+        {/* Section: About Ontario SPCA */}
         <div className="mt-4">
           <h4>Ontario SPCA and Humane Society</h4>
           <p>
@@ -24,6 +29,8 @@ const AboutUs = () => {
             all animals.
           </p>
         </div>
+
+        {/* Section: Our Mission */}
         <div className="mt-4">
           <h4>Our Mission</h4>
           <p>
@@ -35,6 +42,8 @@ const AboutUs = () => {
             improve the adoption experience for both pets and adopters.
           </p>
         </div>
+
+        {/* Section: Our Goals */}
         <div className="mt-4">
           <h4>Our Goals</h4>
           <Row>
@@ -76,6 +85,8 @@ const AboutUs = () => {
             </Col>
           </Row>
         </div>
+
+        {/* Section: Contact Us */}
         <div className="mt-4">
           <h4>Contact Us</h4>
           <p>
@@ -85,6 +96,8 @@ const AboutUs = () => {
           </p>
         </div>
       </Container>
+
+      {/* Footer at the bottom */}
       <FooterComponent />
     </>
   );
