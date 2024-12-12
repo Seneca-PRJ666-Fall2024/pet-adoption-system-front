@@ -79,7 +79,7 @@ const AdopterView = () => {
     <>
       {/* Welcome message with user's name */}
       <Container className="text-center mt-4">
-        <h1>Welcome{userName ? ", " + userName : ""}!</h1>
+        <h1>Welcome{userName && userName != "null" ? ", " + userName : ""}!</h1>
       </Container>
 
       {/* Pet recommendations section */}

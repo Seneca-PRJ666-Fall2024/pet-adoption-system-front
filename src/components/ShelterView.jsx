@@ -102,7 +102,7 @@ const ShelterView = () => {
   return (
     <>
       <Container className="text-center mt-4">
-        <h1>Welcome{userName ? ", " + userName : ""}!</h1>
+        <h1>Welcome{userName && userName != "null" ? ", " + userName : ""}!</h1>
       </Container>
 
       {/* Section to manage pets at the shelter */}
